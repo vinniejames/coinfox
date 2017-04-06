@@ -31,7 +31,7 @@ class App extends Component {
           hodl: Number(localStorage.ltcHodl),
         },
         doge: {
-          cost_basis: Number(localStorage.dodgeCost),
+          cost_basis: Number(localStorage.dogeCost),
           curr_price: 0,
           hodl: Number(localStorage.dogeHodl),
         },
