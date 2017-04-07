@@ -29,4 +29,4 @@ After adding coins you will then see all your holdings:
                
 ## Check Back Daily on Your hodlings
 
-![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Coinfox")
+![alt text](http://i.imgur.com/3QULYvh.png "CoinFox")
