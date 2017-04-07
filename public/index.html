@@ -8,6 +8,15 @@
     <link rel="icon" sizes="192x192" href="%PUBLIC_URL%/mobile-icon.png">
     <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
     <script src="https://use.fontawesome.com/224e5e0840.js"></script>
+    <script>
+    Object.values = x =>
+       Object.keys(x).reduce((y, z) =>
+           y.push(x[z]) && y, []);
+
+    Object.entries = x =>
+       Object.keys(x).reduce((y, z) =>
+           y.push([z, x[z]]) && y, []);
+    </script>
     <link href="https://fonts.googleapis.com/css?family=Roboto:300" rel="stylesheet">
     <!--
       Notice the use of %PUBLIC_URL% in the tag above.
