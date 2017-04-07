@@ -14,72 +14,91 @@ class App extends Component {
       add_ticker: "",
       add_cost_basis: "",
       add_hodl: "",
-      coinz: {
-        btc: {
-          cost_basis: Number(localStorage.btcCost),
-          curr_price: 0,
-          hodl: Number(localStorage.btcHodl),
-        },
-        eth: {
-          cost_basis: Number(localStorage.ethCost),
-          curr_price: 0,
-          hodl: Number(localStorage.ethHodl),
-        },
-        ltc: {
-          cost_basis: Number(localStorage.ltcCost),
-          curr_price: 0,
-          hodl: Number(localStorage.ltcHodl),
-        },
-        doge: {
-          cost_basis: Number(localStorage.dogeCost),
-          curr_price: 0,
-          hodl: Number(localStorage.dogeHodl),
-        },
-        xmr: {
-          cost_basis: Number(localStorage.xmrCost),
-          curr_price: 0,
-          hodl: Number(localStorage.xmrHodl),
-        },
-        gnt: {
-          cost_basis: Number(localStorage.gntCost),
-          curr_price: 0,
-          hodl: Number(localStorage.gntHodl),
+      coinz: {}
+    }
+  }
+
+  componentWillMount(){
+    const localCoins = {};
+    // object to array for map
+    const lStore = Object.entries(localStorage);
+
+    lStore.map((key) => {
+      const ticker = key[0].replace(/_.*/i, '');
+      const cost = ticker + "_cost_basis";
+      const hodl = ticker + "_hodl";
+
+      // if localCoins doesnt have the ticker yet, create it
+      // add localStorage key to localCoins for state
+      if (!localCoins.hasOwnProperty(ticker)) {
+        localCoins[ticker] = {hodl: null, cost_basis: null};
+        if (key[0] === cost) {
+          // key[x] needs to be converted into number
+          localCoins[ticker].cost_basis = Number(key[1]);
+        } else if (key[0] === hodl) {
+          localCoins[ticker].hodl = Number(key[1]);
+        } else {
+          console.log('invalid localStorage');
+        }
+      // localCoins has the ticker, so we add to it instead
+      } else {
+        if (key[0] === cost) {
+          localCoins[ticker].cost_basis = Number(key[1]);
+        } else if (key[0] === hodl) {
+          localCoins[ticker].hodl = Number(key[1]);
+        } else {
+          console.log('invalid localStorage');
         }
       }
+    })
+    const localCoinsLength = Object.keys(localCoins).length;
+    const localStorageLength = Object.keys(localStorage).length / 2;
+    const newCoinsState = {
+      coinz: localCoins
     }
-
+    this.setState(newCoinsState);
   }
+
   componentDidMount(){
     this._marketPrice();
   }
-  _numberWithCommas(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+  _numberWithCommas(d) {
+    return d.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
+
   _costBasis(){
     var cost = 0;
 
     for (var coin in this.state.coinz) {
       const cost_basis = this.state.coinz[coin].cost_basis;
       const hodl = this.state.coinz[coin].hodl;
-      cost = cost + (hodl * cost_basis);
+      if (hodl){
+        cost = cost + (hodl * cost_basis);
+      }
     }
 
     return cost.toFixed(2);
   }
+
   _portfolioValue(){
     var value = 0;
 
     for (var coin in this.state.coinz) {
       const hodl = this.state.coinz[coin].hodl;
       const curr_price = this.state.coinz[coin].curr_price;
-      value = value + (hodl * curr_price);
+      if (hodl){
+        value = value + (hodl * curr_price);
+      }
     }
 
     return value.toFixed(2);
   }
+
   _totalGainLoss(){
     return ( this._portfolioValue() - this._costBasis() ).toFixed(2);
   }
+
   _percentReturn(){
     return ( 100 * ( ( this._portfolioValue() / this._costBasis() ) - 1 ) ).toFixed(2);
   }
@@ -116,8 +135,8 @@ class App extends Component {
     }
 
   }
+
   _toggleMenu(){
-    console.log('menu');
     if (this.state.menu_visibility === "hidden") {
       this.setState({menu_visibility: ""})
     } else {
@@ -127,25 +146,28 @@ class App extends Component {
 
   _handleSubmit (e) {
     e.preventDefault();
-    console.log(this.state.add_ticker, 'yes');
-    const keyCost = this.state.add_ticker.toLowerCase() + "Cost";
-    const keyHodl = this.state.add_ticker.toLowerCase() + "Hodl";
+
+    const keyCost = this.state.add_ticker.toLowerCase() + "_cost_basis";
+    const keyHodl = this.state.add_ticker.toLowerCase() + "_hodl";
     const costBasis = this.state.add_cost_basis;
     const hodl = this.state.add_hodl;
     localStorage.setItem(keyCost, costBasis);
     localStorage.setItem(keyHodl, hodl);
     window.location.href = window.location.href;
   }
+
   _onChange (e) {
     var text = e.target.value;
     var item = e.target.className;
-    //console.log(item);
+
     this.setState({[item]: text});
   }
 
   render() {
     const coinStats = Object.entries(this.state.coinz);
-
+    const gainz = Object.keys(this.state.coinz).length
+      ? "$" + this._numberWithCommas(this._totalGainLoss()) + " (" + this._numberWithCommas(this._percentReturn()) + "%)"
+      : "Use the menu to add your coin holdings";
     return (
       <div className="App">
         <i onClick={this._toggleMenu} className="btn-menu fa fa-lg fa-bars" aria-hidden="true"></i>
@@ -163,7 +185,7 @@ class App extends Component {
                   className="add_cost_basis"
                   onChange={this._onChange}
                   value={this.state.cost_basist}
-                  placeholder="Average Cost Basis"/>
+                  placeholder="Average Cost Basis (per coin)"/>
                   <br/>
                 <input type="text"
                   className="add_hodl"
@@ -176,37 +198,41 @@ class App extends Component {
 
         </div>
 
-
         <div className="App-header">
           <div className="Overview">
           <h1>
             ${this._numberWithCommas(this._portfolioValue())}
           </h1>
           <h2>
-            ${this._numberWithCommas(this._totalGainLoss())} ({this._numberWithCommas(this._percentReturn())}%)
+            {gainz}
           </h2>
           </div>
         </div>
         <div className="Coins">
-          {coinStats.map(function(c, i){
-            const coin = c;
+          {coinStats.map(function(coin, i){
             const ticker = coin[0].toUpperCase();
-            const hodl = this._numberWithCommas(coin[1].hodl.toFixed(0));
+            const hodl = coin[1].hodl.toFixed(0);
             const gain_loss = ((Number(coin[1].curr_price) - coin[1].cost_basis) * coin[1].hodl).toFixed(2);
             const curr_price = Number(coin[1].curr_price).toFixed(2);
             const color = gain_loss >= 0 ? "green" : "red";
-            return (
-              <div key={i} className="coin">
-                <p className="float-left">
-                  {ticker}<br/>
-                  <span>{hodl} Coins</span>
-                </p>
-                <p className="text-right float-right">
-                  <span className={color}>${this._numberWithCommas(gain_loss)}</span><br/>
-                  <span>${this._numberWithCommas(curr_price)}</span>
-                </p>
-              </div>
-            );
+
+            if (!Number(hodl)) {
+              return null;
+            } else {
+              return (
+                <div key={i} className="coin">
+                  <p className="float-left">
+                    {ticker}<br/>
+                    <span>{this._numberWithCommas(hodl)} Coins</span>
+                  </p>
+                  <p className="text-right float-right">
+                    <span className={color}>${this._numberWithCommas(gain_loss)}</span><br/>
+                    <span>${this._numberWithCommas(curr_price)}</span>
+                  </p>
+                </div>
+              );
+            }
+
           }.bind(this))}
         </div>
       </div>
