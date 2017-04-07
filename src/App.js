@@ -27,37 +27,36 @@ class App extends Component {
       const ticker = key[0].replace(/_.*/i, '');
       const cost = ticker + "_cost_basis";
       const hodl = ticker + "_hodl";
-      console.log(localCoins.hasOwnProperty(ticker), ticker);
 
       // if localCoins doesnt have the ticker yet, create it
       // add localStorage key to localCoins for state
       if (!localCoins.hasOwnProperty(ticker)) {
         localCoins[ticker] = {hodl: null, cost_basis: null};
         if (key[0] === cost) {
-          localCoins[ticker].cost_basis = key[1];
+          // key[x] needs to be converted into number
+          localCoins[ticker].cost_basis = Number(key[1]);
         } else if (key[0] === hodl) {
-          localCoins[ticker].hodl = key[1];
+          localCoins[ticker].hodl = Number(key[1]);
         } else {
           console.log('invalid localStorage');
         }
       // localCoins has the ticker, so we add to it instead
       } else {
         if (key[0] === cost) {
-          localCoins[ticker].cost_basis = key[1];
+          localCoins[ticker].cost_basis = Number(key[1]);
         } else if (key[0] === hodl) {
-          localCoins[ticker].hodl = key[1];
+          localCoins[ticker].hodl = Number(key[1]);
         } else {
           console.log('invalid localStorage');
         }
       }
-
-
-
     })
-
-    console.log(localCoins, 'ls');
-
-    this.setState(localCoins);
+    const localCoinsLength = Object.keys(localCoins).length;
+    const localStorageLength = Object.keys(localStorage).length / 2;
+    const newCoinsState = {
+      coinz: localCoins
+    }
+    this.setState(newCoinsState);
   }
 
   componentDidMount(){
@@ -166,7 +165,9 @@ class App extends Component {
 
   render() {
     const coinStats = Object.entries(this.state.coinz);
-
+    const gainz = Object.keys(this.state.coinz).length
+      ? "$" + this._numberWithCommas(this._totalGainLoss()) + " (" + this._numberWithCommas(this._percentReturn()) + "%)"
+      : "Use the menu to add your coin holdings";
     return (
       <div className="App">
         <i onClick={this._toggleMenu} className="btn-menu fa fa-lg fa-bars" aria-hidden="true"></i>
@@ -184,7 +185,7 @@ class App extends Component {
                   className="add_cost_basis"
                   onChange={this._onChange}
                   value={this.state.cost_basist}
-                  placeholder="Average Cost Basis"/>
+                  placeholder="Average Cost Basis (per coin)"/>
                   <br/>
                 <input type="text"
                   className="add_hodl"
@@ -203,7 +204,7 @@ class App extends Component {
             ${this._numberWithCommas(this._portfolioValue())}
           </h1>
           <h2>
-            ${this._numberWithCommas(this._totalGainLoss())} ({this._numberWithCommas(this._percentReturn())}%)
+            {gainz}
           </h2>
           </div>
         </div>
