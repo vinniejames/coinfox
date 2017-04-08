@@ -211,7 +211,7 @@ class App extends Component {
         <div className="Coins">
           {coinStats.map(function(coin, i){
             const ticker = coin[0].toUpperCase();
-            const hodl = coin[1].hodl.toFixed(2);
+            const hodl = parseFloat(coin[1].hodl.toFixed(2));
             const gain_loss = ((Number(coin[1].curr_price) - coin[1].cost_basis) * coin[1].hodl).toFixed(2);
             const curr_price = Number(coin[1].curr_price).toFixed(2);
             const color = gain_loss >= 0 ? "green" : "red";
