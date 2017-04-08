@@ -19,44 +19,61 @@ class App extends Component {
   }
 
   componentWillMount(){
-    const localCoins = {};
-    // object to array for map
-    const lStore = Object.entries(localStorage);
+    // if user doesnt have json
+    if (!localStorage.hasOwnProperty('coinz')) {
+      const localCoins = {};
+      // object to array for map
+      const lStore = Object.entries(localStorage);
+      lStore.map((key) => {
+        const ticker = key[0].replace(/_.*/i, '');
+        const cost = ticker + "_cost_basis";
+        const hodl = ticker + "_hodl";
 
-    lStore.map((key) => {
-      const ticker = key[0].replace(/_.*/i, '');
-      const cost = ticker + "_cost_basis";
-      const hodl = ticker + "_hodl";
+        // if localCoins doesnt have the ticker yet, create it
+        // add localStorage key to localCoins for state
+        if (!localCoins.hasOwnProperty(ticker)) {
+          localCoins[ticker] = {hodl: null, cost_basis: null};
+          if (key[0] === cost) {
+            // key[x] needs to be converted into number
+            localCoins[ticker].cost_basis = Number(key[1]);
+          } else if (key[0] === hodl) {
+            localCoins[ticker].hodl = Number(key[1]);
+          } else {
+            console.log('invalid localStorage');
+          }
+        // localCoins has the ticker, so we add to it instead
+        } else {
+          if (key[0] === cost) {
+            localCoins[ticker].cost_basis = Number(key[1]);
+          } else if (key[0] === hodl) {
+            localCoins[ticker].hodl = Number(key[1]);
+          } else {
+            console.log('invalid localStorage');
+          }
+        }
+      })
+      // convert to string for localStorage
+      const stringCoins = JSON.stringify(localCoins);
+      const jsonCoins = JSON.parse(stringCoins);
+      // clear out old way of localStorage
+      localStorage.clear();
+      // add new json string to localStorage
+      localStorage.setItem('coinz', stringCoins);
 
-      // if localCoins doesnt have the ticker yet, create it
-      // add localStorage key to localCoins for state
-      if (!localCoins.hasOwnProperty(ticker)) {
-        localCoins[ticker] = {hodl: null, cost_basis: null};
-        if (key[0] === cost) {
-          // key[x] needs to be converted into number
-          localCoins[ticker].cost_basis = Number(key[1]);
-        } else if (key[0] === hodl) {
-          localCoins[ticker].hodl = Number(key[1]);
-        } else {
-          console.log('invalid localStorage');
-        }
-      // localCoins has the ticker, so we add to it instead
-      } else {
-        if (key[0] === cost) {
-          localCoins[ticker].cost_basis = Number(key[1]);
-        } else if (key[0] === hodl) {
-          localCoins[ticker].hodl = Number(key[1]);
-        } else {
-          console.log('invalid localStorage');
-        }
+      const newCoinsState = {
+        coinz: jsonCoins
       }
-    })
-    const localCoinsLength = Object.keys(localCoins).length;
-    const localStorageLength = Object.keys(localStorage).length / 2;
-    const newCoinsState = {
-      coinz: localCoins
+      this.setState(newCoinsState);
+    } else if (localStorage.hasOwnProperty('coinz')) {
+      const jsonCoins = JSON.parse(localStorage.coinz);
+      const newCoinsState = {
+        coinz: jsonCoins
+      }
+      this.setState(newCoinsState);
     }
-    this.setState(newCoinsState);
+
+
+
   }
 
   componentDidMount(){
@@ -109,7 +126,7 @@ class App extends Component {
     for (var coin in this.state.coinz) {
       var count = 1;
       const numCoins = Object.keys(this.state.coinz).length;
-      const endpoint = 'https://api.cryptonator.com/api/ticker/'+ coin +'-usd';
+      const endpoint = 'https://api.cryptonator.com/api/ticker/'+ coin.toLowerCase() +'-usd';
 
       fetch(endpoint)
       .then(function(res) {
@@ -147,12 +164,22 @@ class App extends Component {
   _handleSubmit (e) {
     e.preventDefault();
 
-    const keyCost = this.state.add_ticker.toLowerCase() + "_cost_basis";
-    const keyHodl = this.state.add_ticker.toLowerCase() + "_hodl";
-    const costBasis = this.state.add_cost_basis;
-    const hodl = this.state.add_hodl;
-    localStorage.setItem(keyCost, costBasis);
-    localStorage.setItem(keyHodl, hodl);
+    const currentCoins = JSON.parse(localStorage.coinz) || {};
+    // const keyCost = this.state.add_ticker.toLowerCase() + "_cost_basis";
+    // const keyHodl = this.state.add_ticker.toLowerCase() + "_hodl";
+    const ticker = this.state.add_ticker.toLowerCase();
+    const costBasis = Number(this.state.add_cost_basis);
+    const hodl = Number(this.state.add_hodl);
+
+    currentCoins[ticker] = {
+      cost_basis: costBasis,
+      hodl: hodl
+    }
+
+    const stringCoins = JSON.stringify(currentCoins);
+
+    localStorage.setItem("coinz", stringCoins);
+
     window.location.href = window.location.href;
   }
 
@@ -211,8 +238,8 @@ class App extends Component {
         <div className="Coins">
           {coinStats.map(function(coin, i){
             const ticker = coin[0].toUpperCase();
-            const hodl = parseFloat(coin[1].hodl.toFixed(2));
-            const gain_loss = ((Number(coin[1].curr_price) - coin[1].cost_basis) * coin[1].hodl).toFixed(2);
+            const hodl = parseFloat(Number(coin[1].hodl).toFixed(2));
+            const gain_loss = ((Number(coin[1].curr_price) - Number(coin[1].cost_basis) ) * Number(coin[1].hodl) ).toFixed(2);
             const curr_price = Number(coin[1].curr_price).toFixed(2);
             const color = gain_loss >= 0 ? "green" : "red";
 
