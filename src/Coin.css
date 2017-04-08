@@ -1,0 +1,33 @@
+.coinInfo{
+  background-color: #303032;
+  margin: 0 10px;
+  position: absolute;
+  top: 55px;
+  width: calc(100% - 60px);
+  min-height: calc(100vh - 95px);
+  padding: 20px;
+}
+.coinInfo .coin {
+  cursor: auto;
+}
+.coinInfo h1 {
+    font-weight: 300;
+    font-size: 2.5rem;
+    margin: 5px;
+}
+.coinInfo h2 {
+    font-weight: 300;
+    margin: 5px;
+}
+.coinInfo span {
+  color: #777;
+}
+.fa-trash-o {
+  float: right;
+  margin-top: 20px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.25);
+}
+.fa-trash-o:hover {
+  color: red;
+}

@@ -8,6 +8,13 @@ body {
   top: 20px;
   cursor: pointer;
 }
+.coin-close {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  cursor: pointer;
+  z-index: 10;
+}
 .hidden {
   display: none;
 }
@@ -16,7 +23,7 @@ body {
   background-color: #303032;
   height: 100vh;
   width: 100vw;
-  z-index: 1;
+  z-index: 20;
   padding-top: 60px;
 }
 input {
@@ -74,6 +81,11 @@ label {
   text-align: left;
   padding: 0 20px;
 }
+.coin {
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  cursor: pointer;
+  position: relative;
+}
 .coin span {
   color: #777;
 }
@@ -98,6 +110,9 @@ label {
 .text-right {
   text-align: right;
 }
+.text-left {
+  text-align: left;
+}
 span.red {
   color: rgb(216, 45, 45);
 }
@@ -106,4 +121,11 @@ span.green {
 }
 small {
  color: #777
+}
+.fa-info-circle {
+  position: absolute;
+  top: 25px;
+  left: 50%;
+  color: rgba(255,255,255,0.25);
+  pointer-events: none;
 }
