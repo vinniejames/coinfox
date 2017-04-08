@@ -194,10 +194,13 @@ class App extends Component {
   _currencySymbol(ticker){
     const symbol = {
       usd: "$",
+      btc: "฿",
       cad: "$",
       eur: "€",
       jpy: "¥",
-      cny: "¥"
+      cny: "¥",
+      rur: "₽",
+      uah: "₴"
     }
     return symbol[ticker.toLowerCase()];
   }
@@ -229,7 +232,7 @@ class App extends Component {
     const coinStats = Object.entries(this.state.coinz);
     const totalGainLoss = this._totalGainLoss();
     const currencyPref = this.state.preferences.currency
-
+    const avgCostBasis = "Average Cost Basis ("+ this._currencySymbol(this.state.preferences.currency) +"/per coin)"
     const headerColor = totalGainLoss < 0
       ? "App-header red"
       : "App-header";
@@ -245,10 +248,13 @@ class App extends Component {
           <label htmlFor="currency">{this._currencySymbol(this.state.preferences.currency) || "USD"}</label>
           <select id="currency" onChange={this._handleSelectChange} value={currencyPref} name="select">
             <option value="USD">{this._currencySymbol('usd')} USD</option>
+            <option value="BTC">{this._currencySymbol('btc')} BTC</option>
             <option value="CAD">{this._currencySymbol('cad')} CAD</option>
             <option value="EUR">{this._currencySymbol('eur')} EUR</option>
             <option value="CNY">{this._currencySymbol('cny')} CNY</option>
             <option value="JPY">{this._currencySymbol('jpy')} JPY</option>
+            <option value="RUR">{this._currencySymbol('rur')} RUR</option>
+            <option value="UAH">{this._currencySymbol('uah')} UAH</option>
           </select>
 
           <hr />
@@ -264,7 +270,7 @@ class App extends Component {
                   className="add_cost_basis"
                   onChange={this._onChange}
                   value={this.state.cost_basist}
-                  placeholder="Average Cost Basis (per coin)"/>
+                  placeholder={avgCostBasis}/>
                   <br/>
                 <input type="text"
                   className="add_hodl"
