@@ -14,7 +14,10 @@ class App extends Component {
       add_ticker: "",
       add_cost_basis: "",
       add_hodl: "",
-      coinz: {}
+      coinz: {},
+      preferences: {
+        currency: localStorage.currency || "USD"
+      }
     }
   }
 
@@ -192,14 +195,28 @@ class App extends Component {
 
   render() {
     const coinStats = Object.entries(this.state.coinz);
+    const totalGainLoss = this._totalGainLoss();
+    const currencyPref = this.state.preferences.currency
+
+    const headerColor = totalGainLoss < 0
+      ? "App-header red"
+      : "App-header";
     const gainz = Object.keys(this.state.coinz).length
-      ? "$" + this._numberWithCommas(this._totalGainLoss().toFixed(2)) + " (" + this._numberWithCommas(this._percentReturn().toFixed(2)) + "%)"
+      ? "$" + this._numberWithCommas(totalGainLoss.toFixed(2)) + " (" + this._numberWithCommas(this._percentReturn().toFixed(2)) + "%)"
       : "Use the menu to add your coin holdings";
     return (
       <div className="App">
         <i onClick={this._toggleMenu} className="btn-menu fa fa-lg fa-bars" aria-hidden="true"></i>
         <div id="menu-body" className={this.state.menu_visibility}>
           <i onClick={this._toggleMenu} className="btn-menu fa fa-lg fa-times" aria-hidden="true"></i>
+
+          <select defaultValue={currencyPref} name="select">
+            <option value="USD">$ USD</option>
+            <option value="CAD">$ CAD</option>
+            <option value="EUR">$ EUR</option>
+            <option value="CNY">$ CNY</option>
+            <option value="JPY">$ JPY</option>
+          </select>
 
           <form className="" onSubmit={this._handleSubmit}>
                 <input type="text"
@@ -225,7 +242,7 @@ class App extends Component {
 
         </div>
 
-        <div className="App-header">
+        <div className={headerColor}>
           <div className="Overview">
           <h1>
             ${this._numberWithCommas(this._portfolioValue().toFixed(2))}

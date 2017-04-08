@@ -24,6 +24,11 @@ input {
   margin: 5px;
   padding: 10px;
 }
+select {
+  height: 40px;
+  padding: 10px;
+  margin-bottom: 5px;
+}
 .App {
   text-align: center;
   font-family: 'Roboto', sans-serif;
@@ -40,6 +45,9 @@ input {
   padding: 20px;
   color: white;
 }
+.App-header.red {
+  background-color: rgb(216, 45, 45);
+}
 .App-header h1 {
   font-weight: 300;
   font-size: 2.5rem;
@@ -51,6 +59,7 @@ input {
   font-weight: 300;
   font-size: 1rem;
 }
+
 
 .App-intro {
   font-size: large;
@@ -86,7 +95,7 @@ input {
   text-align: right;
 }
 span.red {
-  color: red;
+  color: rgb(216, 45, 45);
 }
 span.green {
   color: rgb(33, 206, 153);
