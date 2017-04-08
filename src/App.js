@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Coin from './Coin';
 import './App.css';
 
 class App extends Component {
@@ -6,16 +7,21 @@ class App extends Component {
     super();
 
     this._toggleMenu = this._toggleMenu.bind(this);
+    this._toggleCoinInfo = this._toggleCoinInfo.bind(this);
+    this._closeCoinInfo = this._toggleCoinInfo.bind(this);
     this._onChange = this._onChange.bind(this);
     this._handleSubmit = this._handleSubmit.bind(this);
     this._handleSelectChange = this._handleSelectChange.bind(this);
 
     this.state = {
       menu_visibility: "hidden",
+      coin_visibility: "hidden",
+      coin_info: "ltc", // defualt required for child <Coin/>
       add_ticker: "",
       add_cost_basis: "",
       add_hodl: "",
       coinz: {},
+      portfolio_total: null,
       preferences: {
         currency: "USD"
       }
@@ -118,8 +124,7 @@ class App extends Component {
         value = value + (hodl * curr_price);
       }
     }
-
-    return value //.toFixed(2);
+    return value;
   }
 
   _totalGainLoss(){
@@ -151,7 +156,7 @@ class App extends Component {
         // var coin was not keeping the correct value in here
         // using res.ticker.base instead
         const theCoin = res.ticker.base.toLowerCase();
-        tempState[theCoin].curr_price = price;
+        tempState[theCoin].curr_price = Number(price);
       })
       .then(function(){
         count++;
@@ -228,7 +233,24 @@ class App extends Component {
     this.setState({[item]: text});
   }
 
+  _closeCoinInfo () {
+    this.setState({coin_visibility: ""});
+  }
+
+  _toggleCoinInfo (e) {
+    const coin = e.target.id;
+    this.setState({coin_info: coin})
+    if (this.state.coin_visibility === "hidden") {
+      this.setState({coin_visibility: ""})
+    } else {
+      this.setState({coin_visibility: "hidden"})
+    }
+  }
+
   render() {
+
+    const coinCloseClass = this.state.coin_visibility + " coin-close fa fa-lg fa-times";
+
     const coinStats = Object.entries(this.state.coinz);
     const totalGainLoss = this._totalGainLoss();
     const currencyPref = this.state.preferences.currency
@@ -305,11 +327,12 @@ class App extends Component {
               return null;
             } else {
               return (
-                <div key={i} className="coin">
+                <div id={ticker} onClick={this._toggleCoinInfo} key={i} className="coin">
                   <p className="float-left">
                     {ticker}<br/>
                     <span>{this._numberWithCommas(hodl)} Coins</span>
                   </p>
+                  <i className="fa fa-lg fa-info-circle" aria-hidden="true"></i>
                   <p className="text-right float-right">
                     <span className={color}>{this._currencySymbol(this.state.preferences.currency)}{this._numberWithCommas(gain_loss)}</span><br/>
                     <span>{this._currencySymbol(this.state.preferences.currency)}{this._numberWithCommas(curr_price)}</span>
@@ -320,6 +343,11 @@ class App extends Component {
 
           }.bind(this))}
         </div>
+          <span>
+            <i onClick={this._closeCoinInfo} className={coinCloseClass} aria-hidden="true"></i>
+            <Coin visible={this.state.coin_visibility} parentState={this.state} coin={this.state.coin_info} />
+          </span>
+
       </div>
     );
   }
