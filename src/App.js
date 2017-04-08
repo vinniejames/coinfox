@@ -78,7 +78,7 @@ class App extends Component {
       }
     }
 
-    return cost.toFixed(2);
+    return cost //.toFixed(2);
   }
 
   _portfolioValue(){
@@ -92,15 +92,15 @@ class App extends Component {
       }
     }
 
-    return value.toFixed(2);
+    return value //.toFixed(2);
   }
 
   _totalGainLoss(){
-    return ( this._portfolioValue() - this._costBasis() ).toFixed(2);
+    return ( this._portfolioValue() - this._costBasis() ) //.toFixed(2);
   }
 
   _percentReturn(){
-    return ( 100 * ( ( this._portfolioValue() / this._costBasis() ) - 1 ) ).toFixed(2);
+    return ( 100 * ( ( this._portfolioValue() / this._costBasis() ) - 1 ) ) //.toFixed(2);
   }
 
   _marketPrice(){
@@ -166,7 +166,7 @@ class App extends Component {
   render() {
     const coinStats = Object.entries(this.state.coinz);
     const gainz = Object.keys(this.state.coinz).length
-      ? "$" + this._numberWithCommas(this._totalGainLoss()) + " (" + this._numberWithCommas(this._percentReturn()) + "%)"
+      ? "$" + this._numberWithCommas(this._totalGainLoss().toFixed(2)) + " (" + this._numberWithCommas(this._percentReturn().toFixed(2)) + "%)"
       : "Use the menu to add your coin holdings";
     return (
       <div className="App">
@@ -201,7 +201,7 @@ class App extends Component {
         <div className="App-header">
           <div className="Overview">
           <h1>
-            ${this._numberWithCommas(this._portfolioValue())}
+            ${this._numberWithCommas(this._portfolioValue().toFixed(2))}
           </h1>
           <h2>
             {gainz}
@@ -211,7 +211,7 @@ class App extends Component {
         <div className="Coins">
           {coinStats.map(function(coin, i){
             const ticker = coin[0].toUpperCase();
-            const hodl = coin[1].hodl.toFixed(0);
+            const hodl = coin[1].hodl.toFixed(2);
             const gain_loss = ((Number(coin[1].curr_price) - coin[1].cost_basis) * coin[1].hodl).toFixed(2);
             const curr_price = Number(coin[1].curr_price).toFixed(2);
             const color = gain_loss >= 0 ? "green" : "red";
