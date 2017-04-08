@@ -8,6 +8,7 @@ class App extends Component {
     this._toggleMenu = this._toggleMenu.bind(this);
     this._onChange = this._onChange.bind(this);
     this._handleSubmit = this._handleSubmit.bind(this);
+    this._handleSelectChange = this._handleSelectChange.bind(this);
 
     this.state = {
       menu_visibility: "hidden",
@@ -16,7 +17,7 @@ class App extends Component {
       add_hodl: "",
       coinz: {},
       preferences: {
-        currency: localStorage.currency || "USD"
+        currency: "USD"
       }
     }
   }
@@ -69,8 +70,14 @@ class App extends Component {
       this.setState(newCoinsState);
     } else if (localStorage.hasOwnProperty('coinz')) {
       const jsonCoins = JSON.parse(localStorage.coinz);
+      const localPref = localStorage.pref
+        ? JSON.parse(localStorage.pref)
+        : this.state.preferences;
       const newCoinsState = {
-        coinz: jsonCoins
+        coinz: jsonCoins,
+        preferences: {
+          currency: localPref.currency
+        }
       }
       this.setState(newCoinsState);
     }
@@ -125,11 +132,11 @@ class App extends Component {
 
   _marketPrice(){
     const tempState = this.state.coinz;
-
+    const currency = '-' + this.state.preferences.currency.toLowerCase();
     for (var coin in this.state.coinz) {
       var count = 1;
       const numCoins = Object.keys(this.state.coinz).length;
-      const endpoint = 'https://api.cryptonator.com/api/ticker/'+ coin.toLowerCase() +'-usd';
+      const endpoint = 'https://api.cryptonator.com/api/ticker/'+ coin.toLowerCase() + currency;
 
       fetch(endpoint)
       .then(function(res) {
@@ -168,8 +175,6 @@ class App extends Component {
     e.preventDefault();
 
     const currentCoins = JSON.parse(localStorage.coinz) || {};
-    // const keyCost = this.state.add_ticker.toLowerCase() + "_cost_basis";
-    // const keyHodl = this.state.add_ticker.toLowerCase() + "_hodl";
     const ticker = this.state.add_ticker.toLowerCase();
     const costBasis = Number(this.state.add_cost_basis);
     const hodl = Number(this.state.add_hodl);
@@ -184,6 +189,33 @@ class App extends Component {
     localStorage.setItem("coinz", stringCoins);
 
     window.location.href = window.location.href;
+  }
+
+  _currencySymbol(ticker){
+    const symbol = {
+      usd: "$",
+      cad: "$",
+      eur: "€",
+      jpy: "¥",
+      cny: "¥"
+    }
+    return symbol[ticker.toLowerCase()];
+  }
+
+  _handleSelectChange(e){
+    const domElement = e.target.id;
+    const statePref = this.state.preferences;
+    const localPref = localStorage.pref
+      ? JSON.parse(localStorage.pref)
+      : {};
+
+    localPref[domElement] = e.target.value;
+    statePref[domElement] = e.target.value;
+
+    localStorage.setItem('pref', JSON.stringify(localPref));
+    this.setState(statePref);
+
+    this._marketPrice();
   }
 
   _onChange (e) {
@@ -210,14 +242,17 @@ class App extends Component {
         <div id="menu-body" className={this.state.menu_visibility}>
           <i onClick={this._toggleMenu} className="btn-menu fa fa-lg fa-times" aria-hidden="true"></i>
 
-          <select defaultValue={currencyPref} name="select">
-            <option value="USD">$ USD</option>
-            <option value="CAD">$ CAD</option>
-            <option value="EUR">$ EUR</option>
-            <option value="CNY">$ CNY</option>
-            <option value="JPY">$ JPY</option>
+          <label htmlFor="currency">{this._currencySymbol(this.state.preferences.currency) || "USD"}</label>
+          <select id="currency" onChange={this._handleSelectChange} value={currencyPref} name="select">
+            <option value="USD">{this._currencySymbol('usd')} USD</option>
+            <option value="CAD">{this._currencySymbol('cad')} CAD</option>
+            <option value="EUR">{this._currencySymbol('eur')} EUR</option>
+            <option value="CNY">{this._currencySymbol('cny')} CNY</option>
+            <option value="JPY">{this._currencySymbol('jpy')} JPY</option>
           </select>
 
+          <hr />
+          <h3>Add a Coin</h3>
           <form className="" onSubmit={this._handleSubmit}>
                 <input type="text"
                   className="add_ticker"
@@ -245,7 +280,7 @@ class App extends Component {
         <div className={headerColor}>
           <div className="Overview">
           <h1>
-            ${this._numberWithCommas(this._portfolioValue().toFixed(2))}
+            {this._currencySymbol(this.state.preferences.currency)}{this._numberWithCommas(this._portfolioValue().toFixed(2))}
           </h1>
           <h2>
             {gainz}
@@ -270,8 +305,8 @@ class App extends Component {
                     <span>{this._numberWithCommas(hodl)} Coins</span>
                   </p>
                   <p className="text-right float-right">
-                    <span className={color}>${this._numberWithCommas(gain_loss)}</span><br/>
-                    <span>${this._numberWithCommas(curr_price)}</span>
+                    <span className={color}>{this._currencySymbol(this.state.preferences.currency)}{this._numberWithCommas(gain_loss)}</span><br/>
+                    <span>{this._currencySymbol(this.state.preferences.currency)}{this._numberWithCommas(curr_price)}</span>
                   </p>
                 </div>
               );

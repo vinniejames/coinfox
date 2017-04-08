@@ -29,6 +29,10 @@ select {
   padding: 10px;
   margin-bottom: 5px;
 }
+label {
+  margin: 10px;
+ font-size: 1.5rem;
+}
 .App {
   text-align: center;
   font-family: 'Roboto', sans-serif;
@@ -99,4 +103,7 @@ span.red {
 }
 span.green {
   color: rgb(33, 206, 153);
+}
+small {
+ color: #777
 }
