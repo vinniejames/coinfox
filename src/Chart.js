@@ -102,17 +102,8 @@ class Chart extends Component {
     fetch(endpoint)
       .then((res) => res.json())
       .then((res)=>{
-        // convert data to time series for highcharts_data
-        // const no_chart_available = !(res.Response === "Success")
-        //   ? []
-        //   : false; // no chart is available
-        //
-        //   console.log(no_chart_available, res.Response, 'no chart available');
-
-        console.log(res.Response);
 
         if (res.Response === "Success") {
-          console.log('if ran')
           const highcharts_data = res.Data.map(function (day) {
             // highcharts wants timestamp in miliseconds
             // https://jsfiddle.net/zyqav14L/
@@ -127,7 +118,8 @@ class Chart extends Component {
 
           this.setState(nextState);
         } else {
-          console.log('chart failed')
+          // chart failed to load
+          // set array empty so componentDidUpdate will chart.destroy()
           this.setState({time_series: []});
         }
 
