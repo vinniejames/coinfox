@@ -29,7 +29,7 @@ body {
 #menu-body {
   position: absolute;
   background-color: #303032;
-  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
   z-index: 20;
   padding-top: 60px;
