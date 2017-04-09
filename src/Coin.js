@@ -88,7 +88,7 @@ class Coin extends Component {
            <span>&nbsp; ({$numberWithCommas(percentReturn.toFixed(2))}%) ROI</span>
         </h2>
 
-        <Chart currency_pref={currency_pref} ticker={this.props.coin} />
+        <Chart chart_container="chart_container" currency_pref={currency_pref} ticker={this.props.coin} />
 
         <div className="coin">
           <p className="text-left float-left">

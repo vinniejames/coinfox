@@ -7,25 +7,74 @@ class Chart extends Component {
   constructor () {
     super();
     this.state = {
-      chart_container: "chart_container",
       ticker: null,
       chart: {
         Response: "no",
         Data: []
       },
-      time_series: [],
-      chart_options: {}
+      time_series: []
     }
   }
 
-  componentDidMount () {
-        // Set container which the chart should render to.
-        console.log(this.state.chart_container, "put highchart here");
-          this.chart = new Highcharts["Chart"](
-            this.state.chart_container,
-            this.state.chart_options
-          );
-    }
+  _chartOptions(series){
+    return (
+      {
+          chart: {
+             zoomType: 'x'
+          },
+          title: {
+              text: ''
+          },
+          subtitle: {
+              text: ""
+          },
+          xAxis: {
+              type: 'datetime'
+          },
+          yAxis: {
+              title: {
+                  text: ''
+              }
+          },
+          legend: {
+              enabled: false
+          },
+          plotOptions: {
+              area: {
+                  fillColor: {
+                      linearGradient: {
+                          x1: 0,
+                          y1: 0,
+                          x2: 0,
+                          y2: 1
+                      },
+                      stops: [
+                          [0, Highcharts.getOptions().colors[0]],
+                          [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                      ]
+                  },
+                  marker: {
+                      radius: 2
+                  },
+                  lineWidth: 1,
+                  states: {
+                      hover: {
+                          lineWidth: 1
+                      }
+                  },
+                  threshold: null
+              }
+          },
+
+          series: [{
+              type: 'area',
+              name: this.state.ticker,
+              data: series
+          }]
+      }
+    )
+  }
+
     //Destroy chart before unmount.
     componentWillUnmount () {
         this.chart.destroy();
@@ -33,7 +82,7 @@ class Chart extends Component {
 
   _fetchChartData (ticker, currency) {
     const endpoint = 'https://min-api.cryptocompare.com/data/histoday?aggregate=1&e=CCCAGG&extraParams=CryptoCompare&fsym='+ ticker.toUpperCase() +'&limit=365&tryConversion=false&tsym=' + currency.toUpperCase();
-console.log(endpoint);
+
     fetch(endpoint)
       .then((res) => res.json())
       .then((res)=>{
@@ -50,6 +99,7 @@ console.log(endpoint);
           chart: res,
           time_series: highcharts_data
         }
+
         this.setState(nextState);
       })
   }
@@ -63,12 +113,26 @@ console.log(endpoint);
     }
   }
 
+
+componentDidUpdate(prevProps, prevState) {
+  // only update chart if the data has changed
+  if (prevState.time_series !== this.state.time_series) {
+    console.log(this.state.time_series);
+    console.log('yip');
+    if(this.state.time_series.length){
+      this.chart = new Highcharts["Chart"](
+        this.props.chart_container,
+        this._chartOptions(this.state.time_series)
+      );
+    }
+  }
+}
+
   render () {
     console.log(this.state, 'rendering state');
+
     return (
       <div>
-        {this.props.ticker} {this.state.chart.Response}
-        <h1>{this.state.time_series.length && this.state.time_series[0][0]}</h1>
         <div id="chart_container"></div>
       </div>
     )
