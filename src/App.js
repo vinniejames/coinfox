@@ -18,7 +18,7 @@ class App extends Component {
     this.state = {
       menu_visibility: "hidden",
       coin_visibility: "hidden",
-      coin_info: "ltc", // defualt required for child <Coin/>
+      coin_info: "", // defualt required for child <Coin/>
       add_ticker: "",
       add_cost_basis: "",
       add_hodl: "",

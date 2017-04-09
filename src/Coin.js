@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Chart from './Chart';
 import './Coin.css';
 import { $cashRoi, $percentRoi, $currencySymbol, $numberWithCommas } from './Helpers';
 class Coin extends Component {
@@ -60,6 +61,7 @@ class Coin extends Component {
 
   render () {
     const ticker = this.props.coin;
+    const currency_pref = this.props.parentState.preferences.currency;
     let curr_price = this._getSafe(() => this.props.parentState.coinz[ticker.toLowerCase()].curr_price)
     let volume24hr = this._getSafe(() => this.props.parentState.coinz[ticker.toLowerCase()].volume24hr * curr_price);
 
@@ -79,12 +81,14 @@ class Coin extends Component {
           {ticker}
         </h2>
         <h1>
-          {$currencySymbol(this.props.parentState.preferences.currency)}{$numberWithCommas(curr_price.toFixed(2))}
+          {$currencySymbol(currency_pref)}{$numberWithCommas(curr_price.toFixed(2))}
         </h1>
         <h2>
-          <span className={color}>{$currencySymbol(this.props.parentState.preferences.currency)}{$numberWithCommas(gainz.toFixed(2))}</span>
+          <span className={color}>{$currencySymbol(currency_pref)}{$numberWithCommas(gainz.toFixed(2))}</span>
            <span>&nbsp; ({$numberWithCommas(percentReturn.toFixed(2))}%) ROI</span>
         </h2>
+
+        <Chart chart_container="chart_container" currency_pref={currency_pref} ticker={this.props.coin} />
 
         <div className="coin">
           <p className="text-left float-left">
@@ -92,8 +96,8 @@ class Coin extends Component {
             <span>{ticker} Holding</span>
           </p>
           <p className="text-right float-right">
-            {$currencySymbol(this.props.parentState.preferences.currency)}{$numberWithCommas( (this._totalCostBasis()).toFixed(2) )}<br/>
-            <span>Total {$currencySymbol(this.props.parentState.preferences.currency)} Holding</span>
+            {$currencySymbol(currency_pref)}{$numberWithCommas( (this._totalCostBasis()).toFixed(2) )}<br/>
+            <span>Total {$currencySymbol(currency_pref)} Holding</span>
           </p>
         </div>
 
@@ -103,19 +107,19 @@ class Coin extends Component {
             <span>of Portfolio</span>
           </p>
           <p className="text-right float-right">
-            {$currencySymbol(this.props.parentState.preferences.currency)}{$numberWithCommas(cost_basis.toFixed(2))}<br/>
-            <span>Cost Basis {$currencySymbol(this.props.parentState.preferences.currency)}/{ticker}</span>
+            {$currencySymbol(currency_pref)}{$numberWithCommas(cost_basis.toFixed(2))}<br/>
+            <span>Cost Basis {$currencySymbol(currency_pref)}/{ticker}</span>
           </p>
         </div>
 
         {/*<div className="coin">
           <p className="text-left float-left">
-            {$currencySymbol(this.props.parentState.preferences.currency)}{volume24hr.toFixed(2)}<br/>
+            {$currencySymbol(currency_pref)}{volume24hr.toFixed(2)}<br/>
             <span>24hr Volume</span>
           </p>
           <p className="text-right float-right">
-            {$currencySymbol(this.props.parentState.preferences.currency)}{$numberWithCommas(cost_basis.toFixed(2))}<br/>
-            <span>Cost Basis {$currencySymbol(this.props.parentState.preferences.currency)}/{ticker}</span>
+            {$currencySymbol(currency_pref)}{$numberWithCommas(cost_basis.toFixed(2))}<br/>
+            <span>Cost Basis {$currencySymbol(currency_pref)}/{ticker}</span>
           </p>
         </div>*/}
 
