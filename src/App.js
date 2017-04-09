@@ -88,7 +88,7 @@ class App extends Component {
           currency: localPref.currency
         }
       }
-      console.log(newCoinsState);
+
       this.setState(newCoinsState);
     }
 
@@ -132,7 +132,6 @@ class App extends Component {
   }
 
   _marketPrice(){
-    console.log(this.state.coinz);
     const tempState = this.state.coinz;
     const currency = '-' + this.state.preferences.currency.toLowerCase();
     for (var coin in this.state.coinz) {
@@ -220,8 +219,6 @@ class App extends Component {
   }
 
   _onChange (e) {
-    console.log(e.target.value);
-    console.log(e.target.className);
     var text = e.target.value;
     var item = e.target.className;
 
