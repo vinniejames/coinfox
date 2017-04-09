@@ -159,7 +159,7 @@ class App extends Component {
         })
         .then((res) => res.json())
         .then(function(res){
-          console.log(res, 'change 1 hour???')
+
           let price = res.ticker.price;
           const volume24hr = res.ticker.volume;
           const change1hr = res.ticker.change;
@@ -168,7 +168,6 @@ class App extends Component {
           // CONVERTING CURRENCY
           if (userCurrency){
             const endpoint = 'https://api.fixer.io/latest?base=USD&symbols=' + userCurrency;
-            console.log(endpoint, 'endpoint')
 
             return fetch(endpoint)
               .then(function(res) {
@@ -198,7 +197,7 @@ class App extends Component {
           // END CURRENCY CONVERSION
         })
         .then(function(newRes){
-          console.log(newRes)
+
           let displayPrice =  Number(newRes.price);
           if (newRes.conversionRate !== 1) {
             displayPrice = newRes.conversionRate * displayPrice;
