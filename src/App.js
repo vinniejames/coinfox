@@ -314,6 +314,7 @@ class App extends Component {
             <option value="BTC">{$currencySymbol('btc')} BTC</option>
             <option value="CAD">{$currencySymbol('cad')} CAD</option>
             <option value="EUR">{$currencySymbol('eur')} EUR</option>
+            <option value="GBP">{$currencySymbol('gbp')} GBP</option>
             <option value="CNY">{$currencySymbol('cny')} CNY</option>
             <option value="JPY">{$currencySymbol('jpy')} JPY</option>
             <option value="RUR">{$currencySymbol('rur')} RUR</option>
