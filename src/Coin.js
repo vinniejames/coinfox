@@ -1,25 +1,11 @@
 import React, { Component } from 'react';
 import './Coin.css';
-
+import { $cashRoi, $percentRoi, $currencySymbol, $numberWithCommas } from './Helpers';
 class Coin extends Component {
 
   constructor() {
     super();
     this._deleteCoin = this._deleteCoin.bind(this);
-  }
-
-  _currencySymbol(ticker){
-    const symbol = {
-      usd: "$",
-      btc: "฿",
-      cad: "$",
-      eur: "€",
-      jpy: "¥",
-      cny: "¥",
-      rur: "₽",
-      uah: "₴"
-    }
-    return symbol[ticker.toLowerCase()];
   }
 
   _portfolioValue(){
@@ -58,15 +44,15 @@ class Coin extends Component {
     }
   }
 
-  _numberWithCommas(d) {
-    return d.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  }
-
   // could not read.property[of]undefined
   // https://stackoverflow.com/questions/14782232/how-to-avoid-cannot-read-property-of-undefined-errors
   _getSafe(fn) {
     try {
-        return fn();
+        if (fn() !== undefined) {
+          return fn();
+        } else {
+          return 0;
+        }
     } catch (e) {
         return 0;
     }
@@ -75,16 +61,17 @@ class Coin extends Component {
   render () {
     const ticker = this.props.coin;
     let curr_price = this._getSafe(() => this.props.parentState.coinz[ticker.toLowerCase()].curr_price)
-    if (curr_price == undefined) {
-      curr_price = 0;
-    }
+    let volume24hr = this._getSafe(() => this.props.parentState.coinz[ticker.toLowerCase()].volume24hr * curr_price);
+
     const visibility = "coinInfo " + this.props.visible;
     const cost_basis = this._getSafe(() => this.props.parentState.coinz[ticker.toLowerCase()].cost_basis);
     const hodl = this._getSafe(() => this.props.parentState.coinz[ticker.toLowerCase()].hodl);
-    //((Number(coin[1].curr_price) - Number(coin[1].cost_basis) ) * Number(coin[1].hodl) ).toFixed(2);
-    const gainz = (curr_price - cost_basis) * hodl;
+    const gainz = $cashRoi(curr_price, cost_basis, hodl);
     const color = gainz >= 0 ? "green" : "red";
-    const percent = ( (curr_price * hodl) / (cost_basis * hodl) ) *10;
+
+    const holding_value = hodl * curr_price;
+    const total_cost_basis = hodl * cost_basis;
+    const percentReturn = $percentRoi(holding_value, total_cost_basis);
 
     return (
       <div className={visibility}>
@@ -92,11 +79,11 @@ class Coin extends Component {
           {ticker}
         </h2>
         <h1>
-          {this._currencySymbol(this.props.parentState.preferences.currency)}{this._numberWithCommas(curr_price.toFixed(2))}
+          {$currencySymbol(this.props.parentState.preferences.currency)}{$numberWithCommas(curr_price.toFixed(2))}
         </h1>
         <h2>
-          <span className={color}>{this._currencySymbol(this.props.parentState.preferences.currency)}{gainz.toFixed(2)}</span>
-           <span>{/*&nbsp; ({percent}%)*/} Return</span>
+          <span className={color}>{$currencySymbol(this.props.parentState.preferences.currency)}{$numberWithCommas(gainz.toFixed(2))}</span>
+           <span>&nbsp; ({$numberWithCommas(percentReturn.toFixed(2))}%) ROI</span>
         </h2>
 
         <div className="coin">
@@ -105,8 +92,8 @@ class Coin extends Component {
             <span>{ticker} Holding</span>
           </p>
           <p className="text-right float-right">
-            {this._currencySymbol(this.props.parentState.preferences.currency)}{this._numberWithCommas( (this._totalCostBasis()).toFixed(2) )}<br/>
-            <span>Total {this._currencySymbol(this.props.parentState.preferences.currency)} Holding</span>
+            {$currencySymbol(this.props.parentState.preferences.currency)}{$numberWithCommas( (this._totalCostBasis()).toFixed(2) )}<br/>
+            <span>Total {$currencySymbol(this.props.parentState.preferences.currency)} Holding</span>
           </p>
         </div>
 
@@ -116,10 +103,22 @@ class Coin extends Component {
             <span>of Portfolio</span>
           </p>
           <p className="text-right float-right">
-            {this._currencySymbol(this.props.parentState.preferences.currency)}{this._numberWithCommas(cost_basis.toFixed(2))}<br/>
-            <span>Cost Basis {this._currencySymbol(this.props.parentState.preferences.currency)}/{ticker}</span>
+            {$currencySymbol(this.props.parentState.preferences.currency)}{$numberWithCommas(cost_basis.toFixed(2))}<br/>
+            <span>Cost Basis {$currencySymbol(this.props.parentState.preferences.currency)}/{ticker}</span>
           </p>
         </div>
+
+        {/*<div className="coin">
+          <p className="text-left float-left">
+            {$currencySymbol(this.props.parentState.preferences.currency)}{volume24hr.toFixed(2)}<br/>
+            <span>24hr Volume</span>
+          </p>
+          <p className="text-right float-right">
+            {$currencySymbol(this.props.parentState.preferences.currency)}{$numberWithCommas(cost_basis.toFixed(2))}<br/>
+            <span>Cost Basis {$currencySymbol(this.props.parentState.preferences.currency)}/{ticker}</span>
+          </p>
+        </div>*/}
+
         <i onClick={this._deleteCoin} className="fa fa-lg fa-trash-o" aria-hidden="true"></i>
 
       </div>

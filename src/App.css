@@ -18,6 +18,14 @@ body {
 .hidden {
   display: none;
 }
+.pointer {
+  cursor: pointer;
+}
+.btn {
+  background-color: #fafafa;
+  color: #000;
+  padding: 15px;
+}
 #menu-body {
   position: absolute;
   background-color: #303032;
@@ -25,6 +33,9 @@ body {
   width: 100vw;
   z-index: 20;
   padding-top: 60px;
+}
+#menu-body hr {
+   margin: 20px 0 30px;
 }
 input {
   width: 50%;
