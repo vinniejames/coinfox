@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Chart from './Chart';
 import './Coin.css';
 import { $cashRoi, $percentRoi, $currencySymbol, $numberWithCommas } from './Helpers';
 class Coin extends Component {
@@ -85,6 +86,8 @@ class Coin extends Component {
           <span className={color}>{$currencySymbol(this.props.parentState.preferences.currency)}{$numberWithCommas(gainz.toFixed(2))}</span>
            <span>&nbsp; ({$numberWithCommas(percentReturn.toFixed(2))}%) ROI</span>
         </h2>
+
+        <Chart ticker={this.props.coin} />
 
         <div className="coin">
           <p className="text-left float-left">
