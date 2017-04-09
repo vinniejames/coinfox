@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { $cashRoi, $percentRoi, $currencySymbol, $numberWithCommas } from './Helpers';
 import Coin from './Coin';
 import './App.css';
 
@@ -12,6 +13,7 @@ class App extends Component {
     this._onChange = this._onChange.bind(this);
     this._handleSubmit = this._handleSubmit.bind(this);
     this._handleSelectChange = this._handleSelectChange.bind(this);
+    this._updateLocalWithSave = this._updateLocalWithSave.bind(this);
 
     this.state = {
       menu_visibility: "hidden",
@@ -24,7 +26,8 @@ class App extends Component {
       portfolio_total: null,
       preferences: {
         currency: "USD"
-      }
+      },
+      coinfox_holdings: ""
     }
   }
 
@@ -85,6 +88,7 @@ class App extends Component {
           currency: localPref.currency
         }
       }
+      console.log(newCoinsState);
       this.setState(newCoinsState);
     }
 
@@ -94,10 +98,6 @@ class App extends Component {
 
   componentDidMount(){
     this._marketPrice();
-  }
-
-  _numberWithCommas(d) {
-    return d.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
   _costBasis(){
@@ -131,39 +131,43 @@ class App extends Component {
     return ( this._portfolioValue() - this._costBasis() ) //.toFixed(2);
   }
 
-  _percentReturn(){
-    return ( 100 * ( ( this._portfolioValue() / this._costBasis() ) - 1 ) ) //.toFixed(2);
-  }
-
   _marketPrice(){
+    console.log(this.state.coinz);
     const tempState = this.state.coinz;
     const currency = '-' + this.state.preferences.currency.toLowerCase();
     for (var coin in this.state.coinz) {
       var count = 1;
       const numCoins = Object.keys(this.state.coinz).length;
       const endpoint = 'https://api.cryptonator.com/api/ticker/'+ coin.toLowerCase() + currency;
+      // if there is a valid coin, easy to add a "" coin, fix form to not submit w/o value
+      if (coin){
+        fetch(endpoint)
+        .then(function(res) {
+          if (!res.ok) {
+              throw Error(res.statusText);
+          }
+          return res;
+        })
+        .then((res) => res.json())
+        .then(function(res){
+          const price = res.ticker.price;
+          const volume24hr = res.ticker.volume;
+          const change1hr = res.ticker.change1hr;
+          // var coin was not keeping the correct value in here
+          // using res.ticker.base instead
+          const theCoin = res.ticker.base.toLowerCase();
+          tempState[theCoin].curr_price = Number(price);
+          tempState[theCoin].volume24hr = Number(volume24hr);
+        })
+        .then(function(){
+          count++;
+          if (count >= numCoins) {
+            this.setState({coinz: tempState});
+          }
+        }.bind(this))
+      }
 
-      fetch(endpoint)
-      .then(function(res) {
-        if (!res.ok) {
-            throw Error(res.statusText);
-        }
-        return res;
-      })
-      .then((res) => res.json())
-      .then(function(res){
-        const price = res.ticker.price;
-        // var coin was not keeping the correct value in here
-        // using res.ticker.base instead
-        const theCoin = res.ticker.base.toLowerCase();
-        tempState[theCoin].curr_price = Number(price);
-      })
-      .then(function(){
-        count++;
-        if (count >= numCoins) {
-          this.setState({coinz: tempState});
-        }
-      }.bind(this))
+
     }
 
   }
@@ -190,25 +194,15 @@ class App extends Component {
     }
 
     const stringCoins = JSON.stringify(currentCoins);
-
-    localStorage.setItem("coinz", stringCoins);
-
-    window.location.href = window.location.href;
-  }
-
-  _currencySymbol(ticker){
-    const symbol = {
-      usd: "$",
-      btc: "฿",
-      cad: "$",
-      eur: "€",
-      jpy: "¥",
-      cny: "¥",
-      rur: "₽",
-      uah: "₴"
+    if (ticker && costBasis && hodl) {
+      localStorage.setItem("coinz", stringCoins);
+      window.location.href = window.location.href;
+    } else {
+      alert("Please fill in the ticker, cost basis & holding")
     }
-    return symbol[ticker.toLowerCase()];
+
   }
+
 
   _handleSelectChange(e){
     const domElement = e.target.id;
@@ -222,11 +216,12 @@ class App extends Component {
 
     localStorage.setItem('pref', JSON.stringify(localPref));
     this.setState(statePref);
-
     this._marketPrice();
   }
 
   _onChange (e) {
+    console.log(e.target.value);
+    console.log(e.target.className);
     var text = e.target.value;
     var item = e.target.className;
 
@@ -247,6 +242,55 @@ class App extends Component {
     }
   }
 
+  _downloadLocalStorage () {
+    function download(filename, objectOfStrings) {
+      const coinz = objectOfStrings.coinz;
+      const pref = objectOfStrings.pref;
+      const json = {};
+
+      if (coinz) {
+        json["coinz"] = JSON.parse(coinz);
+      }
+      if (pref) {
+        json["pref"] = JSON.parse(pref);
+      }
+
+      var text = JSON.stringify(json);
+
+      var element = document.createElement('a');
+      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + text);
+      element.setAttribute('download', filename);
+
+      element.style.display = 'none';
+      document.body.appendChild(element);
+
+      element.click();
+
+      document.body.removeChild(element);
+    }
+    download('coinfox_holdings.txt', localStorage );
+  }
+
+  _updateLocalWithSave(e){
+    e.preventDefault();
+
+    const saveToLocalStorage = JSON.parse(this.state.coinfox_holdings);
+    const coinz = saveToLocalStorage.coinz;
+    const pref = saveToLocalStorage.pref;
+
+    if (coinz) {
+      localStorage.setItem('coinz', JSON.stringify(coinz));
+    } else {
+      alert("Something is wrong with your Save File, please try downloading it again");
+    }
+    if (pref) {
+      localStorage.setItem('pref', JSON.stringify(pref));
+    }
+
+    location.reload();
+
+  }
+
   render() {
 
     const coinCloseClass = this.state.coin_visibility + " coin-close fa fa-lg fa-times";
@@ -254,12 +298,12 @@ class App extends Component {
     const coinStats = Object.entries(this.state.coinz);
     const totalGainLoss = this._totalGainLoss();
     const currencyPref = this.state.preferences.currency
-    const avgCostBasis = "Average Cost Basis ("+ this._currencySymbol(this.state.preferences.currency) +"/per coin)"
+    const avgCostBasis = "Average Cost Basis ("+ $currencySymbol(this.state.preferences.currency) +"/per coin)"
     const headerColor = totalGainLoss < 0
       ? "App-header red"
       : "App-header";
     const gainz = Object.keys(this.state.coinz).length
-      ? "$" + this._numberWithCommas(totalGainLoss.toFixed(2)) + " (" + this._numberWithCommas(this._percentReturn().toFixed(2)) + "%)"
+      ? "$" + $numberWithCommas(totalGainLoss.toFixed(2)) + " (" + $numberWithCommas($percentRoi(this._portfolioValue(), this._costBasis()).toFixed(2)) + "%)"
       : "Use the menu to add your coin holdings";
     return (
       <div className="App">
@@ -267,16 +311,16 @@ class App extends Component {
         <div id="menu-body" className={this.state.menu_visibility}>
           <i onClick={this._toggleMenu} className="btn-menu fa fa-lg fa-times" aria-hidden="true"></i>
 
-          <label htmlFor="currency">{this._currencySymbol(this.state.preferences.currency) || "USD"}</label>
+          <label htmlFor="currency">{$currencySymbol(this.state.preferences.currency) || "USD"}</label>
           <select id="currency" onChange={this._handleSelectChange} value={currencyPref} name="select">
-            <option value="USD">{this._currencySymbol('usd')} USD</option>
-            <option value="BTC">{this._currencySymbol('btc')} BTC</option>
-            <option value="CAD">{this._currencySymbol('cad')} CAD</option>
-            <option value="EUR">{this._currencySymbol('eur')} EUR</option>
-            <option value="CNY">{this._currencySymbol('cny')} CNY</option>
-            <option value="JPY">{this._currencySymbol('jpy')} JPY</option>
-            <option value="RUR">{this._currencySymbol('rur')} RUR</option>
-            <option value="UAH">{this._currencySymbol('uah')} UAH</option>
+            <option value="USD">{$currencySymbol('usd')} USD</option>
+            <option value="BTC">{$currencySymbol('btc')} BTC</option>
+            <option value="CAD">{$currencySymbol('cad')} CAD</option>
+            <option value="EUR">{$currencySymbol('eur')} EUR</option>
+            <option value="CNY">{$currencySymbol('cny')} CNY</option>
+            <option value="JPY">{$currencySymbol('jpy')} JPY</option>
+            <option value="RUR">{$currencySymbol('rur')} RUR</option>
+            <option value="UAH">{$currencySymbol('uah')} UAH</option>
           </select>
 
           <hr />
@@ -303,12 +347,32 @@ class App extends Component {
                 <input className="" type="submit" value="Go"/>
             </form>
 
+            <hr/>
+            <h3>Transfer your data to another device</h3>
+            <br/>
+            <a className="btn pointer" onClick={this._downloadLocalStorage}><i className="fa fa-lg fa-download" aria-hidden="true"></i> Download your Save File</a>
+            <br/><br/><br/><br/>
+            Then, on your new device
+            <br/><br/>
+            Copy/Paste the contents of your Save File below
+            <br/>
+            <form className="" onSubmit={this._updateLocalWithSave}>
+              <input type="text"
+                className="coinfox_holdings"
+                onChange={this._onChange}
+                value={this.state.coinfox_holdings}
+                placeholder="Paste Save File contents here"/>
+              <input className="" type="submit" value="Save"/>
+            </form>
+
+
+
         </div>
 
         <div className={headerColor}>
           <div className="Overview">
           <h1>
-            {this._currencySymbol(this.state.preferences.currency)}{this._numberWithCommas(this._portfolioValue().toFixed(2))}
+            {$currencySymbol(this.state.preferences.currency)}{$numberWithCommas(this._portfolioValue().toFixed(2))}
           </h1>
           <h2>
             {gainz}
@@ -330,12 +394,12 @@ class App extends Component {
                 <div id={ticker} onClick={this._toggleCoinInfo} key={i} className="coin">
                   <p className="float-left">
                     {ticker}<br/>
-                    <span>{this._numberWithCommas(hodl)} Coins</span>
+                    <span>{$numberWithCommas(hodl)} Coins</span>
                   </p>
                   <i className="fa fa-lg fa-info-circle" aria-hidden="true"></i>
                   <p className="text-right float-right">
-                    <span className={color}>{this._currencySymbol(this.state.preferences.currency)}{this._numberWithCommas(gain_loss)}</span><br/>
-                    <span>{this._currencySymbol(this.state.preferences.currency)}{this._numberWithCommas(curr_price)}</span>
+                    <span className={color}>{$currencySymbol(this.state.preferences.currency)}{$numberWithCommas(gain_loss)}</span><br/>
+                    <span>{$currencySymbol(this.state.preferences.currency)}{$numberWithCommas(curr_price)}</span>
                   </p>
                 </div>
               );
