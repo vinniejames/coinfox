@@ -133,11 +133,21 @@ class App extends Component {
 
   _marketPrice(){
     const tempState = this.state.coinz;
-    const currency = '-' + this.state.preferences.currency.toLowerCase();
+    let currency = this.state.preferences.currency.toLowerCase();
+    var userCurrency;
+
+    // currencies to be converted
+    // maybe make array indexOf [aud,xxx,etc]
+    if (currency === 'aud'){
+      var userCurrency = currency.toUpperCase();
+      currency = 'usd';
+    }
+
+
     for (var coin in this.state.coinz) {
       var count = 1;
       const numCoins = Object.keys(this.state.coinz).length;
-      const endpoint = 'https://api.cryptonator.com/api/ticker/'+ coin.toLowerCase() + currency;
+      const endpoint = 'https://api.cryptonator.com/api/ticker/'+ coin.toLowerCase() + '-' + currency;
       // if there is a valid coin, easy to add a "" coin, fix form to not submit w/o value
       if (coin){
         fetch(endpoint)
@@ -149,14 +159,51 @@ class App extends Component {
         })
         .then((res) => res.json())
         .then(function(res){
-          const price = res.ticker.price;
+          console.log(res, 'change 1 hour???')
+          let price = res.ticker.price;
           const volume24hr = res.ticker.volume;
-          const change1hr = res.ticker.change1hr;
-          // var coin was not keeping the correct value in here
-          // using res.ticker.base instead
-          const theCoin = res.ticker.base.toLowerCase();
-          tempState[theCoin].curr_price = Number(price);
-          tempState[theCoin].volume24hr = Number(volume24hr);
+          const change1hr = res.ticker.change;
+          const tickerBase = res.ticker.base.toLowerCase()
+
+          // CONVERTING CURRENCY
+          if (userCurrency){
+            const endpoint = 'https://api.fixer.io/latest?base=USD&symbols=' + userCurrency;
+            console.log(endpoint, 'endpoint')
+
+            return fetch(endpoint)
+              .then(function(res) {
+                if (!res.ok) {
+                    throw Error(res.statusText);
+                }
+                return res;
+              })
+              .then((res) => res.json())
+              .then((res)=> {
+                  return ({
+                    conversionRate: res.rates[userCurrency],
+                    theCoin: tickerBase,
+                    price: price
+                  });
+                }
+              )
+          } else {
+            return {
+              conversionRate: 1,
+              theCoin: tickerBase,
+              price: price,
+              volume24hr: volume24hr,
+              change1hr: change1hr
+            }
+          }
+          // END CURRENCY CONVERSION
+        })
+        .then(function(newRes){
+          console.log(newRes)
+          let displayPrice =  Number(newRes.price);
+          if (newRes.conversionRate !== 1) {
+            displayPrice = newRes.conversionRate * displayPrice;
+          }
+          tempState[newRes.theCoin].curr_price = displayPrice;
         })
         .then(function(){
           count++;
@@ -311,11 +358,12 @@ class App extends Component {
           <label htmlFor="currency">{$currencySymbol(this.state.preferences.currency) || "USD"}</label>
           <select id="currency" onChange={this._handleSelectChange} value={currencyPref} name="select">
             <option value="USD">{$currencySymbol('usd')} USD</option>
+            <option value="AUD">{$currencySymbol('aud')} AUD</option>
             <option value="BTC">{$currencySymbol('btc')} BTC</option>
             <option value="CAD">{$currencySymbol('cad')} CAD</option>
+            <option value="CNY">{$currencySymbol('cny')} CNY</option>
             <option value="EUR">{$currencySymbol('eur')} EUR</option>
             <option value="GBP">{$currencySymbol('gbp')} GBP</option>
-            <option value="CNY">{$currencySymbol('cny')} CNY</option>
             <option value="JPY">{$currencySymbol('jpy')} JPY</option>
             <option value="RUR">{$currencySymbol('rur')} RUR</option>
             <option value="UAH">{$currencySymbol('uah')} UAH</option>
