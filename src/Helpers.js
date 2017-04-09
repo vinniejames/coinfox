@@ -12,6 +12,7 @@ export function $currencySymbol(ticker){
     btc: "฿",
     cad: "$",
     eur: "€",
+    gbp: "£",
     jpy: "¥",
     cny: "¥",
     rur: "₽",
