@@ -16,11 +16,13 @@ class Chart extends Component {
     }
   }
 
-  _chartOptions(series){
+  _chartOptions(data){
     return (
       {
           chart: {
-             zoomType: 'x'
+            height: '200px',
+            zoomType: 'x',
+            backgroundColor: '#303032'
           },
           title: {
               text: ''
@@ -29,18 +31,33 @@ class Chart extends Component {
               text: ""
           },
           xAxis: {
-              type: 'datetime'
+            lineColor: "#777",
+            tickColor: '#777',
+            gridLineColor: '#777',
+              type: 'datetime',
+              labels:{
+                style: {
+                  color: '#777'
+              }
+            }
           },
           yAxis: {
+            gridLineColor: '#777',
               title: {
                   text: ''
+              },
+              labels:{
+                style: {
+                  color: '#777'
               }
+            }
           },
           legend: {
               enabled: false
           },
           plotOptions: {
               area: {
+                 color: 'rgb(33, 206, 153)',
                   fillColor: {
                       linearGradient: {
                           x1: 0,
@@ -49,27 +66,26 @@ class Chart extends Component {
                           y2: 1
                       },
                       stops: [
-                          [0, Highcharts.getOptions().colors[0]],
-                          [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                          [0, 'rgb(33, 206, 153)'],
+                          [1, Highcharts.Color('rgb(33, 206, 153)').setOpacity(0).get('rgba')]
                       ]
                   },
                   marker: {
                       radius: 2
                   },
-                  lineWidth: 1,
+                  lineWidth: 2,
                   states: {
                       hover: {
-                          lineWidth: 1
+                          lineWidth: 3
                       }
                   },
                   threshold: null
               }
           },
-
           series: [{
               type: 'area',
               name: this.state.ticker,
-              data: series
+              data: data
           }]
       }
     )
@@ -117,8 +133,6 @@ class Chart extends Component {
 componentDidUpdate(prevProps, prevState) {
   // only update chart if the data has changed
   if (prevState.time_series !== this.state.time_series) {
-    console.log(this.state.time_series);
-    console.log('yip');
     if(this.state.time_series.length){
       this.chart = new Highcharts["Chart"](
         this.props.chart_container,
@@ -129,7 +143,6 @@ componentDidUpdate(prevProps, prevState) {
 }
 
   render () {
-    console.log(this.state, 'rendering state');
 
     return (
       <div>
