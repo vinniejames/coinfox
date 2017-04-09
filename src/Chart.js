@@ -103,20 +103,35 @@ class Chart extends Component {
       .then((res) => res.json())
       .then((res)=>{
         // convert data to time series for highcharts_data
-        const highcharts_data = res.Data.map(function (day) {
-          // highcharts wants timestamp in miliseconds
-          // https://jsfiddle.net/zyqav14L/
-          var fixDate = day.time * 1000;
-          return [fixDate, day.close]
-        })
+        // const no_chart_available = !(res.Response === "Success")
+        //   ? []
+        //   : false; // no chart is available
+        //
+        //   console.log(no_chart_available, res.Response, 'no chart available');
 
-        const nextState = {
-          ticker: ticker,
-          chart: res,
-          time_series: highcharts_data
+        console.log(res.Response);
+
+        if (res.Response === "Success") {
+          console.log('if ran')
+          const highcharts_data = res.Data.map(function (day) {
+            // highcharts wants timestamp in miliseconds
+            // https://jsfiddle.net/zyqav14L/
+            var fixDate = day.time * 1000;
+            return [fixDate, day.close]
+          })
+          const nextState = {
+            ticker: ticker,
+            chart: res,
+            time_series: highcharts_data
+          }
+
+          this.setState(nextState);
+        } else {
+          console.log('chart failed')
+          this.setState({time_series: []});
         }
 
-        this.setState(nextState);
+
       })
   }
 
@@ -132,12 +147,20 @@ class Chart extends Component {
 
 componentDidUpdate(prevProps, prevState) {
   // only update chart if the data has changed
+  // if (!this.state.chart.Response === "Success") {
+  //   this.chart.destroy();
+  // }
   if (prevState.time_series !== this.state.time_series) {
     if(this.state.time_series.length){
       this.chart = new Highcharts["Chart"](
         this.props.chart_container,
         this._chartOptions(this.state.time_series)
       );
+    } else {
+      // destroys chart, but you see a flash of
+      // previous chart
+      // @TODO this better, so you dont see a flash
+      this.chart.destroy()
     }
   }
 }
