@@ -84,7 +84,7 @@ class Chart extends Component {
           },
           series: [{
               type: 'area',
-              name: this.state.ticker,
+              name: this.state.ticker + '/' + this.props.currency_pref,
               data: data
           }]
       }

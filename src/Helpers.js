@@ -8,6 +8,7 @@ export function $cashRoi(current_price, cost_basis, hodl){
 
 export function $currencySymbol(ticker){
   const symbol = {
+    aud: "$",
     usd: "$",
     btc: "฿",
     cad: "$",
