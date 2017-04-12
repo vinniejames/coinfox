@@ -2,7 +2,7 @@
   "name": "coinfox",
   "version": "0.1.0",
   "private": true,
-  "homepage": "",
+  "homepage": "/coinfox",
   "dependencies": {
     "highcharts": "^5.0.10",
     "react": "^15.4.2",
