@@ -127,6 +127,9 @@ label {
 span.red {
   color: rgb(216, 45, 45);
 }
+a.red {
+  color: rgb(216, 45, 45);
+}
 span.green {
   color: rgb(33, 206, 153);
 }

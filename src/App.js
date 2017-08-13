@@ -348,8 +348,17 @@ class App extends Component {
     const gainz = Object.keys(this.state.coinz).length
       ? "$" + $numberWithCommas(totalGainLoss.toFixed(2)) + " (" + $numberWithCommas($percentRoi(this._portfolioValue(), this._costBasis()).toFixed(2)) + "%)"
       : "Use the menu to add your coin holdings";
+
+    const shouldShowBanner = window.location.hostname === "vinniejames.de" ? "banner" : "banner hidden";
+
     return (
       <div className="App">
+        <div className={shouldShowBanner}>
+          <p className="text-center">
+            Moving to a new home: <a className="red" href="http://coinfox.co">Coinfox.co</a>! <br/>
+            Please use the import/export feature to move your data.
+          </p>
+        </div>
         <i onClick={this._toggleMenu} className="btn-menu fa fa-lg fa-bars" aria-hidden="true"></i>
         <div id="menu-body" className={this.state.menu_visibility}>
           <i onClick={this._toggleMenu} className="btn-menu fa fa-lg fa-times" aria-hidden="true"></i>
