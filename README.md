@@ -1,4 +1,4 @@
-# Crypto Coin Portfolio Tracker
+# [Coinfox.co](http://coinfox.co) Crypto Coin Portfolio Tracker
 
 Easily track all your crypto coin holdings with [Coinfox.co](http://coinfox.co)
 
