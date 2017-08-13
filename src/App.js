@@ -14,6 +14,7 @@ class App extends Component {
     this._handleSubmit = this._handleSubmit.bind(this);
     this._handleSelectChange = this._handleSelectChange.bind(this);
     this._updateLocalWithSave = this._updateLocalWithSave.bind(this);
+    this._hideAddApp = this._hideAddApp.bind(this);
 
     this.state = {
       menu_visibility: "hidden",
@@ -336,6 +337,11 @@ class App extends Component {
 
   }
 
+  _hideAddApp () {
+    localStorage.setItem('seenAddApp', "true");
+    this.forceUpdate();
+  }
+
   render() {
 
 
@@ -470,7 +476,11 @@ class App extends Component {
             <i onClick={this._closeCoinInfo} className={coinCloseClass} aria-hidden="true"></i>
             <Coin visible={this.state.coin_visibility} parentState={this.state} coin={this.state.coin_info} />
           </span>
-
+        {localStorage.seenAddApp !== "true" &&
+          <div className="save-app">Add to Home Screen for app experience <i onClick={this._hideAddApp}
+                                                                             className="fa fa-times text-right"
+                                                                             aria-hidden="true"></i></div>
+        }
       </div>
     );
   }

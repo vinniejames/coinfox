@@ -1,3 +1,16 @@
+.save-app {
+    position: fixed;
+    bottom: 0;
+    text-align: left;
+    background-color: rgb(33, 206, 153);
+    padding: 10px;
+    width: 100vw;
+}
+.save-app i {
+    float: right;
+    margin-right: 20px;
+    cursor: pointer; cursor: hand;
+}
 .coin * {
     pointer-events: none;
 }
