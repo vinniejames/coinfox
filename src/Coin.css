@@ -5,6 +5,7 @@
     background-color: rgb(33, 206, 153);
     padding: 10px;
     width: 100vw;
+    z-index: 100000;
 }
 .save-app i {
     float: right;
