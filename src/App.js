@@ -346,7 +346,7 @@ class App extends Component {
       ? "App-header red"
       : "App-header";
     const gainz = Object.keys(this.state.coinz).length
-      ? "$" + $numberWithCommas(totalGainLoss.toFixed(2)) + " (" + $numberWithCommas($percentRoi(this._portfolioValue(), this._costBasis()).toFixed(2)) + "%)"
+      ? $currencySymbol(this.state.preferences.currency) + $numberWithCommas(totalGainLoss.toFixed(2)) + " (" + $numberWithCommas($percentRoi(this._portfolioValue(), this._costBasis()).toFixed(2)) + "%)"
       : "Use the menu to add your coin holdings";
 
     const shouldShowBanner = window.location.hostname === "vinniejames.de" ? "banner" : "banner hidden";
