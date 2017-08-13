@@ -1,3 +1,6 @@
+.coin * {
+    pointer-events: none;
+}
 .coinInfo{
   background-color: #303032;
   margin: 0 10px;

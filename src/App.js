@@ -277,6 +277,8 @@ class App extends Component {
 
   _toggleCoinInfo (e) {
     const coin = e.target.id;
+    console.log(coin);
+    console.log(e.target);
     this.setState({coin_info: coin})
     if (this.state.coin_visibility === "hidden") {
       this.setState({coin_visibility: ""})
