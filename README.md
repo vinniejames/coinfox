@@ -1,6 +1,7 @@
 # Crypto Coin Portfolio Tracker
 
-Easily track all your crypto coin holdings
+Easily track all your crypto coin holdings with [Coinfox.co](http://coinfox.co)
+
 ## Features
 
 *Charts:* 
