@@ -1,0 +1,7 @@
+.supported-coins {
+    height: 100vh;
+    width: 100vw;
+    z-index: 10000;
+    background-color: blue;
+    position: absolute;
+}

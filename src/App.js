@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { $dontShowNaN, $cashRoi, $percentRoi, $currencySymbol, $numberWithCommas } from './Helpers';
 import Coin from './Coin';
+import SupportedCoins from './SupportedCoins';
 import './App.css';
 
 class App extends Component {
@@ -14,6 +15,8 @@ class App extends Component {
     this._handleSubmit = this._handleSubmit.bind(this);
     this._handleSelectChange = this._handleSelectChange.bind(this);
     this._updateLocalWithSave = this._updateLocalWithSave.bind(this);
+    this._showCoins = this._showCoins.bind(this);
+    this._toggleCoins = this._toggleCoins.bind(this);
 
     this.state = {
       menu_visibility: "hidden",
@@ -27,7 +30,8 @@ class App extends Component {
       preferences: {
         currency: "USD"
       },
-      coinfox_holdings: ""
+      coinfox_holdings: "",
+      showCoins: false
     }
   }
 
@@ -334,6 +338,16 @@ class App extends Component {
 
   }
 
+  _showCoins(e) {
+    e.preventDefault();
+    console.log('show');
+    this.setState({showCoins: true});
+  }
+  _toggleCoins(){
+    const toggle = this.state.showCoins;
+    this.setState({showCoins: !toggle});
+  }
+
   render() {
 
 
@@ -363,6 +377,14 @@ class App extends Component {
           </p>
         </div>
         <i onClick={this._toggleMenu} className="btn-menu fa fa-lg fa-bars" aria-hidden="true"></i>
+
+        {this.state.showCoins &&
+          <div className="supported-coins">
+            <i onClick={this._toggleCoins} className="btn-menu fa fa-lg fa-times" aria-hidden="true"></i>
+            <SupportedCoins />
+          </div>
+        }
+
         <div id="menu-body" className={this.state.menu_visibility}>
           <i onClick={this._toggleMenu} className="btn-menu fa fa-lg fa-times" aria-hidden="true"></i>
 
@@ -382,6 +404,7 @@ class App extends Component {
 
           <hr />
           <h3>Add a Coin</h3>
+          <p>(<a href="" onClick={this._showCoins}>Supported Coins</a>)</p>
           <form className="" onSubmit={this._handleSubmit}>
                 <input type="text"
                   className="add_ticker"
