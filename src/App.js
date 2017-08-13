@@ -239,7 +239,7 @@ class App extends Component {
     }
 
     const stringCoins = JSON.stringify(currentCoins);
-    if (ticker && costBasis && hodl) {
+    if (ticker && costBasis >= 0 && hodl) {
       localStorage.setItem("coinz", stringCoins);
       window.location.href = window.location.href;
     } else {
@@ -389,7 +389,7 @@ class App extends Component {
                 <input type="text"
                   className="add_cost_basis"
                   onChange={this._onChange}
-                  value={this.state.cost_basist}
+                  value={this.state.cost_basis}
                   placeholder={avgCostBasis}/>
                   <br/>
                 <input type="text"
