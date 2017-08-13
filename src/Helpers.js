@@ -26,3 +26,9 @@ export function $currencySymbol(ticker){
 export function $numberWithCommas(d) {
   return d.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
+
+export function $dontShowNaN(value) {
+
+  return isNaN(value) ? 0 : value;
+
+}

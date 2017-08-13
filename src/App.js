@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { $cashRoi, $percentRoi, $currencySymbol, $numberWithCommas } from './Helpers';
+import { $dontShowNaN, $cashRoi, $percentRoi, $currencySymbol, $numberWithCommas } from './Helpers';
 import Coin from './Coin';
 import './App.css';
 
@@ -239,7 +239,7 @@ class App extends Component {
     }
 
     const stringCoins = JSON.stringify(currentCoins);
-    if (ticker && costBasis && hodl) {
+    if (ticker && costBasis >= 0 && hodl) {
       localStorage.setItem("coinz", stringCoins);
       window.location.href = window.location.href;
     } else {
@@ -336,6 +336,7 @@ class App extends Component {
 
   render() {
 
+
     const coinCloseClass = this.state.coin_visibility + " coin-close fa fa-lg fa-times";
 
     const coinStats = Object.entries(this.state.coinz);
@@ -346,10 +347,21 @@ class App extends Component {
       ? "App-header red"
       : "App-header";
     const gainz = Object.keys(this.state.coinz).length
-      ? "$" + $numberWithCommas(totalGainLoss.toFixed(2)) + " (" + $numberWithCommas($percentRoi(this._portfolioValue(), this._costBasis()).toFixed(2)) + "%)"
+      ? $currencySymbol(this.state.preferences.currency) + $numberWithCommas($dontShowNaN(totalGainLoss).toFixed(2)) + " (" + $numberWithCommas($dontShowNaN($percentRoi(this._portfolioValue(), this._costBasis()).toFixed(2))) + "%)"
       : "Use the menu to add your coin holdings";
+
+    const shouldShowBanner = window.location.hostname === "vinniejames.de" ? "banner" : "banner hidden";
+
+
+
     return (
       <div className="App">
+        <div className={shouldShowBanner}>
+          <p className="text-center">
+            Moving to a new home: <a className="red" href="http://coinfox.co">Coinfox.co</a>! <br/>
+            Please use the import/export feature to move your data.
+          </p>
+        </div>
         <i onClick={this._toggleMenu} className="btn-menu fa fa-lg fa-bars" aria-hidden="true"></i>
         <div id="menu-body" className={this.state.menu_visibility}>
           <i onClick={this._toggleMenu} className="btn-menu fa fa-lg fa-times" aria-hidden="true"></i>
@@ -380,7 +392,7 @@ class App extends Component {
                 <input type="text"
                   className="add_cost_basis"
                   onChange={this._onChange}
-                  value={this.state.cost_basist}
+                  value={this.state.cost_basis}
                   placeholder={avgCostBasis}/>
                   <br/>
                 <input type="text"
@@ -417,7 +429,7 @@ class App extends Component {
         <div className={headerColor}>
           <div className="Overview">
           <h1>
-            {$currencySymbol(this.state.preferences.currency)}{$numberWithCommas(this._portfolioValue().toFixed(2))}
+            {$currencySymbol(this.state.preferences.currency)}{$numberWithCommas($dontShowNaN(this._portfolioValue()).toFixed(2))}
           </h1>
           <h2>
             {gainz}
@@ -443,8 +455,8 @@ class App extends Component {
                   </p>
                   <i className="fa fa-lg fa-info-circle" aria-hidden="true"></i>
                   <p className="text-right float-right">
-                    <span className={color}>{$currencySymbol(this.state.preferences.currency)}{$numberWithCommas(gain_loss)}</span><br/>
-                    <span>{$currencySymbol(this.state.preferences.currency)}{$numberWithCommas(curr_price)}</span>
+                    <span className={color}>{$currencySymbol(this.state.preferences.currency)}{$numberWithCommas($dontShowNaN(gain_loss))}</span><br/>
+                    <span>{$currencySymbol(this.state.preferences.currency)}{$numberWithCommas($dontShowNaN(curr_price))}</span>
                   </p>
                 </div>
               );
