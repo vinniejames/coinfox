@@ -343,11 +343,19 @@ class App extends Component {
   }
 
   render() {
-
-
     const coinCloseClass = this.state.coin_visibility + " coin-close fa fa-lg fa-times";
 
-    const coinStats = Object.entries(this.state.coinz);
+    const coinStats = Object.entries(this.state.coinz)
+    const sortCoins = (coinStats) => {
+      coinStats.sort((a, b) => {
+        const aHodl = a[1].curr_price * a[1].hodl;
+        const bHodl = b[1].curr_price * b[1].hodl;
+        return bHodl - aHodl;
+      })
+      return coinStats
+    }
+    const sortedStats = sortCoins(coinStats);
+
     const totalGainLoss = this._totalGainLoss();
     const currencyPref = this.state.preferences.currency
     const avgCostBasis = "Average Cost Basis ("+ $currencySymbol(this.state.preferences.currency) +"/per coin)"
@@ -360,7 +368,22 @@ class App extends Component {
 
     const shouldShowBanner = window.location.hostname === "vinniejames.de" ? "banner" : "banner hidden";
 
-
+    const supportedCurrencies = [
+      "aud",
+      "btc",
+      "cad",
+      "chf",
+      "cny",
+      "eur",
+      "gbp",
+      "jpy",
+      "rur",
+      "uah",
+      "usd"
+    ]
+    const selectCurrency = supportedCurrencies.map((cur) => {
+      return <option key={cur} value={cur.toUpperCase()}>{$currencySymbol(cur)}{cur.toUpperCase()}</option>
+    });
 
     return (
       <div className="App">
@@ -376,17 +399,9 @@ class App extends Component {
 
           <label htmlFor="currency">{$currencySymbol(this.state.preferences.currency) || "USD"}</label>
           <select id="currency" onChange={this._handleSelectChange} value={currencyPref} name="select">
-            <option value="AUD">{$currencySymbol('aud')} AUD</option>
-            <option value="BTC">{$currencySymbol('btc')} BTC</option>
-            <option value="CAD">{$currencySymbol('cad')} CAD</option>
-            <option value="CHF">{$currencySymbol('chf')} CHF</option>
-            <option value="CNY">{$currencySymbol('cny')} CNY</option>
-            <option value="EUR">{$currencySymbol('eur')} EUR</option>
-            <option value="GBP">{$currencySymbol('gbp')} GBP</option>
-            <option value="JPY">{$currencySymbol('jpy')} JPY</option>
-            <option value="RUR">{$currencySymbol('rur')} RUR</option>
-            <option value="UAH">{$currencySymbol('uah')} UAH</option>
-            <option value="USD">{$currencySymbol('usd')} USD</option>
+
+            {selectCurrency}
+
           </select>
 
           <hr />
@@ -446,7 +461,7 @@ class App extends Component {
           </div>
         </div>
         <div className="Coins">
-          {coinStats.map(function(coin, i){
+          {sortedStats.map(function(coin, i){
             const ticker = coin[0].toUpperCase();
             const hodl = parseFloat(Number(coin[1].hodl).toFixed(2));
             const gain_loss = ((Number(coin[1].curr_price) - Number(coin[1].cost_basis) ) * Number(coin[1].hodl) ).toFixed(2);
