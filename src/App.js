@@ -139,7 +139,7 @@ class App extends Component {
 
     // currencies to be converted
     // maybe make array indexOf [aud,xxx,etc]
-    if (currency === 'aud'){
+    if (currency === 'aud' || currency === 'chf'){
       var userCurrency = currency.toUpperCase();
       currency = 'usd';
     }
@@ -376,16 +376,17 @@ class App extends Component {
 
           <label htmlFor="currency">{$currencySymbol(this.state.preferences.currency) || "USD"}</label>
           <select id="currency" onChange={this._handleSelectChange} value={currencyPref} name="select">
-            <option value="USD">{$currencySymbol('usd')} USD</option>
             <option value="AUD">{$currencySymbol('aud')} AUD</option>
             <option value="BTC">{$currencySymbol('btc')} BTC</option>
             <option value="CAD">{$currencySymbol('cad')} CAD</option>
+            <option value="CHF">{$currencySymbol('chf')} CHF</option>
             <option value="CNY">{$currencySymbol('cny')} CNY</option>
             <option value="EUR">{$currencySymbol('eur')} EUR</option>
             <option value="GBP">{$currencySymbol('gbp')} GBP</option>
             <option value="JPY">{$currencySymbol('jpy')} JPY</option>
             <option value="RUR">{$currencySymbol('rur')} RUR</option>
             <option value="UAH">{$currencySymbol('uah')} UAH</option>
+            <option value="USD">{$currencySymbol('usd')} USD</option>
           </select>
 
           <hr />
