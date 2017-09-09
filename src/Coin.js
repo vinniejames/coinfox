@@ -22,21 +22,28 @@ class Coin extends Component {
     return value;
   }
 
-  _totalCostBasis () {
+  _totalCurrentValue () {
     const ticker = this.props.coin;
     const curr_price = this._getSafe(() => this.props.parentState.coinz[ticker.toLowerCase()].curr_price);
     const hodl = this._getSafe(() => this.props.parentState.coinz[ticker.toLowerCase()].hodl);
     return curr_price * hodl;
   }
 
+  _totalCostBasis () {
+    const ticker = this.props.coin;
+    const cost_basis = this._getSafe(() => this.props.parentState.coinz[ticker.toLowerCase()].cost_basis);
+    const hodl = this._getSafe(() => this.props.parentState.coinz[ticker.toLowerCase()].hodl);
+    return cost_basis * hodl;
+  }
+
   _percentOfPortfolio(){
-    return ( this._totalCostBasis() / this._portfolioValue() ) * 100;
+    return ( this._totalCurrentValue() / this._portfolioValue() ) * 100;
   }
 
   _deleteCoin(){
     const ticker = this.props.coin.toLowerCase()
     var strconfirm = confirm("Do you want to remove "+ ticker.toUpperCase() +" from your portfolio?");
-    if (strconfirm == true) {
+    if (strconfirm === true) {
       const localStore = JSON.parse(localStorage.coinz);
       delete localStore[ticker];
       localStorage.setItem('coinz', JSON.stringify(localStore));
@@ -63,7 +70,7 @@ class Coin extends Component {
     const ticker = this.props.coin;
     const currency_pref = this.props.parentState.preferences.currency;
     let curr_price = this._getSafe(() => this.props.parentState.coinz[ticker.toLowerCase()].curr_price)
-    let volume24hr = this._getSafe(() => this.props.parentState.coinz[ticker.toLowerCase()].volume24hr * curr_price);
+    //let volume24hr = this._getSafe(() => this.props.parentState.coinz[ticker.toLowerCase()].volume24hr * curr_price);
 
     const visibility = "coinInfo " + this.props.visible;
     const cost_basis = this._getSafe(() => this.props.parentState.coinz[ticker.toLowerCase()].cost_basis);
@@ -96,7 +103,7 @@ class Coin extends Component {
             <span>{ticker} Holding</span>
           </p>
           <p className="text-right float-right">
-            {$currencySymbol(currency_pref)}{$numberWithCommas( (this._totalCostBasis()).toFixed(2) )}<br/>
+            {$currencySymbol(currency_pref)}{$numberWithCommas( (this._totalCurrentValue()).toFixed(2) )}<br/>
             <span>Total {$currencySymbol(currency_pref)} Holding</span>
           </p>
         </div>
@@ -107,8 +114,8 @@ class Coin extends Component {
             <span>of Portfolio</span>
           </p>
           <p className="text-right float-right">
-            {$currencySymbol(currency_pref)}{$numberWithCommas(cost_basis.toFixed(2))}<br/>
-            <span>Cost Basis {$currencySymbol(currency_pref)}/{ticker}</span>
+            {$currencySymbol(currency_pref)}{$numberWithCommas(cost_basis.toFixed(2))} <span>({$numberWithCommas(this._totalCostBasis().toFixed(2))})</span><br/>
+            <span>Cost Basis {$currencySymbol(currency_pref)}/{ticker} <span>(total)</span></span>
           </p>
         </div>
 
