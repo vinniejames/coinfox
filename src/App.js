@@ -413,32 +413,42 @@ class App extends Component {
       return <option key={cur} value={cur.toUpperCase()}>{$currencySymbol(cur)}{cur.toUpperCase()}</option>
     });
 
+    const pie_data = coinStats.map(coin => {
+      const total_hodl = coin[1].hodl * coin[1].curr_price;
+      const hodl_percentage = ( total_hodl / this._portfolioValue() ) * 100;
+
+      return ({
+        name: coin[0].toUpperCase(),
+        y: hodl_percentage // return a percentage
+      })
+    });
 
     const pie_chart_data = [{
       name: 'HODL',
       colorByPoint: true,
 
-      data: [{
-        name: 'BTC',
-        y: 56.33
-      }, {
-        name: 'LTC',
-        y: 24.03,
-        sliced: true,
-        selected: true
-      }, {
-        name: 'ETH',
-        y: 10.38
-      }, {
-        name: 'BCH',
-        y: 4.77
-      }, {
-        name: 'GNT',
-        y: 0.91
-      }, {
-        name: 'STRAT',
-        y: 0.2
-      }]
+      data: pie_data
+      //   [{
+      //   name: 'BTC',
+      //   y: 56.33
+      // }, {
+      //   name: 'LTC',
+      //   y: 24.03,
+      //   sliced: true,
+      //   selected: true
+      // }, {
+      //   name: 'ETH',
+      //   y: 10.38
+      // }, {
+      //   name: 'BCH',
+      //   y: 4.77
+      // }, {
+      //   name: 'GNT',
+      //   y: 0.91
+      // }, {
+      //   name: 'STRAT',
+      //   y: 0.2
+      // }]
     }];
 
 
