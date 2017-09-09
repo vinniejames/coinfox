@@ -42,7 +42,7 @@ class PieChart extends Component {
 
   // When the PROPS change, create the chart.
   componentWillReceiveProps (nextProps) {
-    if (nextProps.isVisible === "visible" || this.props.isVisible === "visible") {
+    if (nextProps.isVisible === "visible") {
       // Extend Highcharts with modules
       if (this.props.modules) {
         this.props.modules.forEach(function (module) {
@@ -65,9 +65,8 @@ class PieChart extends Component {
   }
 
   render () {
-    if (this.props.isVisible === "hidden") {return <div className={"PieChart gray-card"}><div id={this.props.container}></div></div>}
     return (
-      <div className={"PieChart gray-card"}>
+      <div className={this.props.isVisible + " PieChart gray-card"}>
         <div id={this.props.container}></div>
       </div>
   )
