@@ -529,18 +529,21 @@ class App extends Component {
           <h3>Add a Coin</h3>
           <form className="" onSubmit={this._handleSubmit}>
                 <input type="text"
+                  autoComplete='off' spellCheck='false' autoCorrect='off'
                   className="add_ticker"
                   onChange={this._onChange}
                   value={this.state.ticker}
                   placeholder="Ticker: (BTC, LTC, etc)"/>
                   <br/>
                 <input type="text"
+                  autoComplete='off' spellCheck='false' autoCorrect='off'
                   className="add_cost_basis"
                   onChange={this._onChange}
                   value={this.state.cost_basis}
                   placeholder={avgCostBasis}/>
                   <br/>
                 <input type="text"
+                  autoComplete='off' spellCheck='false' autoCorrect='off'
                   className="add_hodl"
                   onChange={this._onChange}
                   value={this.state.hodl}
