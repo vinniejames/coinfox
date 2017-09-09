@@ -11,17 +11,40 @@ Easily track all your crypto coin holdings with [Coinfox.co](http://coinfox.co)
 
 *Multi-currency support (let me know if you'd like others)*
 
-   * aud: $
-   * usd: $
-   * btc: ฿
-   * cad: $
-   * chf: Fr.
-   * eur: €
-   * gbp: £
-   * jpy: ¥
-   * cny: ¥
-   * rur: ₽
-   * uah: ₴
+   * AUD $
+   * BGN лв
+   * BRL R$
+   * BTC ฿
+   * CAD $
+   * CHF Fr.
+   * CNY ¥
+   * CZK Kč
+   * DKK kr
+   * EUR €
+   * GBP £
+   * HKD $
+   * HRK kn
+   * HUF Ft
+   * IDR Rp
+   * ILS ₪
+   * INR ₹
+   * JPY ¥
+   * KRW ₩
+   * MXN $
+   * MYR RM
+   * NOK kr
+   * NZD $
+   * PHP ₱
+   * PLN zł
+   * RON lei
+   * RUR ₽
+   * SEK kr
+   * SGD $
+   * THB ฿
+   * TRY ₺
+   * UAH ₴
+   * USD $
+   * ZAR R
 
 
 *Individual coin pages:*
