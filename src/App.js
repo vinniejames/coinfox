@@ -150,7 +150,35 @@ class App extends Component {
 
     // currencies to be converted
     // maybe make array indexOf [aud,xxx,etc]
-    if (currency === 'aud' || currency === 'chf'){
+    const extendedCurrencies = [
+      "aud",
+      "bgn",
+      "brl",
+      "chf",
+      "czk",
+      "dkk",
+      "hkd",
+      "hrk",
+      "huf",
+      "idr",
+      "ils",
+      "inr",
+      "krw",
+      "mxn",
+      "myr",
+      "nok",
+      "nzd",
+      "php",
+      "pln",
+      "ron",
+      "sek",
+      "sgd",
+      "thb",
+      "try",
+      "zar"
+    ];
+
+    if (extendedCurrencies.indexOf(currency) > -1){
       userCurrency = currency.toUpperCase();
       currency = 'usd';
     }
@@ -400,19 +428,42 @@ class App extends Component {
 
     const supportedCurrencies = [
       "aud",
+      "bgn",
+      "brl",
       "btc",
       "cad",
       "chf",
       "cny",
+      "czk",
+      "dkk",
       "eur",
       "gbp",
+      "hkd",
+      "hrk",
+      "huf",
+      "idr",
+      "ils",
+      "inr",
       "jpy",
+      "krw",
+      "mxn",
+      "myr",
+      "nok",
+      "nzd",
+      "php",
+      "pln",
+      "ron",
       "rur",
+      "sek",
+      "sgd",
+      "thb",
+      "try",
       "uah",
-      "usd"
-    ]
+      "usd",
+      "zar"
+    ];
     const selectCurrency = supportedCurrencies.map((cur) => {
-      return <option key={cur} value={cur.toUpperCase()}>{$currencySymbol(cur)}{cur.toUpperCase()}</option>
+      return <option key={cur} value={cur.toUpperCase()}>{cur.toUpperCase()} {$currencySymbol(cur)}</option>
     });
 
     const pie_data = coinStats.map(coin => {
