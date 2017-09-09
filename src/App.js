@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { $dontShowNaN, $cashRoi, $percentRoi, $currencySymbol, $numberWithCommas } from './Helpers';
+import { $dontShowNaN, $percentRoi, $currencySymbol, $numberWithCommas } from './Helpers';
 import Coin from './Coin';
 import './App.css';
+
+import PieChart from './PieChart';
 
 class App extends Component {
   constructor () {
@@ -15,10 +17,17 @@ class App extends Component {
     this._handleSelectChange = this._handleSelectChange.bind(this);
     this._updateLocalWithSave = this._updateLocalWithSave.bind(this);
     this._hideAddApp = this._hideAddApp.bind(this);
+    this._toggleVisibility = this._toggleVisibility.bind(this);
+    this._togglePie = this._togglePie.bind(this);
+    this._toggleBarView = this._toggleBarView.bind(this);
 
     this.state = {
       menu_visibility: "hidden",
       coin_visibility: "hidden",
+      pie_menu_visibility: "visible",
+      pie_chart_visibility: "hidden",
+      bar_menu_visibility: "hidden",
+      isListVisible: "visible",
       coin_info: "", // defualt required for child <Coin/>
       add_ticker: "",
       add_cost_basis: "",
@@ -140,7 +149,7 @@ class App extends Component {
     // currencies to be converted
     // maybe make array indexOf [aud,xxx,etc]
     if (currency === 'aud' || currency === 'chf'){
-      var userCurrency = currency.toUpperCase();
+      userCurrency = currency.toUpperCase();
       currency = 'usd';
     }
 
@@ -218,12 +227,35 @@ class App extends Component {
 
   }
 
-  _toggleMenu(){
-    if (this.state.menu_visibility === "hidden") {
-      this.setState({menu_visibility: ""})
+  _toggleVisibility(element){
+    if (this.state[element] === "hidden") {
+      this.setState({[element]: "visible"})
     } else {
-      this.setState({menu_visibility: "hidden"})
+      this.setState({[element]: "hidden"})
     }
+  }
+
+  _toggleMenu(){
+    this._toggleVisibility("menu_visibility");
+    this._toggleVisibility("isListVisible");
+  }
+
+  _togglePie(){
+    //alert('pie');
+    // this._toggleVisibility("menu_visibility");
+    this._toggleVisibility("isListVisible");
+    this._toggleVisibility("pie_chart_visibility");
+    this._toggleVisibility("pie_menu_visibility");
+    this._toggleVisibility("bar_menu_visibility");
+  }
+
+  _toggleBarView(){
+    //alert('pie');
+    // this._toggleVisibility("menu_visibility");
+    this._toggleVisibility("isListVisible");
+    this._toggleVisibility("pie_chart_visibility");
+    this._toggleVisibility("pie_menu_visibility");
+    this._toggleVisibility("bar_menu_visibility");
   }
 
   _handleSubmit (e) {
@@ -278,14 +310,10 @@ class App extends Component {
 
   _toggleCoinInfo (e) {
     const coin = e.target.id;
-    console.log(coin);
-    console.log(e.target);
-    this.setState({coin_info: coin})
-    if (this.state.coin_visibility === "hidden") {
-      this.setState({coin_visibility: ""})
-    } else {
-      this.setState({coin_visibility: "hidden"})
-    }
+    this.setState({coin_info: coin});
+
+    this._toggleVisibility("coin_visibility");
+    this._toggleVisibility("pie_menu_visibility");
   }
 
   _downloadLocalStorage () {
@@ -385,6 +413,36 @@ class App extends Component {
       return <option key={cur} value={cur.toUpperCase()}>{$currencySymbol(cur)}{cur.toUpperCase()}</option>
     });
 
+
+    const pie_chart_data = [{
+      name: 'HODL',
+      colorByPoint: true,
+
+      data: [{
+        name: 'BTC',
+        y: 56.33
+      }, {
+        name: 'LTC',
+        y: 24.03,
+        sliced: true,
+        selected: true
+      }, {
+        name: 'ETH',
+        y: 10.38
+      }, {
+        name: 'BCH',
+        y: 4.77
+      }, {
+        name: 'GNT',
+        y: 0.91
+      }, {
+        name: 'STRAT',
+        y: 0.2
+      }]
+    }];
+
+
+
     return (
       <div className="App">
         <div className={shouldShowBanner}>
@@ -450,6 +508,9 @@ class App extends Component {
 
         </div>
 
+        <i onClick={this._togglePie} className={this.state.pie_menu_visibility + " btn-pie fa fa-lg fa-pie-chart"} aria-hidden="true"></i>
+        <i onClick={this._toggleBarView} className={this.state.bar_menu_visibility + " btn-pie fa fa-lg fa-th-list"} aria-hidden="true"></i>
+
         <div className={headerColor}>
           <div className="Overview">
           <h1>
@@ -460,6 +521,10 @@ class App extends Component {
           </h2>
           </div>
         </div>
+
+        <PieChart chart_data={pie_chart_data} container="pie_chart_view" isVisible={this.state.pie_chart_visibility} />
+
+        <span className={this.state.isListVisible + " main-coin-listing"}>
         <div className="Coins">
           {sortedStats.map(function(coin, i){
             const ticker = coin[0].toUpperCase();
@@ -497,6 +562,7 @@ class App extends Component {
                                                                              className="fa fa-times text-right"
                                                                              aria-hidden="true"></i></div>
         }
+        </span>
       </div>
     );
   }

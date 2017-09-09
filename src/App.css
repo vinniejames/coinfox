@@ -2,9 +2,21 @@ body {
   background-color: #040d14;
   color: #fafafa;
 }
+.gray-card {
+  background-color: #303032;
+  margin: -40px 10px;
+  text-align: left;
+  padding: 0 20px;
+}
 .btn-menu {
   position: absolute;
   left: 20px;
+  top: 20px;
+  cursor: pointer;
+}
+.btn-pie {
+  position: absolute;
+  right: 20px;
   top: 20px;
   cursor: pointer;
 }
