@@ -42,6 +42,7 @@ class Chart extends Component {
             }
           },
           yAxis: {
+            min: 0,
             gridLineColor: '#777',
               title: {
                   text: ''
