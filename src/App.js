@@ -21,10 +21,12 @@ class App extends Component {
     this._togglePie = this._togglePie.bind(this);
     this._toggleBarView = this._toggleBarView.bind(this);
 
+    const userHasCoins = Boolean(localStorage.hasOwnProperty('coinz') && Object.keys(JSON.parse(localStorage.coinz)).length);
+
     this.state = {
       menu_visibility: "hidden",
       coin_visibility: "hidden",
-      pie_menu_visibility: "visible",
+      pie_menu_visibility: userHasCoins ? "visible" : "hidden",
       pie_chart_visibility: "hidden",
       bar_menu_visibility: "hidden",
       isListVisible: "visible",
