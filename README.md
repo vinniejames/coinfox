@@ -87,3 +87,8 @@ After adding coins you will then see all your holdings:
 ## Check Back Daily on Your hodlings
 
 ![alt text](http://i.imgur.com/3QULYvh.png "CoinFox")
+
+## DISCLAIMER
+
+Coinfox is licensed under [GNU](https://github.com/vinniejames/coinfox/blob/master/LICENSE.md) for entertainment purposes only. DO NOT execute trades based on price data. Coinfox makes no claims guaranteeing accuracy of price data, nor offers any financial advice.
+
