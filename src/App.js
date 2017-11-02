@@ -3,6 +3,11 @@ import { $dontShowNaN, $percentRoi, $currencySymbol, $numberWithCommas } from '.
 import Coin from './Coin';
 import './App.css';
 
+import {
+  putFile,
+  getFile
+} from 'blockstack';
+
 import PieChart from './PieChart';
 
 class App extends Component {
@@ -20,6 +25,7 @@ class App extends Component {
     this._toggleVisibility = this._toggleVisibility.bind(this);
     this._togglePie = this._togglePie.bind(this);
     this._toggleBarView = this._toggleBarView.bind(this);
+    this._saveToGaia = this._saveToGaia.bind(this);
 
     const userHasCoins = Boolean(localStorage.hasOwnProperty('coinz') && Object.keys(JSON.parse(localStorage.coinz)).length);
 
@@ -400,6 +406,29 @@ class App extends Component {
     this.forceUpdate();
   }
 
+  _saveToGaia () {
+    console.log('!Gaia!');
+    const STORAGE_FILE = 'coinfox.json';
+    const encrypt = true;
+    putFile(STORAGE_FILE, JSON.stringify(this.state.coinz), encrypt)
+      .catch((ex) => {
+        console.log(ex, 'Gaia put exception');
+      })
+  }
+
+  _fetchFromGaia () {
+    console.log('GETME');
+    const decrypt = true;
+    const STORAGE_FILE = 'coinfox.json';
+    getFile(STORAGE_FILE, decrypt)
+      .then((coinz) => {
+        alert(coinz);
+      })
+      .catch((ex) => {
+        console.log(ex, 'fetch from Gaia exception')
+      })
+  }
+
   render() {
     const coinCloseClass = this.state.coin_visibility + " coin-close fa fa-lg fa-times";
 
@@ -504,10 +533,14 @@ class App extends Component {
       // }]
     }];
 
-
+console.log(putFile, 'bs');
 
     return (
       <div className="App">
+
+        <button onClick={this._saveToGaia}>Add to store</button>
+        <button onClick={this._fetchFromGaia}>Get from store</button>
+
         <div className={shouldShowBanner}>
           <p className="text-center">
             Moving to a new home: <a className="red" href="http://coinfox.co">Coinfox.co</a>! <br/>
