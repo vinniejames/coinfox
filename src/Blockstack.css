@@ -1,0 +1,10 @@
+#login, #logout {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    cursor: pointer;
+}
+#logout a, #logout a:visited {
+    color: white;
+    text-decoration: none;
+}

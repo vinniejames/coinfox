@@ -17,13 +17,14 @@ body {
 .btn-pie {
   position: absolute;
   right: 20px;
-  top: 20px;
+  top: 115px;
   cursor: pointer;
+  z-index: 100;
 }
 .coin-close {
   position: absolute;
   right: 20px;
-  top: 20px;
+  top: 65px;
   cursor: pointer;
   z-index: 10;
 }

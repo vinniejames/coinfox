@@ -573,9 +573,14 @@ class App extends Component {
 
 
         </div>
-
-        <i onClick={this._togglePie} className={this.state.pie_menu_visibility + " btn-pie fa fa-lg fa-pie-chart"} aria-hidden="true"></i>
-        <i onClick={this._toggleBarView} className={this.state.bar_menu_visibility + " btn-pie fa fa-lg fa-th-list"} aria-hidden="true"></i>
+        {Object.keys(this.state.coinz).length ?
+          <span>
+          <i onClick={this._togglePie}
+             className={this.state.pie_menu_visibility + " btn-pie fa fa-lg fa-pie-chart"}
+             aria-hidden="true"></i>
+          < i onClick={this._toggleBarView} className={this.state.bar_menu_visibility + " btn-pie fa fa-lg fa-th-list"} aria-hidden="true"></i>
+          </span>
+        : null}
 
         <div className={headerColor}>
           <div className="Overview">
