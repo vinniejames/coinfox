@@ -26,7 +26,6 @@ class App extends Component {
     this._togglePie = this._togglePie.bind(this);
     this._toggleBarView = this._toggleBarView.bind(this);
     this._saveToGaia = this._saveToGaia.bind(this);
-    this._fetchFromGaia = this._fetchFromGaia.bind(this);
 
     const userHasCoins = Boolean(localStorage.hasOwnProperty('coinz') && Object.keys(JSON.parse(localStorage.coinz)).length);
 
@@ -44,51 +43,20 @@ class App extends Component {
       coinz: {},
       portfolio_total: null,
       preferences: {
-        currency: "USD",
-        gaia: false // is user currently using gia storage?
+        currency: "USD"
       },
       coinfox_holdings: ""
     }
   }
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   console.log(this.state.coinz != nextState.coinz);
-  //
-  //   // const newCoinz = this.state.coinz !== nextState.coinz;
-  //   // const newPref = this.state.preferences !== nextState.preferences;
-  //   // if (newCoinz || newPref) {
-  //   //   console.log(nextState.coinz, "save to gia");
-  //   //   this._saveToGaia({
-  //   //     coinz: nextState.coinz,
-  //   //     preferences: nextState.preferences
-  //   //   })
-  //   // }
-  //
-  //   // dont limit state updates to only coinz/prefs
-  //   return true;
-  // }
-
-  // componentWillUpdate(nextProps, nextState) {
-  //
-  //   //console.log(this.state, nextState, nextState === this.state, "same?")
-  //
-  //   // console.log(this.state.coinz, nextState.coinz, this.state.coinz !== nextState.coinz, 'x');
-  //   //
-  //   // const newCoinz = this.state.coinz !== nextState.coinz;
-  //   // const newPref = this.state.preferences !== nextState.preferences;
-  //   // if (newCoinz || newPref) {
-  //   //   console.log(nextState.coinz, "save to gia");
-  //   //   this._saveToGaia({
-  //   //     coinz: nextState.coinz,
-  //   //     preferences: nextState.preferences
-  //   //   })
-  //   // }
-  // }
-
-  _saveToGaia (data) {
+  _saveToGaia () {
     console.log('!Gaia!');
     const STORAGE_FILE = 'coinfox.json';
     const encrypt = true;
+    const data = {
+      coinz: this.state.coinz,
+      preferences: this.state.preferences
+    }
     putFile(STORAGE_FILE, JSON.stringify(data), encrypt)
       .catch((ex) => {
         console.log(ex, 'Gaia put exception');
@@ -101,25 +69,26 @@ class App extends Component {
     const STORAGE_FILE = 'coinfox.json';
     getFile(STORAGE_FILE, decrypt)
       .then((gaia) => {
-        const gaiaJson = JSON.parse(gaia);
-        console.log(gaiaJson, 'xx');
-        const newCoinsState = {
-          coinz: gaiaJson.coinz,
-          preferences: {
-            currency: gaiaJson.preferences,
-            gaia: true
-          }
+        alert(gaia);
+        const jsonGaia = JSON.parse(gaia);
+        const userData = {
+          coinz: jsonGaia.coinz,
+          preferences: jsonGaia.preferences
         };
-        this.setState(newCoinsState);
+        this.setState(userData);
       })
       .catch((ex) => {
         console.log(ex, 'fetch from Gaia exception')
       })
   }
 
-  componentWillMount() {
-    if (this.props.blockstack) {
+  componentWillMount(){
+    // user is blocstack
+    // and they have localStorage.blockstack ie they logged in
+    if (this.props.blockstack && localStorage.blockstack) {
       this._fetchFromGaia();
+
+    // user is not in blockstack
     } else {
       // if user doesnt have json
       if (!localStorage.hasOwnProperty('coinz')) {
@@ -143,7 +112,7 @@ class App extends Component {
             } else {
               console.log('invalid localStorage');
             }
-            // localCoins has the ticker, so we add to it instead
+          // localCoins has the ticker, so we add to it instead
           } else {
             if (key[0] === cost) {
               localCoins[ticker].cost_basis = Number(key[1]);
@@ -161,18 +130,13 @@ class App extends Component {
         localStorage.clear();
         // add new json string to localStorage
         localStorage.setItem('coinz', stringCoins);
-        if (this.props.blockstack) {
-          console.log(localCoins);
-          this._saveToGaia({
-            coinz: localCoins,
-            preferences: this.state.preferences
-          })
-        }
 
         const newCoinsState = {
           coinz: jsonCoins
         }
         this.setState(newCoinsState);
+      } else if (this.state.gaiaStorage) {
+
       } else if (localStorage.hasOwnProperty('coinz')) {
         const jsonCoins = JSON.parse(localStorage.coinz);
         const localPref = localStorage.pref
@@ -187,7 +151,10 @@ class App extends Component {
 
         this.setState(newCoinsState);
       }
+
     }
+
+
 
 
   }
@@ -389,13 +356,6 @@ class App extends Component {
     if (ticker && costBasis >= 0 && hodl) {
 
       localStorage.setItem("coinz", stringCoins);
-      if (this.props.blockstack) {
-        console.log(currentCoins);
-        this._saveToGaia({
-          coinz: currentCoins,
-          preferences: this.state.preferences
-        })
-      }
 
       window.location.href = window.location.href;
     } else {
@@ -416,13 +376,6 @@ class App extends Component {
     statePref[domElement] = e.target.value;
 
     localStorage.setItem('pref', JSON.stringify(localPref));
-    if (this.props.blockstack) {
-      console.log(localPref);
-      this._saveToGaia({
-        coinz: this.state.coinz,
-        preferences: localPref
-      })
-    }
     this.setState(statePref);
     this._marketPrice();
   }
@@ -484,36 +437,20 @@ class App extends Component {
 
     if (coinz) {
       localStorage.setItem('coinz', JSON.stringify(coinz));
-      if (this.props.blockstack) {
-        console.log(coinz);
-        this._saveToGaia({
-          coinz: coinz,
-          preferences: this.state.preferences
-        })
-      }
     } else {
       alert("Something is wrong with your Save File, please try downloading it again");
     }
     if (pref) {
       localStorage.setItem('pref', JSON.stringify(pref));
-      if (this.props.blockstack) {
-        console.log(pref);
-        this._saveToGaia({
-          coinz: localCoins,
-          preferences: pref
-        })
-      }
     }
 
     location.reload();
-
   }
 
   _hideAddApp () {
     localStorage.setItem('seenAddApp', "true");
     this.forceUpdate();
   }
-
 
 
   render() {
