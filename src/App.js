@@ -54,8 +54,8 @@ class App extends Component {
     const STORAGE_FILE = 'coinfox.json';
     const encrypt = true;
     const data = {
-      coinz: this.state.coinz,
-      preferences: this.state.preferences
+      coinz: JSON.parse(localStorage.coinz), //this.state.coinz,
+      preferences: JSON.parse(localStorage.pref)//this.state.preferences
     }
     putFile(STORAGE_FILE, JSON.stringify(data), encrypt)
       .catch((ex) => {
@@ -80,6 +80,11 @@ class App extends Component {
       .catch((ex) => {
         console.log(ex, 'fetch from Gaia exception')
       })
+  }
+
+  _dataManagement (key, payload) {
+    localStorage.setItem(key, payload);
+    this._saveToGaia();
   }
 
   componentWillMount(){
@@ -129,7 +134,7 @@ class App extends Component {
         // clear out old way of localStorage
         localStorage.clear();
         // add new json string to localStorage
-        localStorage.setItem('coinz', stringCoins);
+        this._dataManagement('coinz', stringCoins);
 
         const newCoinsState = {
           coinz: jsonCoins
@@ -355,7 +360,7 @@ class App extends Component {
     const stringCoins = JSON.stringify(currentCoins);
     if (ticker && costBasis >= 0 && hodl) {
 
-      localStorage.setItem("coinz", stringCoins);
+      this._dataManagement("coinz", stringCoins);
 
       window.location.href = window.location.href;
     } else {
@@ -375,7 +380,7 @@ class App extends Component {
     localPref[domElement] = e.target.value;
     statePref[domElement] = e.target.value;
 
-    localStorage.setItem('pref', JSON.stringify(localPref));
+    this._dataManagement('pref', JSON.stringify(localPref));
     this.setState(statePref);
     this._marketPrice();
   }
@@ -436,12 +441,12 @@ class App extends Component {
     const pref = saveToLocalStorage.pref;
 
     if (coinz) {
-      localStorage.setItem('coinz', JSON.stringify(coinz));
+      this._dataManagement('coinz', JSON.stringify(coinz));
     } else {
       alert("Something is wrong with your Save File, please try downloading it again");
     }
     if (pref) {
-      localStorage.setItem('pref', JSON.stringify(pref));
+      this._dataManagement('pref', JSON.stringify(pref));
     }
 
     location.reload();
