@@ -40,10 +40,10 @@ class Blockstack extends React.Component {
           {!isUserSignedIn() ?
             <Signin handleSignIn={this._handleSignIn}/>
             : <Profile handleSignOut={this._handleSignOut}/>}
-          <App/>
+          <App blockstack={true}/>
         </div>)
     } else {
-      return <App/>;
+      return <App blockstack={false}/>;
     }
   }
 }

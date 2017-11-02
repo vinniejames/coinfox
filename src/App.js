@@ -26,6 +26,7 @@ class App extends Component {
     this._togglePie = this._togglePie.bind(this);
     this._toggleBarView = this._toggleBarView.bind(this);
     this._saveToGaia = this._saveToGaia.bind(this);
+    this._fetchFromGaia = this._fetchFromGaia.bind(this);
 
     const userHasCoins = Boolean(localStorage.hasOwnProperty('coinz') && Object.keys(JSON.parse(localStorage.coinz)).length);
 
@@ -43,73 +44,150 @@ class App extends Component {
       coinz: {},
       portfolio_total: null,
       preferences: {
-        currency: "USD"
+        currency: "USD",
+        gaia: false // is user currently using gia storage?
       },
       coinfox_holdings: ""
     }
   }
 
-  componentWillMount(){
-    // if user doesnt have json
-    if (!localStorage.hasOwnProperty('coinz')) {
-      const localCoins = {};
-      // object to array for map
-      const lStore = Object.entries(localStorage);
-      lStore.map((key) => {
-        const ticker = key[0].replace(/_.*/i, '');
-        const cost = ticker + "_cost_basis";
-        const hodl = ticker + "_hodl";
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   console.log(this.state.coinz != nextState.coinz);
+  //
+  //   // const newCoinz = this.state.coinz !== nextState.coinz;
+  //   // const newPref = this.state.preferences !== nextState.preferences;
+  //   // if (newCoinz || newPref) {
+  //   //   console.log(nextState.coinz, "save to gia");
+  //   //   this._saveToGaia({
+  //   //     coinz: nextState.coinz,
+  //   //     preferences: nextState.preferences
+  //   //   })
+  //   // }
+  //
+  //   // dont limit state updates to only coinz/prefs
+  //   return true;
+  // }
 
-        // if localCoins doesnt have the ticker yet, create it
-        // add localStorage key to localCoins for state
-        if (!localCoins.hasOwnProperty(ticker)) {
-          localCoins[ticker] = {hodl: null, cost_basis: null};
-          if (key[0] === cost) {
-            // key[x] needs to be converted into number
-            localCoins[ticker].cost_basis = Number(key[1]);
-          } else if (key[0] === hodl) {
-            localCoins[ticker].hodl = Number(key[1]);
-          } else {
-            console.log('invalid localStorage');
-          }
-        // localCoins has the ticker, so we add to it instead
-        } else {
-          if (key[0] === cost) {
-            localCoins[ticker].cost_basis = Number(key[1]);
-          } else if (key[0] === hodl) {
-            localCoins[ticker].hodl = Number(key[1]);
-          } else {
-            console.log('invalid localStorage');
-          }
-        }
+  // componentWillUpdate(nextProps, nextState) {
+  //
+  //   //console.log(this.state, nextState, nextState === this.state, "same?")
+  //
+  //   // console.log(this.state.coinz, nextState.coinz, this.state.coinz !== nextState.coinz, 'x');
+  //   //
+  //   // const newCoinz = this.state.coinz !== nextState.coinz;
+  //   // const newPref = this.state.preferences !== nextState.preferences;
+  //   // if (newCoinz || newPref) {
+  //   //   console.log(nextState.coinz, "save to gia");
+  //   //   this._saveToGaia({
+  //   //     coinz: nextState.coinz,
+  //   //     preferences: nextState.preferences
+  //   //   })
+  //   // }
+  // }
+
+  _saveToGaia (data) {
+    console.log('!Gaia!');
+    const STORAGE_FILE = 'coinfox.json';
+    const encrypt = true;
+    putFile(STORAGE_FILE, JSON.stringify(data), encrypt)
+      .catch((ex) => {
+        console.log(ex, 'Gaia put exception');
       })
-      // convert to string for localStorage
-      const stringCoins = JSON.stringify(localCoins);
-      const jsonCoins = JSON.parse(stringCoins);
-      // clear out old way of localStorage
-      localStorage.clear();
-      // add new json string to localStorage
-      localStorage.setItem('coinz', stringCoins);
+  }
 
-      const newCoinsState = {
-        coinz: jsonCoins
-      }
-      this.setState(newCoinsState);
-    } else if (localStorage.hasOwnProperty('coinz')) {
-      const jsonCoins = JSON.parse(localStorage.coinz);
-      const localPref = localStorage.pref
-        ? JSON.parse(localStorage.pref)
-        : this.state.preferences;
-      const newCoinsState = {
-        coinz: jsonCoins,
-        preferences: {
-          currency: localPref.currency
+  _fetchFromGaia () {
+    console.log('GETME');
+    const decrypt = true;
+    const STORAGE_FILE = 'coinfox.json';
+    getFile(STORAGE_FILE, decrypt)
+      .then((gaia) => {
+        const gaiaJson = JSON.parse(gaia);
+        console.log(gaiaJson, 'xx');
+        const newCoinsState = {
+          coinz: gaiaJson.coinz,
+          preferences: {
+            currency: gaiaJson.preferences,
+            gaia: true
+          }
+        };
+        this.setState(newCoinsState);
+      })
+      .catch((ex) => {
+        console.log(ex, 'fetch from Gaia exception')
+      })
+  }
+
+  componentWillMount() {
+    if (this.props.blockstack) {
+      this._fetchFromGaia();
+    } else {
+      // if user doesnt have json
+      if (!localStorage.hasOwnProperty('coinz')) {
+        const localCoins = {};
+        // object to array for map
+        const lStore = Object.entries(localStorage);
+        lStore.map((key) => {
+          const ticker = key[0].replace(/_.*/i, '');
+          const cost = ticker + "_cost_basis";
+          const hodl = ticker + "_hodl";
+
+          // if localCoins doesnt have the ticker yet, create it
+          // add localStorage key to localCoins for state
+          if (!localCoins.hasOwnProperty(ticker)) {
+            localCoins[ticker] = {hodl: null, cost_basis: null};
+            if (key[0] === cost) {
+              // key[x] needs to be converted into number
+              localCoins[ticker].cost_basis = Number(key[1]);
+            } else if (key[0] === hodl) {
+              localCoins[ticker].hodl = Number(key[1]);
+            } else {
+              console.log('invalid localStorage');
+            }
+            // localCoins has the ticker, so we add to it instead
+          } else {
+            if (key[0] === cost) {
+              localCoins[ticker].cost_basis = Number(key[1]);
+            } else if (key[0] === hodl) {
+              localCoins[ticker].hodl = Number(key[1]);
+            } else {
+              console.log('invalid localStorage');
+            }
+          }
+        })
+        // convert to string for localStorage
+        const stringCoins = JSON.stringify(localCoins);
+        const jsonCoins = JSON.parse(stringCoins);
+        // clear out old way of localStorage
+        localStorage.clear();
+        // add new json string to localStorage
+        localStorage.setItem('coinz', stringCoins);
+        if (this.props.blockstack) {
+          console.log(localCoins);
+          this._saveToGaia({
+            coinz: localCoins,
+            preferences: this.state.preferences
+          })
         }
+
+        const newCoinsState = {
+          coinz: jsonCoins
+        }
+        this.setState(newCoinsState);
+      } else if (localStorage.hasOwnProperty('coinz')) {
+        const jsonCoins = JSON.parse(localStorage.coinz);
+        const localPref = localStorage.pref
+          ? JSON.parse(localStorage.pref)
+          : this.state.preferences;
+        const newCoinsState = {
+          coinz: jsonCoins,
+          preferences: {
+            currency: localPref.currency
+          }
+        }
+
+        this.setState(newCoinsState);
       }
-
-      this.setState(newCoinsState);
     }
-
 
 
   }
@@ -309,7 +387,16 @@ class App extends Component {
 
     const stringCoins = JSON.stringify(currentCoins);
     if (ticker && costBasis >= 0 && hodl) {
+
       localStorage.setItem("coinz", stringCoins);
+      if (this.props.blockstack) {
+        console.log(currentCoins);
+        this._saveToGaia({
+          coinz: currentCoins,
+          preferences: this.state.preferences
+        })
+      }
+
       window.location.href = window.location.href;
     } else {
       alert("Please fill in the ticker, cost basis & holding")
@@ -329,6 +416,13 @@ class App extends Component {
     statePref[domElement] = e.target.value;
 
     localStorage.setItem('pref', JSON.stringify(localPref));
+    if (this.props.blockstack) {
+      console.log(localPref);
+      this._saveToGaia({
+        coinz: this.state.coinz,
+        preferences: localPref
+      })
+    }
     this.setState(statePref);
     this._marketPrice();
   }
@@ -390,11 +484,25 @@ class App extends Component {
 
     if (coinz) {
       localStorage.setItem('coinz', JSON.stringify(coinz));
+      if (this.props.blockstack) {
+        console.log(coinz);
+        this._saveToGaia({
+          coinz: coinz,
+          preferences: this.state.preferences
+        })
+      }
     } else {
       alert("Something is wrong with your Save File, please try downloading it again");
     }
     if (pref) {
       localStorage.setItem('pref', JSON.stringify(pref));
+      if (this.props.blockstack) {
+        console.log(pref);
+        this._saveToGaia({
+          coinz: localCoins,
+          preferences: pref
+        })
+      }
     }
 
     location.reload();
@@ -406,28 +514,7 @@ class App extends Component {
     this.forceUpdate();
   }
 
-  _saveToGaia () {
-    console.log('!Gaia!');
-    const STORAGE_FILE = 'coinfox.json';
-    const encrypt = true;
-    putFile(STORAGE_FILE, JSON.stringify(this.state.coinz), encrypt)
-      .catch((ex) => {
-        console.log(ex, 'Gaia put exception');
-      })
-  }
 
-  _fetchFromGaia () {
-    console.log('GETME');
-    const decrypt = true;
-    const STORAGE_FILE = 'coinfox.json';
-    getFile(STORAGE_FILE, decrypt)
-      .then((coinz) => {
-        alert(coinz);
-      })
-      .catch((ex) => {
-        console.log(ex, 'fetch from Gaia exception')
-      })
-  }
 
   render() {
     const coinCloseClass = this.state.coin_visibility + " coin-close fa fa-lg fa-times";
@@ -532,8 +619,6 @@ class App extends Component {
       //   y: 0.2
       // }]
     }];
-
-console.log(putFile, 'bs');
 
     return (
       <div className="App">
