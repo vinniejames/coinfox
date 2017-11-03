@@ -26,6 +26,7 @@ class App extends Component {
     this._togglePie = this._togglePie.bind(this);
     this._toggleBarView = this._toggleBarView.bind(this);
     this._saveToGaia = this._saveToGaia.bind(this);
+    this._fetchFromGaia = this._fetchFromGaia.bind(this);
 
     const userHasCoins = Boolean(localStorage.hasOwnProperty('coinz') && Object.keys(JSON.parse(localStorage.coinz)).length);
 
@@ -58,6 +59,16 @@ class App extends Component {
       preferences: JSON.parse(localStorage.pref)//this.state.preferences
     }
     putFile(STORAGE_FILE, JSON.stringify(data), encrypt)
+      .then(() => {
+        this.setState({
+          // clear user coin input
+          add_ticker: "",
+          add_cost_basis: "",
+          add_hodl: "",
+        })
+        // refresh coin list with new prices
+        this._fetchFromGaia();
+      })
       .catch((ex) => {
         console.log(ex, 'Gaia put exception');
       })
@@ -69,13 +80,23 @@ class App extends Component {
     const STORAGE_FILE = 'coinfox.json';
     getFile(STORAGE_FILE, decrypt)
       .then((gaia) => {
-        alert(gaia);
+        console.log(gaia, 'just fetched from gaia');
         const jsonGaia = JSON.parse(gaia);
+        console.log(jsonGaia, 'gaia json');
         const userData = {
+          // clear user coin input
+          add_ticker: "",
+          add_cost_basis: "",
+          add_hodl: "",
           coinz: jsonGaia.coinz,
           preferences: jsonGaia.preferences
         };
         this.setState(userData);
+      })
+      .then(() => {
+        // need to fetch the price here
+        // componentDidMount race condition?
+        this._marketPrice();
       })
       .catch((ex) => {
         console.log(ex, 'fetch from Gaia exception')
@@ -92,57 +113,9 @@ class App extends Component {
     // and they have localStorage.blockstack ie they logged in
     if (this.props.blockstack && localStorage.blockstack) {
       this._fetchFromGaia();
-
     // user is not in blockstack
     } else {
-      // if user doesnt have json
-      if (!localStorage.hasOwnProperty('coinz')) {
-        const localCoins = {};
-        // object to array for map
-        const lStore = Object.entries(localStorage);
-        lStore.map((key) => {
-          const ticker = key[0].replace(/_.*/i, '');
-          const cost = ticker + "_cost_basis";
-          const hodl = ticker + "_hodl";
-
-          // if localCoins doesnt have the ticker yet, create it
-          // add localStorage key to localCoins for state
-          if (!localCoins.hasOwnProperty(ticker)) {
-            localCoins[ticker] = {hodl: null, cost_basis: null};
-            if (key[0] === cost) {
-              // key[x] needs to be converted into number
-              localCoins[ticker].cost_basis = Number(key[1]);
-            } else if (key[0] === hodl) {
-              localCoins[ticker].hodl = Number(key[1]);
-            } else {
-              console.log('invalid localStorage');
-            }
-          // localCoins has the ticker, so we add to it instead
-          } else {
-            if (key[0] === cost) {
-              localCoins[ticker].cost_basis = Number(key[1]);
-            } else if (key[0] === hodl) {
-              localCoins[ticker].hodl = Number(key[1]);
-            } else {
-              console.log('invalid localStorage');
-            }
-          }
-        })
-        // convert to string for localStorage
-        const stringCoins = JSON.stringify(localCoins);
-        const jsonCoins = JSON.parse(stringCoins);
-        // clear out old way of localStorage
-        localStorage.clear();
-        // add new json string to localStorage
-        this._dataManagement('coinz', stringCoins);
-
-        const newCoinsState = {
-          coinz: jsonCoins
-        }
-        this.setState(newCoinsState);
-      } else if (this.state.gaiaStorage) {
-
-      } else if (localStorage.hasOwnProperty('coinz')) {
+      if (localStorage.hasOwnProperty('coinz')) {
         const jsonCoins = JSON.parse(localStorage.coinz);
         const localPref = localStorage.pref
           ? JSON.parse(localStorage.pref)
@@ -153,14 +126,9 @@ class App extends Component {
             currency: localPref.currency
           }
         }
-
         this.setState(newCoinsState);
       }
-
     }
-
-
-
 
   }
 
@@ -359,10 +327,19 @@ class App extends Component {
 
     const stringCoins = JSON.stringify(currentCoins);
     if (ticker && costBasis >= 0 && hodl) {
-
+      //hide menu then add to persistant stores
+      this._toggleMenu();
       this._dataManagement("coinz", stringCoins);
 
-      window.location.href = window.location.href;
+      // clear user coin input
+      this.setState({
+        add_ticker: "",
+        add_cost_basis: "",
+        add_hodl: ""
+      });
+
+      //window.location.href = window.location.href;
+      this.forceUpdate();
     } else {
       alert("Please fill in the ticker, cost basis & holding")
     }
@@ -482,8 +459,6 @@ class App extends Component {
       ? $currencySymbol(this.state.preferences.currency) + $numberWithCommas($dontShowNaN(totalGainLoss).toFixed(2)) + " (" + $numberWithCommas($dontShowNaN($percentRoi(this._portfolioValue(), this._costBasis()).toFixed(2))) + "%)"
       : "Use the menu to add your coin holdings";
 
-    const shouldShowBanner = window.location.hostname === "vinniejames.de" ? "banner" : "banner hidden";
-
     const supportedCurrencies = [
       "aud",
       "bgn",
@@ -568,12 +543,6 @@ class App extends Component {
         <button onClick={this._saveToGaia}>Add to store</button>
         <button onClick={this._fetchFromGaia}>Get from store</button>
 
-        <div className={shouldShowBanner}>
-          <p className="text-center">
-            Moving to a new home: <a className="red" href="http://coinfox.co">Coinfox.co</a>! <br/>
-            Please use the import/export feature to move your data.
-          </p>
-        </div>
         <i onClick={this._toggleMenu} className="btn-menu fa fa-lg fa-bars" aria-hidden="true"></i>
         <div id="menu-body" className={this.state.menu_visibility}>
           <i onClick={this._toggleMenu} className="btn-menu fa fa-lg fa-times" aria-hidden="true"></i>
@@ -686,7 +655,11 @@ class App extends Component {
         </div>
           <span>
             <i onClick={this._closeCoinInfo} className={coinCloseClass} aria-hidden="true"></i>
-            <Coin visible={this.state.coin_visibility} parentState={this.state} coin={this.state.coin_info} />
+            <Coin
+              blockstack={this.props.blockstack}
+              visible={this.state.coin_visibility}
+              parentState={this.state}
+              coin={this.state.coin_info} />
           </span>
         {localStorage.seenAddApp !== "true" &&
           <div className="save-app">Add to Home Screen for app experience <i onClick={this._hideAddApp}

@@ -2,11 +2,16 @@ import React, { Component } from 'react';
 import Chart from './Chart';
 import './Coin.css';
 import { $cashRoi, $percentRoi, $currencySymbol, $numberWithCommas } from './Helpers';
+import {
+  putFile
+} from 'blockstack';
+
 class Coin extends Component {
 
   constructor() {
     super();
     this._deleteCoin = this._deleteCoin.bind(this);
+    this._saveToGaia = this._saveToGaia.bind(this);
   }
 
   _portfolioValue(){
@@ -40,6 +45,24 @@ class Coin extends Component {
     return ( this._totalCurrentValue() / this._portfolioValue() ) * 100;
   }
 
+  _saveToGaia () {
+    console.log('!Gaia!');
+    const STORAGE_FILE = 'coinfox.json';
+    const encrypt = true;
+    const data = {
+      coinz: JSON.parse(localStorage.coinz), //this.state.coinz,
+      preferences: JSON.parse(localStorage.pref)//this.state.preferences
+    };
+    putFile(STORAGE_FILE, JSON.stringify(data), encrypt)
+      .then(() => {
+        // refresh coin list with new prices
+        location.reload();
+      })
+      .catch((ex) => {
+        console.log(ex, 'Gaia put exception');
+      })
+  }
+
   _deleteCoin(){
     const ticker = this.props.coin.toLowerCase()
     var strconfirm = confirm("Do you want to remove "+ ticker.toUpperCase() +" from your portfolio?");
@@ -47,8 +70,15 @@ class Coin extends Component {
       const localStore = JSON.parse(localStorage.coinz);
       delete localStore[ticker];
       localStorage.setItem('coinz', JSON.stringify(localStore));
-      // refresh page
-      location.reload()
+      if (this.props.blockstack){
+        // update Gaia to match local storage
+        this._saveToGaia();
+        //.then(location.reload())
+      } else {
+        // @TODO DONT refresh page
+        location.reload()
+      }
+
     }
   }
 
