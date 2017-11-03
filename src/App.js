@@ -30,6 +30,73 @@ class App extends Component {
 
     const userHasCoins = Boolean(localStorage.hasOwnProperty('coinz') && Object.keys(JSON.parse(localStorage.coinz)).length);
 
+
+    this.supportedCurrencies = [
+      "aud",
+      "bgn",
+      "brl",
+      "btc",
+      "cad",
+      "chf",
+      "cny",
+      "czk",
+      "dkk",
+      "eur",
+      "gbp",
+      "hkd",
+      "hrk",
+      "huf",
+      "idr",
+      "ils",
+      "inr",
+      "jpy",
+      "krw",
+      "mxn",
+      "myr",
+      "nok",
+      "nzd",
+      "php",
+      "pln",
+      "ron",
+      "rur",
+      "sek",
+      "sgd",
+      "thb",
+      "try",
+      "uah",
+      "usd",
+      "zar"
+    ];
+    // currencies to be converted
+    // maybe make array indexOf [aud,xxx,etc]
+    this.extendedCurrencies = [
+      "aud",
+      "bgn",
+      "brl",
+      "chf",
+      "czk",
+      "dkk",
+      "hkd",
+      "hrk",
+      "huf",
+      "idr",
+      "ils",
+      "inr",
+      "krw",
+      "mxn",
+      "myr",
+      "nok",
+      "nzd",
+      "php",
+      "pln",
+      "ron",
+      "sek",
+      "sgd",
+      "thb",
+      "try",
+      "zar"
+    ];
+
     this.state = {
       menu_visibility: "hidden",
       coin_visibility: "hidden",
@@ -46,7 +113,8 @@ class App extends Component {
       preferences: {
         currency: "USD"
       },
-      coinfox_holdings: ""
+      coinfox_holdings: "",
+      retry_fetch_market_price: 2 // retry two times, then 0
     }
   }
 
@@ -167,46 +235,16 @@ class App extends Component {
     return ( this._portfolioValue() - this._costBasis() ) //.toFixed(2);
   }
 
+
   _marketPrice(){
     const tempState = this.state.coinz;
     let currency = this.state.preferences.currency.toLowerCase();
     var userCurrency;
 
-    // currencies to be converted
-    // maybe make array indexOf [aud,xxx,etc]
-    const extendedCurrencies = [
-      "aud",
-      "bgn",
-      "brl",
-      "chf",
-      "czk",
-      "dkk",
-      "hkd",
-      "hrk",
-      "huf",
-      "idr",
-      "ils",
-      "inr",
-      "krw",
-      "mxn",
-      "myr",
-      "nok",
-      "nzd",
-      "php",
-      "pln",
-      "ron",
-      "sek",
-      "sgd",
-      "thb",
-      "try",
-      "zar"
-    ];
-
-    if (extendedCurrencies.indexOf(currency) > -1){
+    if (this.extendedCurrencies.indexOf(currency) > -1){
       userCurrency = currency.toUpperCase();
       currency = 'usd';
     }
-
 
     for (var coin in this.state.coinz) {
       var count = 1;
@@ -218,6 +256,13 @@ class App extends Component {
         .then(function(res) {
           if (!res.ok) {
               throw Error(res.statusText);
+              // if (this.state.retry_fetch_market_price > 0) {
+              //   console.log('!res.ok retrying coin fetch');
+              //   const retry = this.state.retry_fetch_market_price - 1;
+              //   this.setState({retry_fetch_market_price: retry});
+              //   // fetch again
+              //   this._marketPrice();
+              // }
           }
           return res;
         })
@@ -274,6 +319,16 @@ class App extends Component {
             this.setState({coinz: tempState});
           }
         }.bind(this))
+        .catch((err) => {
+          console.log('error', err);
+          // if (this.state.retry_fetch_market_price > 0) {
+          //   console.log('catch retrying coin fetch');
+          //   const retry = this.state.retry_fetch_market_price - 1;
+          //   this.setState({retry_fetch_market_price: retry});
+          //   // fetch again
+          //   this._marketPrice();
+          // }
+        })
       }
 
 
@@ -459,42 +514,8 @@ class App extends Component {
       ? $currencySymbol(this.state.preferences.currency) + $numberWithCommas($dontShowNaN(totalGainLoss).toFixed(2)) + " (" + $numberWithCommas($dontShowNaN($percentRoi(this._portfolioValue(), this._costBasis()).toFixed(2))) + "%)"
       : "Use the menu to add your coin holdings";
 
-    const supportedCurrencies = [
-      "aud",
-      "bgn",
-      "brl",
-      "btc",
-      "cad",
-      "chf",
-      "cny",
-      "czk",
-      "dkk",
-      "eur",
-      "gbp",
-      "hkd",
-      "hrk",
-      "huf",
-      "idr",
-      "ils",
-      "inr",
-      "jpy",
-      "krw",
-      "mxn",
-      "myr",
-      "nok",
-      "nzd",
-      "php",
-      "pln",
-      "ron",
-      "rur",
-      "sek",
-      "sgd",
-      "thb",
-      "try",
-      "uah",
-      "usd",
-      "zar"
-    ];
+    const supportedCurrencies = this.supportedCurrencies;
+
     const selectCurrency = supportedCurrencies.map((cur) => {
       return <option key={cur} value={cur.toUpperCase()}>{cur.toUpperCase()} {$currencySymbol(cur)}</option>
     });
