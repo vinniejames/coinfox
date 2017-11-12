@@ -1,10 +1,29 @@
-#login, #logout {
+#logout {
     position: absolute;
     right: 20px;
     top: 20px;
     cursor: pointer;
 }
+#login {
+    cursor: pointer;
+    background: white;
+    border: none;
+    padding: 15px;
+    font-size: 16px;
+}
 #logout a, #logout a:visited {
     color: white;
     text-decoration: none;
+}
+
+.block-login h2 {
+    text-align: center;
+    margin-top: 40vh;
+    font-size: 2rem;
+}
+.block-login p {
+    text-align: center;
+}
+.block-login p a {
+    color: black;
 }

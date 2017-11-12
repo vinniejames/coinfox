@@ -28,8 +28,8 @@ class App extends Component {
     this._saveToGaia = this._saveToGaia.bind(this);
     this._fetchFromGaia = this._fetchFromGaia.bind(this);
 
-    const userHasCoins = Boolean(localStorage.hasOwnProperty('coinz') && Object.keys(JSON.parse(localStorage.coinz)).length);
-
+    this.userHasCoins = Boolean(localStorage.hasOwnProperty('coinz') && Object.keys(JSON.parse(localStorage.coinz)).length);
+    console.log("user has coins", this.state);
 
     this.supportedCurrencies = [
       "aud",
@@ -100,7 +100,7 @@ class App extends Component {
     this.state = {
       menu_visibility: "hidden",
       coin_visibility: "hidden",
-      pie_menu_visibility: userHasCoins ? "visible" : "hidden",
+      pie_menu_visibility: this.userHasCoins ? "visible" : "hidden",
       pie_chart_visibility: "hidden",
       bar_menu_visibility: "hidden",
       isListVisible: "visible",
@@ -122,12 +122,23 @@ class App extends Component {
     console.log('!Gaia!');
     const STORAGE_FILE = 'coinfox.json';
     const encrypt = true;
-    console.log(JSON.parse(localStorage.coinz), 'cc');
+    // console.log(JSON.parse(localStorage.coinz), 'cc');
+
+    // @TODO SAVE CURRENT STATE TO GIAA
+    // @TODO GAIA SHOULD ONLY USE GIAA< AND STATE< NEVER LOCAL
+    // console.log(this.state.coinz, "save me to gia");
+    // console.log(this.state.preferences, "save me to gia");
+    // console.log(this.state.preferences, "save me to gia");
+    // console.log(this.state.coinz == JSON.parse(localStorage.coinz), "?local/state equal");
+    // console.log(this.state.preferences == JSON.parse(localStorage.pref), "?local/state equal");
     const data = {
-      coinz: localStorage.coinz && JSON.parse(localStorage.coinz), //this.state.coinz,
-      preferences: localStorage.pref && JSON.parse(localStorage.pref)//this.state.preferences
+      coinz: this.state.coinz, // localStorage.coinz && JSON.parse(localStorage.coinz), //,
+      preferences: this.state.preferences // localStorage.pref && JSON.parse(localStorage.pref)//
     };
-    console.log(data, 'die bitch')
+    // console.log(data, 'die bitch')
+    // console.log(STORAGE_FILE, "storage file");
+    // console.log(data, "data");
+    console.log(JSON.stringify(data), "JSONstringify(data)");
     putFile(STORAGE_FILE, JSON.stringify(data), encrypt)
       .then(() => {
         this.setState({
@@ -136,6 +147,8 @@ class App extends Component {
           add_cost_basis: "",
           add_hodl: "",
         })
+      })
+      .then(() => {
         // refresh coin list with new prices
         this._fetchFromGaia();
       })
@@ -145,22 +158,32 @@ class App extends Component {
   }
 
   _fetchFromGaia () {
-    console.log('GETME');
+    console.log(this.userHasCoins)
+    console.log('GETME data from Gaia');
     const decrypt = true;
     const STORAGE_FILE = 'coinfox.json';
     getFile(STORAGE_FILE, decrypt)
       .then((gaia) => {
         console.log(gaia, 'just fetched from gaia');
         const jsonGaia = JSON.parse(gaia);
-        console.log(jsonGaia, 'gaia json');
+        console.log(jsonGaia, 'gaia json data');
+        console.log(jsonGaia.coinz, jsonGaia.preferences, 'fucked');
+        const gaiaCoinz = jsonGaia.coinz && jsonGaia.coinz || {};
+        const gaiaPref = jsonGaia.preferences && jsonGaia.preferences || {};
+
+        console.log(gaiaCoinz, gaiaPref, 'vars');
+
+        const hasCoins = Object.keys(gaiaCoinz).length;
         const userData = {
           // clear user coin input
+          pie_menu_visibility: hasCoins ? "visible" : "hidden",
           add_ticker: "",
           add_cost_basis: "",
           add_hodl: "",
-          coinz: jsonGaia.coinz,
-          preferences: jsonGaia.preferences
+          coinz: gaiaCoinz,
+          preferences: gaiaPref
         };
+        console.log("writing", userData, "to state");
         this.setState(userData);
       })
       .then(() => {
@@ -174,14 +197,22 @@ class App extends Component {
   }
 
   _dataManagement (key, payload) {
-    localStorage.setItem(key, payload);
-    (this.props.blockstack && localStorage.blockstack) && this._saveToGaia();
+    if (this.props.blockstack && localStorage.blockstack) {
+      console.log("_dM saveToGaia", this.state);
+      console.log("ignoring", key, payload);
+      console.log(this.state, "will be saveed to gaia");
+
+      this._saveToGaia();
+    } else {
+      localStorage.setItem(key, payload);
+    }
   }
 
   componentWillMount(){
     // user is blocstack
     // and they have localStorage.blockstack ie they logged in
     if (this.props.blockstack && localStorage.blockstack) {
+      console.log('cWillMnt: getting user data from gaia');
       this._fetchFromGaia();
     // user is not in blockstack
     } else {
@@ -372,7 +403,15 @@ class App extends Component {
   _handleSubmit (e) {
     e.preventDefault();
     console.log(e);
-    const currentCoins = localStorage.coinz && JSON.parse(localStorage.coinz) || {};
+    let currentCoins = localStorage.coinz && JSON.parse(localStorage.coinz) || {};
+
+    if (this.props.blockstack && localStorage.blockstack) {
+      // this should update state, but we need to wait for it
+      // or return a promise
+      this._fetchFromGaia();
+      currentCoins = this.state.coinz;
+    }
+
     console.log(currentCoins);
     const ticker = this.state.add_ticker.toLowerCase();
     const costBasis = Number(this.state.add_cost_basis);
@@ -391,13 +430,14 @@ class App extends Component {
 
       // clear user coin input
       this.setState({
+        menu_visibility: "hidden",
         add_ticker: "",
         add_cost_basis: "",
         add_hodl: ""
       });
 
       //window.location.href = window.location.href;
-      location.reload();
+      // location.reload();
     } else {
       alert("Please fill in the ticker, cost basis & holding")
     }
@@ -564,8 +604,8 @@ class App extends Component {
     return (
       <div className="App">
 
-        {/*<button onClick={this._saveToGaia}>Add to store</button>*/}
-        {/*<button onClick={this._fetchFromGaia}>Get from store</button>*/}
+        <button onClick={this._saveToGaia}>Add to store</button>
+        <button onClick={this._fetchFromGaia}>Get from store</button>
 
         <i onClick={this._toggleMenu} className="btn-menu fa fa-lg fa-bars" aria-hidden="true"></i>
         <div id="menu-body" className={this.state.menu_visibility}>
