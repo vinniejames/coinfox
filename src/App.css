@@ -44,7 +44,7 @@ body {
   background-color: #303032;
   min-height: 100vh;
   width: 100vw;
-  z-index: 20;
+  z-index: 1000;
   padding-top: 60px;
 }
 #menu-body hr {

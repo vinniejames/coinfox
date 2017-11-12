@@ -46,12 +46,14 @@ class Coin extends Component {
   }
 
   _saveToGaia () {
-    console.log('!Gaia!');
+    console.log('!Save to Gaia!');
     const STORAGE_FILE = 'coinfox.json';
     const encrypt = true;
+    console.log((localStorage.coinz && JSON.parse(localStorage.coinz)) || {});
+    console.log(JSON.parse(localStorage.preferences));
     const data = {
-      coinz: JSON.parse(localStorage.coinz), //this.state.coinz,
-      preferences: JSON.parse(localStorage.pref)//this.state.preferences
+      coinz: (localStorage.coinz && JSON.parse(localStorage.coinz)) || {}, //this.state.coinz,
+      preferences: JSON.parse(localStorage.preferences)//this.state.preferences
     };
     putFile(STORAGE_FILE, JSON.stringify(data), encrypt)
       .then(() => {
@@ -61,6 +63,12 @@ class Coin extends Component {
       .catch((ex) => {
         console.log(ex, 'Gaia put exception');
       })
+  }
+
+  _toggleCoinInfo () {
+    let e = {};
+    e.target = this.props.coin;
+    return e;
   }
 
   _deleteCoin(){
@@ -73,10 +81,10 @@ class Coin extends Component {
       if (this.props.blockstack){
         // update Gaia to match local storage
         this._saveToGaia();
-        //.then(location.reload())
+        this.props.toggleInfo(this._toggleCoinInfo());
       } else {
-        // @TODO DONT refresh page
-        location.reload()
+        this.props.toggleInfo(this._toggleCoinInfo());
+        location.reload();
       }
 
     }

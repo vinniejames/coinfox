@@ -122,10 +122,12 @@ class App extends Component {
     console.log('!Gaia!');
     const STORAGE_FILE = 'coinfox.json';
     const encrypt = true;
+    console.log(JSON.parse(localStorage.coinz), 'cc');
     const data = {
-      coinz: JSON.parse(localStorage.coinz), //this.state.coinz,
-      preferences: JSON.parse(localStorage.pref)//this.state.preferences
-    }
+      coinz: localStorage.coinz && JSON.parse(localStorage.coinz), //this.state.coinz,
+      preferences: localStorage.pref && JSON.parse(localStorage.pref)//this.state.preferences
+    };
+    console.log(data, 'die bitch')
     putFile(STORAGE_FILE, JSON.stringify(data), encrypt)
       .then(() => {
         this.setState({
@@ -173,7 +175,7 @@ class App extends Component {
 
   _dataManagement (key, payload) {
     localStorage.setItem(key, payload);
-    this._saveToGaia();
+    (this.props.blockstack && localStorage.blockstack) && this._saveToGaia();
   }
 
   componentWillMount(){
@@ -256,13 +258,13 @@ class App extends Component {
         .then(function(res) {
           if (!res.ok) {
               throw Error(res.statusText);
-              // if (this.state.retry_fetch_market_price > 0) {
-              //   console.log('!res.ok retrying coin fetch');
-              //   const retry = this.state.retry_fetch_market_price - 1;
-              //   this.setState({retry_fetch_market_price: retry});
-              //   // fetch again
-              //   this._marketPrice();
-              // }
+              if (this.state.retry_fetch_market_price > 0) {
+                console.log('!res.ok retrying coin fetch');
+                const retry = this.state.retry_fetch_market_price - 1;
+                this.setState({retry_fetch_market_price: retry});
+                // fetch again
+                this._marketPrice();
+              }
           }
           return res;
         })
@@ -321,13 +323,13 @@ class App extends Component {
         }.bind(this))
         .catch((err) => {
           console.log('error', err);
-          // if (this.state.retry_fetch_market_price > 0) {
-          //   console.log('catch retrying coin fetch');
-          //   const retry = this.state.retry_fetch_market_price - 1;
-          //   this.setState({retry_fetch_market_price: retry});
-          //   // fetch again
-          //   this._marketPrice();
-          // }
+          if (this.state.retry_fetch_market_price > 0) {
+            console.log('catch retrying coin fetch');
+            const retry = this.state.retry_fetch_market_price - 1;
+            this.setState({retry_fetch_market_price: retry});
+            // fetch again
+            this._marketPrice();
+          }
         })
       }
 
@@ -369,8 +371,9 @@ class App extends Component {
 
   _handleSubmit (e) {
     e.preventDefault();
-
-    const currentCoins = JSON.parse(localStorage.coinz) || {};
+    console.log(e);
+    const currentCoins = localStorage.coinz && JSON.parse(localStorage.coinz) || {};
+    console.log(currentCoins);
     const ticker = this.state.add_ticker.toLowerCase();
     const costBasis = Number(this.state.add_cost_basis);
     const hodl = Number(this.state.add_hodl);
@@ -394,7 +397,7 @@ class App extends Component {
       });
 
       //window.location.href = window.location.href;
-      this.forceUpdate();
+      location.reload();
     } else {
       alert("Please fill in the ticker, cost basis & holding")
     }
@@ -561,8 +564,8 @@ class App extends Component {
     return (
       <div className="App">
 
-        <button onClick={this._saveToGaia}>Add to store</button>
-        <button onClick={this._fetchFromGaia}>Get from store</button>
+        {/*<button onClick={this._saveToGaia}>Add to store</button>*/}
+        {/*<button onClick={this._fetchFromGaia}>Get from store</button>*/}
 
         <i onClick={this._toggleMenu} className="btn-menu fa fa-lg fa-bars" aria-hidden="true"></i>
         <div id="menu-body" className={this.state.menu_visibility}>
@@ -677,6 +680,7 @@ class App extends Component {
           <span>
             <i onClick={this._closeCoinInfo} className={coinCloseClass} aria-hidden="true"></i>
             <Coin
+              toggleInfo={this._toggleCoinInfo}
               blockstack={this.props.blockstack}
               visible={this.state.coin_visibility}
               parentState={this.state}

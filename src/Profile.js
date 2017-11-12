@@ -39,7 +39,7 @@ class Profile extends Component {
       !isSignInPending() ?
       <div className="Profile">
         <span id="logout">
-          <a href="http://localhost:8888">{ person.name() ? person.name() : 'Natoshi Sockamoto' }</a> &nbsp;
+          { person.name() ? person.name() : 'Natoshi Sockamoto' } &nbsp;
           <i onClick={this._handleSignOut} className="fa fa-sign-out" aria-hidden="true"></i>
         </span>
       </div>
