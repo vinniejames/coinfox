@@ -134,12 +134,15 @@ class App extends Component {
         const storage = this._readLocalStorage();
         console.log('getting new data from localStorage');
         this._marketData(storage.coinz);
-        this.setState({
-          blockstack: true,
-          coinz: storage.coinz,
-          pref: storage.pref});
+        // this.setState({
+        //   blockstack: true,
+        //   coinz: storage.coinz,
+        //   pref: storage.pref});
       }, 2000)
 
+      // @TODO VALID LOGIN
+      //http://localhost:8888/auth?authRequest=eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NksifQ.eyJqdGkiOiJiNWVlOTk4OC1mZTgzLTRiMjYtYmVhNi0zZTA1OWFhZTQ3YjgiLCJpYXQiOjE1MTEwNTM1MTYsImV4cCI6MTUxMTA1NzExNiwiaXNzIjoiZGlkOmJ0Yy1hZGRyOjE0S0NaVXhIQ1BSV3JVR1Jkb3RIZXg1VjJlWENtaHNGVGgiLCJwdWJsaWNfa2V5cyI6WyIwMmQ3MmNjYmFlMzkwZjZlOTYxNTU1YmQyY2M5YTBhMzI3ODYzNzE1ODMxNTIwYTExZDY2NjhjNzhkNWFmODQzYWQiXSwiZG9tYWluX25hbWUiOiJodHRwOi8vdXNlLmNvaW5zYXBwLmNvIiwibWFuaWZlc3RfdXJpIjoiaHR0cDovL3VzZS5jb2luc2FwcC5jby9tYW5pZmVzdC5qc29uIiwicmVkaXJlY3RfdXJpIjoiaHR0cDovL3VzZS5jb2luc2FwcC5jby8iLCJzY29wZXMiOlsic3RvcmVfd3JpdGUiXX0.4PuIFj2qWQtx2ZBY_6gQgjm2_KCn2hhdgvia_hTqHqdAXj7ZsDMRoeDadrVDaoGtnaj8WA-aDv3cS6CbNYzaLQ#coreAPIPassword=off&logServerPort=off
+      //http://localhost:8888/auth?authRequest=eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NksifQ.eyJqdGkiOiJhNjg3MDc5OS1jMmExLTQ2ZjktODVlNy05ZjRiZThmNzMwYjIiLCJpYXQiOjE1MTEwNTM4MTksImV4cCI6MTUxMTA1NzQxOSwiaXNzIjoiZGlkOmJ0Yy1hZGRyOjFMSkNRZkZkS0JuMmdTdjVoOGZVZmFhMk5WejJSRWVWN1oiLCJwdWJsaWNfa2V5cyI6WyIwMjJmMjI2YzE4OTZjN2MyYTQ0MzgxYTJkOGYwODFkOGY3ZmRjZGZlYzlhNzAzZDU2MWU5YzQwZDI2YWNiMWFhMjEiXSwiZG9tYWluX25hbWUiOiJodHRwOi8vbG9jYWxob3N0OjMwMDAiLCJtYW5pZmVzdF91cmkiOiJodHRwOi8vbG9jYWxob3N0OjMwMDAvbWFuaWZlc3QuanNvbiIsInJlZGlyZWN0X3VyaSI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzAwMC8iLCJ2ZXJzaW9uIjoiMS4xLjAiLCJkb19ub3RfaW5jbHVkZV9wcm9maWxlIjp0cnVlLCJzY29wZXMiOlsic3RvcmVfd3JpdGUiXX0.zqqS45VRF2zHTIgvGR2lQM-NGV9Hlpc51-6aBFbMSOFKuJFM9CwRipD0ULGSL3jQpiAgRaJQX-JQ4l1UhbOR0g#coreAPIPassword=off&logServerPort=off
     } else {
       const storage = this._readLocalStorage();
       console.log('getting new data from localStorage');
