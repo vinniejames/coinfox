@@ -59,7 +59,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/src/SupportedCoins.css" />
         <option value="$PROJECT_DIR$/src/SupportedCoins.js" />
         <option value="$PROJECT_DIR$/src/Coin.css" />
@@ -84,6 +83,7 @@
         <option value="$PROJECT_DIR$/src/Blockstack.css" />
         <option value="$PROJECT_DIR$/src/Signin.js" />
         <option value="$PROJECT_DIR$/src/App.js" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -99,6 +99,9 @@
   <component name="JsGulpfileManager">
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="NodeModulesDirectoryManager">
+    <handled-path value="$PROJECT_DIR$/node_modules" />
   </component>
   <component name="PhpServers">
     <servers />
@@ -239,12 +242,12 @@
       <workItem from="1510162948663" duration="12000" />
       <workItem from="1510440802073" duration="1795000" />
       <workItem from="1510443713545" duration="6687000" />
-      <workItem from="1511050420473" duration="164000" />
+      <workItem from="1511050420473" duration="495000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="55109000" />
+    <option name="totallyTimeSpent" value="55440000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="877" extended-state="6" />
@@ -572,6 +575,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5833">
           <caret line="307" column="12" lean-forward="false" selection-start-line="307" selection-start-column="12" selection-end-line="307" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="184">
+          <caret line="18" column="7" lean-forward="false" selection-start-line="18" selection-start-column="7" selection-end-line="18" selection-end-column="7" />
           <folding />
         </state>
       </provider>
