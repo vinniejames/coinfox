@@ -14,14 +14,16 @@ class App extends Component {
   constructor() {
     super();
     this._addCoinz = this._addCoinz.bind(this);
+
+    this.state = {
+      coinz: {},
+      pref: {},
+      marketData: false, // no data yet
+      blockstack: false,
+      exchangeRate: 1 // defaults to 1 for US Dollar
+    }
   }
-  state = {
-    coinz: {},
-    pref: {},
-    marketData: false, // no data yet
-    blockstack: false,
-    exchangeRate: 1 // defaults to 1 for US Dollar
-  }
+
 
   _readLocalStorage(){
     const userCoinData = localStorage.coinz ? JSON.parse(localStorage.coinz) : {};
