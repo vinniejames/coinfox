@@ -15,32 +15,38 @@ class Blockstack extends React.Component {
 
   constructor(props){
     super(props);
+    this._handleSignIn = this._handleSignIn.bind(this);
+    this._handleSignOut = this._handleSignOut.bind(this);
+    this.state = {
+      blockurl: window.location.origin + "/blockstack",
+      manifest: window.location.origin + "/manifest.json",
+    }
   }
 
   componentWillMount() {
+    this.props.setBlockstackTrue();
     if (isSignInPending()) {
       handlePendingSignIn().then((userData) => {
-        const blockUrl = window.location.origin + "?fuckinghell";
-        window.location = blockUrl;
+        window.location = this.state.blockurl;
       });
     }
   }
 
   _handleSignIn(e) {
     e.preventDefault();
-    redirectToSignIn();
+    //https://blockstack.github.io/blockstack.js/index.html#redirecttosignin
+    redirectToSignIn(this.state.blockurl, this.state.manifest);
   }
 
   _handleSignOut(e) {
     e.preventDefault();
-    signUserOut(window.location.origin + "?fuckinghell");
+    signUserOut(this.state.blockurl);
     // manually clear local storage blockstack key
     // @TODO ask proper way
     localStorage.setItem("blockstack-transit-private-key", false);
   }
 
   render () {
-
       return (
         <div className="Blockstack">
           {!isUserSignedIn() ?

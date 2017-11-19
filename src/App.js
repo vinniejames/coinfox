@@ -14,6 +14,7 @@ class App extends Component {
   constructor() {
     super();
     this._addCoinz = this._addCoinz.bind(this);
+    this._setBlockstackTrue = this._setBlockstackTrue.bind(this);
 
     this.state = {
       coinz: {},
@@ -24,6 +25,9 @@ class App extends Component {
     }
   }
 
+  _setBlockstackTrue() {
+    this.setState({blockstack: true});
+  }
 
   _readLocalStorage(){
     const userCoinData = localStorage.coinz ? JSON.parse(localStorage.coinz) : {};
@@ -175,6 +179,7 @@ class App extends Component {
                 (props) => <Blockstack {...props}
                   coinz={this.state.coinz}
                   marketData={this.state.marketData}
+                  setBlockstackTrue={this._setBlockstackTrue}
                 />
               }
             />
