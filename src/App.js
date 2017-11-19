@@ -8,6 +8,7 @@ import Pie from './Pie';
 import Menu from './Menu';
 
 import './App.css';
+import Blockstack from "./Blockstack";
 
 class App extends Component {
   constructor() {
@@ -161,7 +162,7 @@ class App extends Component {
                  coinz={this.state.coinz}
                  marketData={this.state.marketData} />} />
             <Route exact path="/blockstack"
-                 render={(props) => <Home {...props}
+                 render={(props) => <Blockstack {...props}
                  coinz={this.state.coinz}
                  marketData={this.state.marketData} />} />
 
