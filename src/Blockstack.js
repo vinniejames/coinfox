@@ -13,10 +13,15 @@ import {
 
 class Blockstack extends React.Component {
 
+  constructor(props){
+    super(props);
+  }
+
   componentWillMount() {
     if (isSignInPending()) {
       handlePendingSignIn().then((userData) => {
-        window.location = window.location.origin + "/blockstack";
+        const blockUrl = window.location.origin + "?fuckinghell";
+        window.location = blockUrl;
       });
     }
   }
@@ -28,7 +33,10 @@ class Blockstack extends React.Component {
 
   _handleSignOut(e) {
     e.preventDefault();
-    signUserOut(window.location.origin + "/blockstack");
+    signUserOut(window.location.origin + "?fuckinghell");
+    // manually clear local storage blockstack key
+    // @TODO ask proper way
+    localStorage.setItem("blockstack-transit-private-key", false);
   }
 
   render () {
@@ -44,3 +52,4 @@ class Blockstack extends React.Component {
 }
 
 export default Blockstack;
+

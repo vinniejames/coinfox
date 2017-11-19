@@ -60,7 +60,6 @@ class App extends Component {
       // must be a new coin
       storage.coinz[key] = payload;
       const newCoinz = storage.coinz;
-      console.log(newCoinz);
 
       // @TODO save to blockstack instead;
       localStorage.setItem("coinz", JSON.stringify(newCoinz));
@@ -163,23 +162,41 @@ class App extends Component {
         <div>
           <Switch>
             <Route exact path="/"
-                 render={(props) => <Home {...props}
-                 coinz={this.state.coinz}
-                 marketData={this.state.marketData} />} />
+              render={
+                (props) => <Home {...props}
+                  coinz={this.state.coinz}
+                  marketData={this.state.marketData}
+                />
+              }
+            />
+
             <Route exact path="/blockstack"
-                 render={(props) => <Blockstack {...props}
-                 coinz={this.state.coinz}
-                 marketData={this.state.marketData} />} />
+              render={
+                (props) => <Blockstack {...props}
+                  coinz={this.state.coinz}
+                  marketData={this.state.marketData}
+                />
+              }
+            />
 
             <Route path="/coin/*"
-                 render={(props) => <Coin {...props}
-                 coinz={this.state.coinz}
-                 marketData={this.state.marketData} />} />
+              render={
+                (props) => <Coin {...props}
+                  coinz={this.state.coinz}
+                  marketData={this.state.marketData}
+                />
+               }
+            />
 
-              <Route path="/pie" component={Pie} />
-              <Route path="/menu"
-                     render={(props) => <Menu {...props}
-                     addCoinz={this._addCoinz} />} />
+            <Route path="/pie" component={Pie} />
+            <Route path="/menu"
+              render={
+                (props) => <Menu {...props}
+                  addCoinz={this._addCoinz}
+                />
+              }
+            />
+
           </Switch>
         </div>
       </BrowserRouter>
