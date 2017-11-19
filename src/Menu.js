@@ -5,9 +5,10 @@ import AddCoin from './AddCoin';
 
 class Menu extends Component {
   render() {
+    const home = this.props.blockstack ? '/blockstack' : '/';
     const Menu = <AddCoin addCoinz={this.props.addCoinz} key='AddCoin'/>;
     return ([
-        <Link key='nav' to='/'>X</Link>,
+        <Link key='nav' to={home}>X</Link>,
         Menu
     ]);
   }
