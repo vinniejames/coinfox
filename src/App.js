@@ -66,7 +66,6 @@ class App extends Component {
       storage.coinz[key] = payload;
       const newCoinz = storage.coinz;
 
-      // @TODO save to blockstack instead;
       localStorage.setItem("coinz", JSON.stringify(newCoinz));
       // must re-fetch market data if new coin
       this._marketData(newCoinz);
@@ -132,15 +131,12 @@ class App extends Component {
             })
         }
 
-
       })
-
   }
 
   _addCoinz(coin){
     const ticker = coin.ticker;
-    console.log('addition is fucked up, adding total of costbasis, need to write average instead');
-    const costBasis = coin.avg_cost * coin.hodl;
+    const costBasis = coin.avg_cost;
     const payload = {
       cost_basis: costBasis,
       hodl: coin.hodl

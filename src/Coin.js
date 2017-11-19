@@ -19,7 +19,7 @@ class Coin extends Component {
         <h1>COIN: {coin}</h1>
         <p>Price: {price}</p>
         <p>Holding: {coinInfo && coinInfo.hodl}</p>
-        <p>CB: {coinInfo && coinInfo.cost_basis}</p>
+        <p>Avg CB: {coinInfo && coinInfo.cost_basis}</p>
       </div>
     );
   }

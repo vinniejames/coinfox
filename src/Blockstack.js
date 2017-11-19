@@ -89,8 +89,11 @@ class Blockstack extends React.Component {
           {/*<button onClick={this._fetchFromGaia}>Get from store</button>*/}
           {!isUserSignedIn() ?
             <Signin handleSignIn={this._handleSignIn}/>
-            : <Profile handleSignOut={this._handleSignOut}/>}
-          <Home {...this.props} />
+            : [
+              <Profile key="Profile" handleSignOut={this._handleSignOut}/>,
+              <Home key="Home" {...this.props} />
+            ]
+          }
         </div>)
   }
 }
