@@ -22,6 +22,7 @@ class App extends Component {
   constructor() {
     super();
     this._addCoinz = this._addCoinz.bind(this);
+    this._saveNewPref = this._saveNewPref.bind(this);
 
     this.state = {
       coinz: {},
@@ -29,6 +30,7 @@ class App extends Component {
       marketData: false, // no data yet
       exchangeRate: 1, // defaults to 1 for US Dollar
       blockstack: isUserSignedIn(), //returns true if user is logged in
+      gaiaStorage: 'coinfox.json'
     }
   }
 
@@ -76,12 +78,11 @@ class App extends Component {
   _saveCoinToGaia(key, payload) {
     // @TODO make this a function that returns a promise
     const decrypt = true;
-    const STORAGE_FILE = 'coinfox.json';
-    getFile(STORAGE_FILE, decrypt)
+    getFile(this.state.gaiaStorage, decrypt)
       .then((gaia) => {
         const jsonGaia = JSON.parse(gaia);
         const gaiaCoinz = jsonGaia.coinz && jsonGaia.coinz || {};
-        const gaiaPref = jsonGaia.pref && jsonGaia.pref || {};
+        const gaiaPref = jsonGaia.pref && jsonGaia.pref || {currency:"USD"};
         const userData = {
           coinz: gaiaCoinz,
           pref: gaiaPref
@@ -97,15 +98,18 @@ class App extends Component {
           const newCoinz = this._addExistingCoin(storage, key, payload);
           const data = {
             coinz: newCoinz,
-            pref: this.state.pref
+            pref: storage.pref
           };
 
-          putFile(STORAGE_FILE, JSON.stringify(data), encrypt)
+          putFile(this.state.gaiaStorage, JSON.stringify(data), encrypt)
             .then(() => {
               this._marketData(newCoinz);
             })
             .then(() => {
-              this.setState({coinz: newCoinz})
+              this.setState({
+                coinz: newCoinz,
+                pref: storage.pref
+              })
             })
             .catch((ex) => {
               console.log(ex, 'Gaia put exception');
@@ -116,15 +120,18 @@ class App extends Component {
           const newCoinz = storage.coinz;
           const data = {
             coinz: newCoinz,
-            pref: this.state.pref
+            pref: storage.pref
           };
 
-          putFile(STORAGE_FILE, JSON.stringify(data), encrypt)
+          putFile(this.state.gaiaStorage, JSON.stringify(data), encrypt)
             .then(() => {
               this._marketData(newCoinz);
             })
             .then(() =>{
-              this.setState({coinz: newCoinz})
+              this.setState({
+                coinz: newCoinz,
+                pref: storage.pref
+              })
             })
             .catch((ex) => {
               console.log(ex, 'Gaia put exception');
@@ -192,7 +199,7 @@ class App extends Component {
   }
   _readLocalStorage(){
     const userCoinData = localStorage.coinz ? JSON.parse(localStorage.coinz) : {};
-    const userPref = localStorage.pref ? JSON.parse(localStorage.pref) : {};
+    const userPref = localStorage.pref ? JSON.parse(localStorage.pref) : {currency:"USD"};
 
     return {coinz: userCoinData, pref: userPref}
   }
@@ -202,12 +209,11 @@ class App extends Component {
     if (isUserSignedIn()) {
       // @TODO make this a function that returns a promise
       const decrypt = true;
-      const STORAGE_FILE = 'coinfox.json';
-      getFile(STORAGE_FILE, decrypt)
+      getFile(this.state.gaiaStorage, decrypt)
         .then((gaia) => {
           const jsonGaia = JSON.parse(gaia);
           const gaiaCoinz = jsonGaia.coinz && jsonGaia.coinz || {};
-          const gaiaPref = jsonGaia.pref && jsonGaia.pref || {};
+          const gaiaPref = jsonGaia.pref && jsonGaia.pref || {currency:"USD"};
           const userData = {
             coinz: gaiaCoinz,
             pref: gaiaPref
@@ -231,6 +237,28 @@ class App extends Component {
       });
     }
 
+  }
+
+  _saveNewPref(newPref) {
+    if (isUserSignedIn()){
+      const encrypt = true;
+
+      const data = {
+        coinz: this.state.coinz,
+        pref: {currency: newPref}
+      };
+      // set state first, to avoid waiting for storage to update
+      this.setState({
+        pref: data.pref
+      });
+      putFile(this.state.gaiaStorage, JSON.stringify(data), encrypt)
+        .catch((ex) => {
+          console.log(ex, 'Gaia put exception');
+        })
+    } else {
+      localStorage.setItem("pref", JSON.stringify({currency: newPref}));
+      this.setState({pref: {currency: newPref}});
+    }
   }
 
   render() {
@@ -272,6 +300,8 @@ class App extends Component {
                 (props) => <Menu {...props}
                   addCoinz={this._addCoinz}
                   blockstack={this.state.blockstack}
+                  pref={this.state.pref}
+                  saveNewPref={this._saveNewPref}
                 />
               }
             />
@@ -282,6 +312,5 @@ class App extends Component {
     );
   }
 }
-
 
 export default App;

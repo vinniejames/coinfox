@@ -1,5 +1,4 @@
 import * as React from 'react';
-// import './Blockstack.css';
 import Signin from './Signin';
 import Profile from './Profile';
 import Home from "./Home";
