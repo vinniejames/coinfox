@@ -1,3 +1,110 @@
 body {
+  background-color: black;
+  font-family: Roboto, sans-serif;
+}
+
+.lightGray {
+  color: hsla(0,0%,100%,.25);
+}
+.green {
+  color: #21ce99;
+}
+
+a {
+  color: white;
+}
+
+.theMenu {
+  background-color: #303032;
+  height: 100vh;
+  padding-top: 20px;
+}
+
+.menu {
+  margin-left: 20px;
+}
+
+.Home .header {
   background-color: #21ce99;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.TotalPortfolio {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.TotalPortfolio h1 {
+  font-weight: 300;
+  font-size: 2.5rem;
+  color: white;
+  margin: 5px;
+}
+
+.CoinList {
+  height: 100%;
+  margin: -25px 10px;
+}
+
+.listCoin {
+  background: #303032;
+  border-bottom: 1px solid hsla(0,0%,100%,.1);
+  padding: 20px;
+
+}
+.listCoin:after {
+  content: '';
+  display: block;
+  clear: both;
+}
+
+.coinLink {
+  text-decoration: none;
+}
+
+.left {
+  float: left;
+  text-align: left;
+}
+.middle {
+  position: absolute;
+  right: 0;
+  margin: 10px 50vw;
+}
+.right {
+  float: right;
+  text-align: right;
+}
+
+.Coin {
+  background-color: #21ce99;
+  height: 100vh;
+  margin-top: -15px;
+  padding-top: 35px;
+}
+
+.coinClose {
+  float: right;
+  padding-right: 20px;
+}
+
+#chart_container {
+  min-height: 200px;
+}
+
+.coinCard {
+  background-color: #303032;
+  color: white;
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 10px;
+  min-height: calc(100vh - 60px);
+}
+.coinCard h1 {
+  font-size: 2.5rem;
+}
+.coinCard h1, .coinCard h2 {
+  font-weight: 300;
+  margin: 0;
 }

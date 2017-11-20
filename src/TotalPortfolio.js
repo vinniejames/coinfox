@@ -37,10 +37,9 @@ class TotalPortfolio extends Component {
     const returnPercentage = this.returnPercentage(totalValue, totalBasis);
 
     return (
-      <div>
-        <h1>TotalPortfolio</h1>
-        <p>{totalValue}</p>
-        <p>{totalReturn} Return: ({returnPercentage}%)</p>
+      <div className="TotalPortfolio">
+        <h1>$ {totalValue}</h1>
+        <p>$ {totalReturn} ({returnPercentage}%)</p>
       </div>
     );
   }

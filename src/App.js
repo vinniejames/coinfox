@@ -290,7 +290,6 @@ class App extends Component {
         })
         .then(() => {
           this._fetchExchangeRates();
-          console.log('fetch exchange rate', this.state.pref);
         })
 
     } else {
@@ -300,7 +299,6 @@ class App extends Component {
         coinz: storage.coinz,
         pref: storage.pref
       });
-      console.log('s fetch exchange rate', storage.pref);
       this._fetchExchangeRates();
     }
 
@@ -331,8 +329,6 @@ class App extends Component {
     const exchangeRate = this.state.exchangeRates[this.state.pref.currency]
       ? this.state.exchangeRates[this.state.pref.currency]
       : 1; // default 1 for USD
-
-    console.log(exchangeRate, 'multiplier');
 
     return (
       <BrowserRouter>
