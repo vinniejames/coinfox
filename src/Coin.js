@@ -17,8 +17,8 @@ class Coin extends Component {
 
     return (
       <div>
-        <p><Link key='Menu' to='/menu'>MENU</Link></p>
-        <p><Link to={home}>X</Link></p>
+        <p><Link key='Menu' to='/menu'><i className="btn-menu fa fa-lg fa-bars" aria-hidden="true"></i></Link></p>
+        <p><Link to={home}><i className="btn-menu fa fa-lg fa-times" aria-hidden="true"></i></Link></p>
 
         <Chart exchangeRate={this.props.exchangeRate} ticker={coin} />
 

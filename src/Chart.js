@@ -95,7 +95,7 @@ class Chart extends Component {
 
   //Destroy chart before unmount.
   componentWillUnmount () {
-    this.chart.destroy();
+    this.chart && this.chart.destroy();
   }
 
   _fetchChartData (coin, exchangeRate) {
@@ -132,7 +132,7 @@ class Chart extends Component {
           // chart failed to load
           // set array empty then chart.destroy()
           this.setState({time_series: []});
-          this.chart.destroy();
+          this.chart && this.chart.destroy();
         }
       })
   }

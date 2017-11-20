@@ -8,7 +8,10 @@ class Home extends Component {
     const coinz = Object.keys(this.props.coinz).length > 0 ? this.props.coinz : false;
     if (coinz) {
       return (
-        [<Link key='Menu' to='/menu'>MENU</Link>,
+        [
+          <Link key='Menu' to='/menu'>
+            <i className="btn-menu fa fa-lg fa-bars" aria-hidden="true"></i>
+          </Link>,
           <TotalPortfolio
             exchangeRate={this.props.exchangeRate}
             marketData={this.props.marketData}
@@ -23,7 +26,9 @@ class Home extends Component {
       );
     } else {
       return (
-        [<Link key='Menu' to='/menu'>MENU</Link>,
+        [<Link key='Menu' to='/menu'>
+          <i className="btn-menu fa fa-lg fa-bars" aria-hidden="true"></i>
+        </Link>,
         <p key="Welcome">maybe add some coins</p>]
       )
     }

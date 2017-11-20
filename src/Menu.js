@@ -9,7 +9,9 @@ class Menu extends Component {
     const currency = this.props.pref.currency ? this.props.pref.currency : '...';
 
     return ([
-        <Link key='nav' to={home}>X</Link>,
+        <Link key='nav' to={home}>
+          <i className="btn-menu fa fa-lg fa-times" aria-hidden="true"></i>
+        </Link>,
         <CurrencyPref
           supportedCurrencies={this.props.supportedCurrencies}
           saveNewPref={this.props.saveNewPref}
