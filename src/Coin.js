@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
+import Chart from "./Chart";
 
 class Coin extends Component {
   render() {
+    console.log(this.props.exchangeRate, 'rate in Coin');
     const home = this.props.blockstack ? '/blockstack' : '/';
     const coin = this.props.match.params["0"];
     const coinz = Object.keys(this.props.coinz).length > 0 ? this.props.coinz : false;
@@ -17,6 +19,9 @@ class Coin extends Component {
       <div>
         <p><Link key='Menu' to='/menu'>MENU</Link></p>
         <p><Link to={home}>X</Link></p>
+
+        <Chart exchangeRate={this.props.exchangeRate} ticker={coin} />
+
         <h1>COIN: {coin}</h1>
         <p>Price: {price}</p>
         <p>Holding: {coinInfo && coinInfo.hodl}</p>
