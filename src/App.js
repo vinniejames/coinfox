@@ -328,6 +328,12 @@ class App extends Component {
   }
 
   render() {
+    const exchangeRate = this.state.exchangeRates[this.state.pref.currency]
+      ? this.state.exchangeRates[this.state.pref.currency]
+      : 1; // default 1 for USD
+
+    console.log(exchangeRate, 'multiplier');
+
     return (
       <BrowserRouter>
         <div>
@@ -337,6 +343,7 @@ class App extends Component {
                 (props) => <Home {...props}
                   coinz={this.state.coinz}
                   marketData={this.state.marketData}
+                  exchangeRate={exchangeRate}
                 />
               }
             />
@@ -346,6 +353,7 @@ class App extends Component {
                 (props) => <Blockstack {...props}
                   coinz={this.state.coinz}
                   marketData={this.state.marketData}
+                  exchangeRate={exchangeRate}
                 />
               }
             />
@@ -356,6 +364,7 @@ class App extends Component {
                   coinz={this.state.coinz}
                   marketData={this.state.marketData}
                   blockstack={this.state.blockstack}
+                  exchangeRate={exchangeRate}
                 />
                }
             />

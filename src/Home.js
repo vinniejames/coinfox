@@ -9,12 +9,23 @@ class Home extends Component {
     if (coinz) {
       return (
         [<Link key='Menu' to='/menu'>MENU</Link>,
-          <TotalPortfolio marketData={this.props.marketData} coinz={this.props.coinz} key={"TotalPortfolio"}/>,
-          <CoinList marketData={this.props.marketData} coinz={this.props.coinz} key={"CoinList"}/>
+          <TotalPortfolio
+            exchangeRate={this.props.exchangeRate}
+            marketData={this.props.marketData}
+            coinz={this.props.coinz}
+            key={"TotalPortfolio"}/>,
+          <CoinList
+            exchangeRate={this.props.exchangeRate}
+            marketData={this.props.marketData}
+            coinz={this.props.coinz}
+            key={"CoinList"}/>
         ]
       );
     } else {
-      return <p>maybe add some coins</p>
+      return (
+        [<Link key='Menu' to='/menu'>MENU</Link>,
+        <p key="Welcome">maybe add some coins</p>]
+      )
     }
   }
 }

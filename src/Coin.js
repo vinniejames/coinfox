@@ -15,6 +15,7 @@ class Coin extends Component {
 
     return (
       <div>
+        <p><Link key='Menu' to='/menu'>MENU</Link></p>
         <p><Link to={home}>X</Link></p>
         <h1>COIN: {coin}</h1>
         <p>Price: {price}</p>

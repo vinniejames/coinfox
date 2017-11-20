@@ -9,8 +9,10 @@ class CoinList extends Component {
       <div className="">
         COINLIST
         {coinz && marketData && Object.keys(coinz).map((coin, i) => {
+          const coinPrice = (this.props.marketData[coin] && this.props.marketData[coin].ticker && this.props.marketData[coin].ticker.price) || 0;
           const price = this.props.marketData[coin] && this.props.marketData[coin].ticker
-            ? this.props.marketData[coin].ticker.price
+            // adjusted for exchange rate
+            ? coinPrice * this.props.exchangeRate
             : false;
           return <p key={i}><Link to={"/coin/" + coin}>{coin}: {coinz[coin].hodl}</Link> ${price}</p>
         })}

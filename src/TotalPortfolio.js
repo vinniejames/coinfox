@@ -20,7 +20,12 @@ class TotalPortfolio extends Component {
 
       // if we have the price data
       if (marketData[coin]){
-        const coinPrice = Number(marketData[coin].ticker.price);
+        // set price to 0 if it doesnt exist
+        const price = (marketData[coin] && marketData[coin].ticker && marketData[coin].ticker.price)
+          ? Number(marketData[coin].ticker.price)
+          : 0;
+          // coinPrice adjusted for exchange rate
+        let coinPrice = price * this.props.exchangeRate;
         const valueForCoin = coinPrice * hodl;
 
         totalValue = totalValue + valueForCoin;
