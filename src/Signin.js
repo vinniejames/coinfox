@@ -13,10 +13,10 @@ class Signin extends Component {
 
     return (
       <div className={"block-login"}>
-        <h2>Coinfox on Blockstack</h2>
+        <h1>Coinfox</h1>
         <p>A decentralized portfolio tracker built on <a rel="noopener noreferrer" target="_blank" href="https://blockstack.org/">Blockstack</a></p>
         <p>
-          <button id="login" onClick={handleSignIn.bind(this)}>
+          <button className="btn" id="login" onClick={handleSignIn.bind(this)}>
             <i className="fa fa-lg fa-user-circle" aria-hidden="true"></i> Sign In With Blockstack</button>
         </p>
       </div>

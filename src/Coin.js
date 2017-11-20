@@ -36,7 +36,7 @@ class Coin extends Component {
             <span className="lightGray">{coin.toUpperCase() + " Holding"}</span>
           </span>
           <span className="right">
-            $ {cost_basis * hodl}<br/>
+            $ {hodl * price}<br/>
             <span className="lightGray">{"Total $ Holding"}</span>
           </span>
           </div>

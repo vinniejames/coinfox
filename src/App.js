@@ -340,6 +340,12 @@ class App extends Component {
                   coinz={this.state.coinz}
                   marketData={this.state.marketData}
                   exchangeRate={exchangeRate}
+                  supportedCurrencies={this.state.supportedCurrencies}
+
+                  currency={this.state.pref && this.state.pref.currency || "USD"}
+                  addCoinz={this._addCoinz}
+                  saveNewPref={this._saveNewPref}
+
                 />
               }
             />
@@ -350,6 +356,7 @@ class App extends Component {
                   coinz={this.state.coinz}
                   marketData={this.state.marketData}
                   exchangeRate={exchangeRate}
+                  supportedCurrencies={this.state.supportedCurrencies}
                 />
               }
             />

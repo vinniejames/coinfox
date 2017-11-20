@@ -51,7 +51,10 @@ class Blockstack extends React.Component {
             <Signin handleSignIn={this._handleSignIn}/>
             : [
               <Profile key="Profile" handleSignOut={this._handleSignOut}/>,
-              <Home exchangeRate={this.props.exchangeRate} key="Home" {...this.props} />
+              <Home
+                supportedCurrencies={this.props.supportedCurrencies}
+                exchangeRate={this.props.exchangeRate}
+                key="Home" {...this.props} />
             ]
           }
         </div>)

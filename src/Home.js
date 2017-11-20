@@ -2,6 +2,12 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
 import TotalPortfolio from './TotalPortfolio';
 import CoinList from './CoinList';
+import CurrencyPref from './CurrencyPref';
+import AddCoin from './AddCoin';
+
+import {
+  isUserSignedIn,
+} from 'blockstack';
 
 class Home extends Component {
   render() {
@@ -26,13 +32,30 @@ class Home extends Component {
             key={"CoinList"}/>
         </div>
       );
-    } else {
+    } else if (!isUserSignedIn()) {
+      // NEW User Welcome screen
       return (
-        [<Link className="menu" key='Menu' to='/menu'>
-          <i className="btn-menu fa fa-lg fa-bars" aria-hidden="true"></i>
-        </Link>,
-        <p key="Welcome">maybe add some coins</p>]
-      )
+        <div className="Home">
+          <div className="header">
+            <Link className="menu" key='Menu' to='/menu'>
+              <i className="btn-menu fa fa-lg fa-bars" aria-hidden="true"></i>
+            </Link>
+            <h1 className="white center">Welcome to Coinfox</h1>
+            <p className="white center">Your secure, personal blockchain portfolio manager</p>
+          </div>
+          <div className="addFirstCoin">
+            <h3>Add your first hodling</h3>
+            <CurrencyPref
+              supportedCurrencies={this.props.supportedCurrencies}
+              saveNewPref={this.props.saveNewPref}
+              currency={this.props.currency} />
+            <AddCoin addCoinz={this.props.addCoinz} key='AddCoin'/>
+          </div>
+
+        </div>
+      );
+    } else {
+      return null // @TODO add loading screen
     }
   }
 }

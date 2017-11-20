@@ -41,7 +41,7 @@ class AddCoin extends Component {
     // const avgCostBasis = "Average Cost Basis ("+ $currencySymbol(this.state.preferences.currency) +"/per coin)"
     const avgCostBasis = "Average Cost Basis ($/per coin)"
     return (
-      <div>
+      <div className={"addFirstCoin"}>
         <h3>Add a Coin</h3>
         <form className="" onSubmit={this._addCoin}>
           <input type="text"
@@ -65,7 +65,7 @@ class AddCoin extends Component {
                  value={this.state.hodl}
                  placeholder="Number of Coins Held"/>
           <br/>
-          <input className="" type="submit" value="Go"/>
+          <input className="btn" type="submit" value="Go"/>
         </form>
       </div>
     );

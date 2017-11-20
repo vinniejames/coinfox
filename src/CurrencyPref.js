@@ -22,8 +22,9 @@ class CurrencyPref extends Component {
     });
     const symbol = "$"//this._supportedCurrencies()[this.props.currency][1];
     return (
-      <div>
-      <label htmlFor="currency">{symbol || "USD"}</label>
+      <div className={"addFirstCoin"}>
+        <h3>Select your currency preference</h3>
+        <label htmlFor="currency">{symbol || "USD"}</label>
         <select id="currency" onChange={this._handleSelectChange} value={this.props.currency} name="select">
           {selectCurrency}
         </select>
