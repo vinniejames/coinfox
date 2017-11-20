@@ -6,21 +6,6 @@ class CurrencyPref extends Component {
     this._handleSelectChange = this._handleSelectChange.bind(this);
   }
 
-  _supportedCurrencies () {
-    return [
-      ['USD', '$'],
-      ['EUR', 'e'],
-      ['JPY', 'j'],
-      ['GBP', 'g'],
-      ['CHF', 'c'],
-      ['CAD', 'c'],
-      ['AUD', 'a'],
-      ['NZD', 'n'],
-      ['ZAR', 'z'],
-      ['CNY', 'c'],
-    ]
-  }
-
 
   _handleSelectChange(e){
     const domElement = e.target.id;
@@ -32,7 +17,7 @@ class CurrencyPref extends Component {
   }
 
   render() {
-    const selectCurrency = this._supportedCurrencies().map((cur) => {
+    const selectCurrency = this.props.supportedCurrencies.map((cur) => {
       return <option key={cur[0]} value={cur[0].toUpperCase()}>{cur[0].toUpperCase()} {cur[1]}</option>
     });
     const symbol = "$"//this._supportedCurrencies()[this.props.currency][1];

@@ -23,14 +23,53 @@ class App extends Component {
     super();
     this._addCoinz = this._addCoinz.bind(this);
     this._saveNewPref = this._saveNewPref.bind(this);
+    this._fetchExchangeRates = this._fetchExchangeRates.bind(this);
+
+    const supportedCurrencies = [
+      ['AUD', '$'],
+      ['BGN', 'лв'],
+      ['BRL', 'R$'],
+      // ['BTC', '฿'],
+      ['CAD', '$'],
+      ['CHF', 'Fr.'],
+      ['CNY', '¥'],
+      ['CZK', 'Kč'],
+      ['DKK', 'kr'],
+      ['EUR', '€'],
+      ['GBP', '£'],
+      ['HKD', '$'],
+      ['HRK', 'kn'],
+      ['HUF', 'Ft'],
+      ['IDR', 'Rp'],
+      ['ILS', '₪'],
+      ['INR', '₹'],
+      ['JPY', '¥'],
+      ['KRW', '₩'],
+      ['MXN', '$'],
+      ['MYR', 'RM'],
+      ['NOK', 'kr'],
+      ['NZD', '$'],
+      ['PHP', '₱'],
+      ['PLN', 'zł'],
+      ['RON', 'lei'],
+      // ['RUR', '₽'],
+      ['SEK', 'kr'],
+      ['SGD', '$'],
+      ['THB', '฿'],
+      ['TRY', '₺'],
+      // ['UAH', '₴'],
+      ['USD', '$'],
+      ['ZAR', 'R'],
+    ];
 
     this.state = {
       coinz: {},
       pref: {},
       marketData: false, // no data yet
-      exchangeRate: 1, // defaults to 1 for US Dollar
+      exchangeRates: {USD: 1}, // defaults to 1 for US Dollar
       blockstack: isUserSignedIn(), //returns true if user is logged in
-      gaiaStorage: 'coinfox.json'
+      gaiaStorage: 'coinfox.json',
+      supportedCurrencies: supportedCurrencies,
     }
   }
 
@@ -204,6 +243,28 @@ class App extends Component {
     return {coinz: userCoinData, pref: userPref}
   }
 
+  _fetchExchangeRates () {
+    const currencies = this.state.supportedCurrencies.map((cur) => {
+      return cur[0];
+    });
+    const endpoint = 'https://api.fixer.io/latest?base=USD&symbols=' + currencies.toString();
+
+    return fetch(endpoint)
+      .then(function(res) {
+        if (!res.ok) {
+          throw Error(res.statusText);
+        }
+        return res;
+      })
+      .then((res) => res.json())
+      .then((res)=> {
+          // set default to US 1
+          res.rates.USD = 1;
+          this.setState({exchangeRates: res.rates});
+        }
+      )
+  }
+
   componentDidMount() {
 
     if (isUserSignedIn()) {
@@ -227,6 +288,10 @@ class App extends Component {
         .then(() => {
           this._marketData(this.state.coinz);
         })
+        .then(() => {
+          this._fetchExchangeRates();
+          console.log('fetch exchange rate', this.state.pref);
+        })
 
     } else {
       const storage = this._readLocalStorage();
@@ -235,6 +300,8 @@ class App extends Component {
         coinz: storage.coinz,
         pref: storage.pref
       });
+      console.log('s fetch exchange rate', storage.pref);
+      this._fetchExchangeRates();
     }
 
   }
@@ -242,7 +309,6 @@ class App extends Component {
   _saveNewPref(newPref) {
     if (isUserSignedIn()){
       const encrypt = true;
-
       const data = {
         coinz: this.state.coinz,
         pref: {currency: newPref}
@@ -302,6 +368,7 @@ class App extends Component {
                   blockstack={this.state.blockstack}
                   pref={this.state.pref}
                   saveNewPref={this._saveNewPref}
+                  supportedCurrencies={this.state.supportedCurrencies}
                 />
               }
             />
