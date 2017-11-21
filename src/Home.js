@@ -11,8 +11,10 @@ import {
 
 class Home extends Component {
   render() {
+    console.log('render home');
     const coinz = Object.keys(this.props.coinz).length > 0 ? this.props.coinz : false;
     if (coinz) {
+      console.log('found coinz');
       return (
         <div className="Home">
           <div className="header">
@@ -34,7 +36,8 @@ class Home extends Component {
             key={"CoinList"}/>
         </div>
       );
-    } else if (!isUserSignedIn()) {
+    } else { // if (!isUserSignedIn()) {
+      console.log("!isUserSignedIn()");
       // NEW User Welcome screen
       return (
         <div className="Home">
@@ -55,9 +58,9 @@ class Home extends Component {
 
         </div>
       );
-    } else {
-      return null // @TODO add loading screen
-    }
+    } //else {
+      //return null // @TODO add loading screen
+    //}
   }
 }
 

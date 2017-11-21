@@ -306,6 +306,9 @@ class App extends Component {
       const decrypt = true;
       getFile(this.state.gaiaStorage, decrypt)
         .then((gaia) => {
+
+          console.log('gimme gaia', gaia);
+
           const jsonGaia = JSON.parse(gaia);
           const gaiaCoinz = jsonGaia.coinz && jsonGaia.coinz || {};
           const gaiaPref = jsonGaia.pref && jsonGaia.pref || {currency:"USD"};
@@ -324,6 +327,25 @@ class App extends Component {
         })
         .then(() => {
           this._fetchExchangeRates();
+        })
+        .catch((ex) => {
+          console.log(ex, 'Gaia get exception');
+
+
+          // @TODO dont assume all exceptions are missing gaia file
+
+          const encrypt = true;
+          const data = {
+            coinz: this.state.coinz,
+            pref: {currency:"USD"}
+          };
+          putFile(this.state.gaiaStorage, JSON.stringify(data), encrypt)
+            .then(()=>{
+              window.location.reload();
+            })
+            .catch((ex) => {
+              console.log(ex, 'Gaia put exception');
+            })
         })
 
     } else {
@@ -404,7 +426,7 @@ class App extends Component {
       : 1; // default 1 for USD
 
     return (
-      <BrowserRouter basename={process.env.PUBLIC_URL}>
+      <BrowserRouter>
         <div>
           <Switch>
             <Route exact path="/"
@@ -430,7 +452,10 @@ class App extends Component {
                   marketData={this.state.marketData}
                   exchangeRate={exchangeRate}
                   supportedCurrencies={this.state.supportedCurrencies}
+
                   currency={this.state.pref && this.state.pref.currency || "USD"}
+                  addCoinz={this._addCoinz}
+                  saveNewPref={this._saveNewPref}
                 />
               }
             />
