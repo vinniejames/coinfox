@@ -6,7 +6,7 @@
   <script type="text/javascript">
     
     // GitHub pages appear to give 414 url too long at around 8195 characters
-    if (window.location.pathname == "/blockstack" && window.location.search.indexOf("authResponse")) {
+    if (window.location.search.indexOf("authResponse")) {
       console.log('caught auth');
       localStorage.setItem('blockstring', window.location.search);
       window.location.replace(window.location.origin + "?blockstring");
