@@ -14,7 +14,6 @@ Easily track all your crypto coin holdings with [Coinfox.co](http://coinfox.co)
    * AUD $
    * BGN лв
    * BRL R$
-   * BTC ฿
    * CAD $
    * CHF Fr.
    * CNY ¥
@@ -37,12 +36,10 @@ Easily track all your crypto coin holdings with [Coinfox.co](http://coinfox.co)
    * PHP ₱
    * PLN zł
    * RON lei
-   * RUR ₽
    * SEK kr
    * SGD $
    * THB ฿
    * TRY ₺
-   * UAH ₴
    * USD $
    * ZAR R
 
@@ -75,20 +72,19 @@ Enter:
 After adding coins you will then see all your holdings:
 
 ```
-               Total portfolio $value
-               $gain/loss %gain/loss
- -----------------------------------------------------             
- Ticker                                 coin gain/loss
- # Coins                                Current price
+               Total portfolio $value
+               $gain/loss %gain/loss
+ -----------------------------------------------------             
+ Ticker                                 coin gain/loss
+ # Coins                                Current price
 ```
 
-              
-              
+              
+              
 ## Check Back Daily on Your hodlings
 
 ![alt text](http://i.imgur.com/3QULYvh.png "CoinFox")
 
-## DISCLAIMER
+## TERMS of USE
 
 Coinfox is licensed under [GNU](https://github.com/vinniejames/coinfox/blob/master/LICENSE.md) for entertainment purposes only. DO NOT execute trades based on price data. Coinfox makes no claims guaranteeing accuracy of price data, nor offers any financial advice.
-

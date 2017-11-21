@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <!--
   /\   /\
 //\\_//\\     ____
@@ -14,28 +14,23 @@
   <head>
     <meta charset="utf-8">
     <meta name="description" content="CoinFox: Crypto coin portfolio tracker">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1.0, user-scalable=no" />
     <meta name="HandheldFriendly" content="true" />
     <meta name="theme-color" content="#040d14">
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/mobile-icon.png">
-    <link rel="icon" sizes="192x192" href="%PUBLIC_URL%/mobile-icon.png">
+    <link rel="apple-touch-icon" href="/mobile-icon.png">
+    <link rel="icon" sizes="192x192" href="/mobile-icon.png">
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="CoinFox">
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
-    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
+    <!--
+      manifest.json provides metadata used when your web app is added to the
+      homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
+    -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="shortcut icon" href="/favicon.ico">
     <script src="https://use.fontawesome.com/224e5e0840.js"></script>
-    <script>
-    Object.values = x =>
-       Object.keys(x).reduce((y, z) =>
-           y.push(x[z]) && y, []);
-
-    Object.entries = x =>
-       Object.keys(x).reduce((y, z) =>
-           y.push([z, x[z]]) && y, []);
-    </script>
     <link href="https://fonts.googleapis.com/css?family=Roboto:300" rel="stylesheet">
     <!--
-      Notice the use of %PUBLIC_URL% in the tag above.
+      Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
       Only files inside the `public` folder can be referenced from the HTML.
 
@@ -51,11 +46,12 @@
         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
         m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
       })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
       ga('create', 'UA-2918890-15', 'auto');
       ga('send', 'pageview');
-
     </script>
+    <noscript>
+      You need to enable JavaScript to run this app.
+    </noscript>
     <div id="root"></div>
     <!--
       This HTML file is a template.
@@ -64,8 +60,8 @@
       You can add webfonts, meta tags, or analytics to this file.
       The build step will place the bundled scripts into the <body> tag.
 
-      To begin the development, run `npm start`.
-      To create a production bundle, use `npm run build`.
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
     -->
   </body>
 </html>

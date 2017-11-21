@@ -1,635 +1,470 @@
 import React, { Component } from 'react';
-import { $dontShowNaN, $percentRoi, $currencySymbol, $numberWithCommas } from './Helpers';
-import Coin from './Coin';
-import './App.css';
+import { BrowserRouter} from 'react-router-dom'
+import { Switch, Route } from 'react-router'
+import {
+  isUserSignedIn,
+  putFile,
+  getFile
+} from 'blockstack';
 
-import PieChart from './PieChart';
+import Home from './Home';
+import Coin from './Coin';
+import Pie from './Pie';
+import Menu from './Menu';
+
+import './App.css';
+import Blockstack from "./Blockstack";
+
+// @TODO yo generator
+// https://github.com/blockstack/blockstack-app-generator
 
 class App extends Component {
-  constructor () {
+  constructor() {
     super();
+    this._addCoinz = this._addCoinz.bind(this);
+    this._deleteCoin  = this._deleteCoin.bind(this);
+    this._saveNewPref = this._saveNewPref.bind(this);
+    this._fetchExchangeRates = this._fetchExchangeRates.bind(this);
 
-    this._toggleMenu = this._toggleMenu.bind(this);
-    this._toggleCoinInfo = this._toggleCoinInfo.bind(this);
-    this._closeCoinInfo = this._toggleCoinInfo.bind(this);
-    this._onChange = this._onChange.bind(this);
-    this._handleSubmit = this._handleSubmit.bind(this);
-    this._handleSelectChange = this._handleSelectChange.bind(this);
-    this._updateLocalWithSave = this._updateLocalWithSave.bind(this);
-    this._hideAddApp = this._hideAddApp.bind(this);
-    this._toggleVisibility = this._toggleVisibility.bind(this);
-    this._togglePie = this._togglePie.bind(this);
-    this._toggleBarView = this._toggleBarView.bind(this);
-
-    const userHasCoins = Boolean(localStorage.hasOwnProperty('coinz') && Object.keys(JSON.parse(localStorage.coinz)).length);
-
-    this.state = {
-      menu_visibility: "hidden",
-      coin_visibility: "hidden",
-      pie_menu_visibility: userHasCoins ? "visible" : "hidden",
-      pie_chart_visibility: "hidden",
-      bar_menu_visibility: "hidden",
-      isListVisible: "visible",
-      coin_info: "", // defualt required for child <Coin/>
-      add_ticker: "",
-      add_cost_basis: "",
-      add_hodl: "",
-      coinz: {},
-      portfolio_total: null,
-      preferences: {
-        currency: "USD"
-      },
-      coinfox_holdings: ""
-    }
-  }
-
-  componentWillMount(){
-    // if user doesnt have json
-    if (!localStorage.hasOwnProperty('coinz')) {
-      const localCoins = {};
-      // object to array for map
-      const lStore = Object.entries(localStorage);
-      lStore.map((key) => {
-        const ticker = key[0].replace(/_.*/i, '');
-        const cost = ticker + "_cost_basis";
-        const hodl = ticker + "_hodl";
-
-        // if localCoins doesnt have the ticker yet, create it
-        // add localStorage key to localCoins for state
-        if (!localCoins.hasOwnProperty(ticker)) {
-          localCoins[ticker] = {hodl: null, cost_basis: null};
-          if (key[0] === cost) {
-            // key[x] needs to be converted into number
-            localCoins[ticker].cost_basis = Number(key[1]);
-          } else if (key[0] === hodl) {
-            localCoins[ticker].hodl = Number(key[1]);
-          } else {
-            console.log('invalid localStorage');
-          }
-        // localCoins has the ticker, so we add to it instead
-        } else {
-          if (key[0] === cost) {
-            localCoins[ticker].cost_basis = Number(key[1]);
-          } else if (key[0] === hodl) {
-            localCoins[ticker].hodl = Number(key[1]);
-          } else {
-            console.log('invalid localStorage');
-          }
-        }
-      })
-      // convert to string for localStorage
-      const stringCoins = JSON.stringify(localCoins);
-      const jsonCoins = JSON.parse(stringCoins);
-      // clear out old way of localStorage
-      localStorage.clear();
-      // add new json string to localStorage
-      localStorage.setItem('coinz', stringCoins);
-
-      const newCoinsState = {
-        coinz: jsonCoins
-      }
-      this.setState(newCoinsState);
-    } else if (localStorage.hasOwnProperty('coinz')) {
-      const jsonCoins = JSON.parse(localStorage.coinz);
-      const localPref = localStorage.pref
-        ? JSON.parse(localStorage.pref)
-        : this.state.preferences;
-      const newCoinsState = {
-        coinz: jsonCoins,
-        preferences: {
-          currency: localPref.currency
-        }
-      }
-
-      this.setState(newCoinsState);
-    }
-
-
-
-  }
-
-  componentDidMount(){
-    this._marketPrice();
-  }
-
-  _costBasis(){
-    var cost = 0;
-
-    for (var coin in this.state.coinz) {
-      const cost_basis = this.state.coinz[coin].cost_basis;
-      const hodl = this.state.coinz[coin].hodl;
-      if (hodl){
-        cost = cost + (hodl * cost_basis);
-      }
-    }
-
-    return cost //.toFixed(2);
-  }
-
-  _portfolioValue(){
-    var value = 0;
-
-    for (var coin in this.state.coinz) {
-      const hodl = this.state.coinz[coin].hodl;
-      const curr_price = this.state.coinz[coin].curr_price;
-      if (hodl){
-        value = value + (hodl * curr_price);
-      }
-    }
-    return value;
-  }
-
-  _totalGainLoss(){
-    return ( this._portfolioValue() - this._costBasis() ) //.toFixed(2);
-  }
-
-  _marketPrice(){
-    const tempState = this.state.coinz;
-    let currency = this.state.preferences.currency.toLowerCase();
-    var userCurrency;
-
-    // currencies to be converted
-    // maybe make array indexOf [aud,xxx,etc]
-    const extendedCurrencies = [
-      "aud",
-      "bgn",
-      "brl",
-      "chf",
-      "czk",
-      "dkk",
-      "hkd",
-      "hrk",
-      "huf",
-      "idr",
-      "ils",
-      "inr",
-      "krw",
-      "mxn",
-      "myr",
-      "nok",
-      "nzd",
-      "php",
-      "pln",
-      "ron",
-      "sek",
-      "sgd",
-      "thb",
-      "try",
-      "zar"
+    const supportedCurrencies = [
+      ['AUD', '$'],
+      ['BGN', 'лв'],
+      ['BRL', 'R$'],
+      // ['BTC', '฿'],
+      ['CAD', '$'],
+      ['CHF', 'Fr.'],
+      ['CNY', '¥'],
+      ['CZK', 'Kč'],
+      ['DKK', 'kr'],
+      ['EUR', '€'],
+      ['GBP', '£'],
+      ['HKD', '$'],
+      ['HRK', 'kn'],
+      ['HUF', 'Ft'],
+      ['IDR', 'Rp'],
+      ['ILS', '₪'],
+      ['INR', '₹'],
+      ['JPY', '¥'],
+      ['KRW', '₩'],
+      ['MXN', '$'],
+      ['MYR', 'RM'],
+      ['NOK', 'kr'],
+      ['NZD', '$'],
+      ['PHP', '₱'],
+      ['PLN', 'zł'],
+      ['RON', 'lei'],
+      // ['RUR', '₽'],
+      ['SEK', 'kr'],
+      ['SGD', '$'],
+      ['THB', '฿'],
+      ['TRY', '₺'],
+      // ['UAH', '₴'],
+      ['USD', '$'],
+      ['ZAR', 'R'],
     ];
 
-    if (extendedCurrencies.indexOf(currency) > -1){
-      userCurrency = currency.toUpperCase();
-      currency = 'usd';
+    this.state = {
+      coinz: {},
+      pref: {},
+      marketData: false, // no data yet
+      exchangeRates: {USD: 1}, // defaults to 1 for US Dollar
+      blockstack: isUserSignedIn(), //returns true if user is logged in
+      gaiaStorage: 'coinfox.json',
+      supportedCurrencies: supportedCurrencies,
     }
+  }
+
+  _addExistingCoin (storage, key, payload) {
+    // if user had coin, add more
+    const existingPriceAvg = storage.coinz[key].cost_basis;
+    const existingHodl = storage.coinz[key].hodl;
+
+    const addPriceAvg = payload.cost_basis;
+    const addHodl = payload.hodl;
+
+    const newHodl = addHodl + existingHodl;
+    const newTotalValue = (addPriceAvg * addHodl) + (existingPriceAvg * existingHodl);
+
+    const newPriceAvg = newTotalValue / newHodl;
+
+    storage.coinz[key] = {
+      cost_basis: newPriceAvg,
+      hodl: newHodl
+    };
+
+    return storage.coinz;
+  }
+
+  _saveCoinToStorage(key, payload) {
+    const storage = this._readLocalStorage();
+    if (storage.coinz[key]) {
+      const newCoinz = this._addExistingCoin(storage, key, payload);
+
+      localStorage.setItem("coinz", JSON.stringify(newCoinz));
+      this.setState({coinz: newCoinz})
+
+    } else {
+      // must be a new coin
+      storage.coinz[key] = payload;
+      const newCoinz = storage.coinz;
+
+      localStorage.setItem("coinz", JSON.stringify(newCoinz));
+      // must re-fetch market data if new coin
+      this._marketData(newCoinz);
+      this.setState({coinz: newCoinz})
+    }
+  }
+
+  _saveCoinToGaia(key, payload) {
+    // @TODO make this a function that returns a promise
+
+    // @TODO DO THIS READING FROM STATE INSTEAD!!!
+    // NO REASON TO getFile IF IT WILL BE OVERWRITTEN
 
 
-    for (var coin in this.state.coinz) {
-      var count = 1;
-      const numCoins = Object.keys(this.state.coinz).length;
-      const endpoint = 'https://api.cryptonator.com/api/ticker/'+ coin.toLowerCase() + '-' + currency;
-      // if there is a valid coin, easy to add a "" coin, fix form to not submit w/o value
-      if (coin){
-        fetch(endpoint)
-        .then(function(res) {
-          if (!res.ok) {
-              throw Error(res.statusText);
-          }
-          return res;
-        })
-        .then((res) => res.json())
-        .then(function(res){
+    const decrypt = true;
+    getFile(this.state.gaiaStorage, decrypt)
+      .then((gaia) => {
+        const jsonGaia = JSON.parse(gaia);
+        const gaiaCoinz = jsonGaia.coinz && jsonGaia.coinz || {};
+        const gaiaPref = jsonGaia.pref && jsonGaia.pref || {currency:"USD"};
+        const userData = {
+          coinz: gaiaCoinz,
+          pref: gaiaPref
+        };
+        return userData;
+      })
+      .then((storage) => {
+        console.log(storage.coinz, storage.pref, 'for gaia to save');
+        const encrypt = true;
 
-          let price = res.ticker.price;
-          const volume24hr = res.ticker.volume;
-          const change1hr = res.ticker.change;
-          const tickerBase = res.ticker.base.toLowerCase()
+        if (storage.coinz[key]) {
+          //user already has this coin
+          const newCoinz = this._addExistingCoin(storage, key, payload);
+          const data = {
+            coinz: newCoinz,
+            pref: storage.pref
+          };
 
-          // CONVERTING CURRENCY
-          if (userCurrency){
-            const endpoint = 'https://api.fixer.io/latest?base=USD&symbols=' + userCurrency;
-
-            return fetch(endpoint)
-              .then(function(res) {
-                if (!res.ok) {
-                    throw Error(res.statusText);
-                }
-                return res;
+          putFile(this.state.gaiaStorage, JSON.stringify(data), encrypt)
+            .then(() => {
+              this._marketData(newCoinz);
+            })
+            .then(() => {
+              this.setState({
+                coinz: newCoinz,
+                pref: storage.pref
               })
-              .then((res) => res.json())
-              .then((res)=> {
-                  return ({
-                    conversionRate: res.rates[userCurrency],
-                    theCoin: tickerBase,
-                    price: price
-                  });
-                }
-              )
-          } else {
-            return {
-              conversionRate: 1,
-              theCoin: tickerBase,
-              price: price,
-              volume24hr: volume24hr,
-              change1hr: change1hr
-            }
-          }
-          // END CURRENCY CONVERSION
+            })
+            .catch((ex) => {
+              console.log(ex, 'Gaia put exception');
+            })
+        } else {
+          // must be a new coin
+          storage.coinz[key] = payload;
+          const newCoinz = storage.coinz;
+          const data = {
+            coinz: newCoinz,
+            pref: storage.pref
+          };
+
+          putFile(this.state.gaiaStorage, JSON.stringify(data), encrypt)
+            .then(() => {
+              this._marketData(newCoinz);
+            })
+            .then(() =>{
+              this.setState({
+                coinz: newCoinz,
+                pref: storage.pref
+              })
+            })
+            .catch((ex) => {
+              console.log(ex, 'Gaia put exception');
+            })
+        }
+
+      })
+  }
+
+  _addCoinz(coin){
+    const ticker = coin.ticker;
+    const costBasis = coin.avg_cost;
+    const hodl = coin.hodl;
+
+    if (!ticker || !costBasis || !hodl) {
+      alert("Please fill in the ticker, cost basis & holding");
+    } else {
+      const payload = {
+        cost_basis: costBasis,
+        hodl: hodl
+      };
+      if (isUserSignedIn()) {
+        this._saveCoinToGaia(ticker, payload);
+      } else {
+        this._saveCoinToStorage(ticker, payload);
+      }
+      // go back
+      //history.goBack()
+      alert(ticker.toUpperCase() + " added to your portfolio")
+    }
+  }
+
+  _fetchThen(endpoint) {
+    const promise = new Promise(function(resolve, reject) {
+      let handleFetchErr = function(res) {
+        if (!res.ok) {
+          throw Error(res.statusText);
+        }
+        return res;
+      };
+
+      fetch(endpoint)
+        .then(handleFetchErr)
+        .then((res) => {
+          return res.json()
         })
-        .then(function(newRes){
-
-          let displayPrice =  Number(newRes.price);
-          if (newRes.conversionRate !== 1) {
-            displayPrice = newRes.conversionRate * displayPrice;
-          }
-          tempState[newRes.theCoin].curr_price = displayPrice;
+        .then(res => {
+          resolve(res);
         })
-        .then(function(){
-          count++;
-          if (count >= numCoins) {
-            this.setState({coinz: tempState});
-          }
-        }.bind(this))
+        .catch(e => {
+          console.log(e);
+          reject();
+        });
+    });
+
+    return promise;
+  }
+
+  // _percentOfPortfolio (coinz) {
+  //   let totalPortfolio = 0;
+  //   // coinz.forEach((coin) => {
+  //   //   const currentValue = coin.hodl * price;
+  //   //   totalPortfolio = totalPortfolio + currentValue;
+  //   // })
+  //   for (const coin in coinz) {
+  //     const price = this.state.marketData[coin];
+  //     console.log(coinz[coin].hodl, price)
+  //     const currentValue = coinz[coin].hodl * price;
+  //     totalPortfolio = totalPortfolio + currentValue;
+  //   }
+  //   console.log(totalPortfolio);
+  //   return totalPortfolio;
+  // }
+
+  _marketData(userCoinz){
+    let marketData = {};
+    for (const coin in userCoinz) {
+      // @TODO modify price based on userPref
+      const currency = "USD";
+      const endpoint = 'https://api.cryptonator.com/api/ticker/'+ coin.toLowerCase() + '-' + currency;
+
+      this._fetchThen(endpoint)
+        .then((res) => {
+          marketData[coin] = res;
+          this.setState({marketData: marketData});
+        })
+    }
+    // this._percentOfPortfolio(userCoinz);
+    // @TODO find out why setting state after for loop broke things
+    // this.setState({marketData: marketData});
+
+  }
+  _readLocalStorage(){
+    const userCoinData = localStorage.coinz ? JSON.parse(localStorage.coinz) : {};
+    const userPref = localStorage.pref ? JSON.parse(localStorage.pref) : {currency:"USD"};
+
+    return {coinz: userCoinData, pref: userPref}
+  }
+
+  _fetchExchangeRates () {
+    const currencies = this.state.supportedCurrencies.map((cur) => {
+      return cur[0];
+    });
+    const endpoint = 'https://api.fixer.io/latest?base=USD&symbols=' + currencies.toString();
+
+    return fetch(endpoint)
+      .then(function(res) {
+        if (!res.ok) {
+          throw Error(res.statusText);
+        }
+        return res;
+      })
+      .then((res) => res.json())
+      .then((res)=> {
+          // set default to US 1
+          res.rates.USD = 1;
+          this.setState({exchangeRates: res.rates});
+        }
+      )
+  }
+
+
+  componentDidMount() {
+    // @TODO find out why isUserSignedIn re:true, even if blockstack isnt running
+    if (isUserSignedIn() && window.location.pathname == "/blockstack") {
+      // @TODO make this a function that returns a promise
+      const decrypt = true;
+      getFile(this.state.gaiaStorage, decrypt)
+        .then((gaia) => {
+          const jsonGaia = JSON.parse(gaia);
+          const gaiaCoinz = jsonGaia.coinz && jsonGaia.coinz || {};
+          const gaiaPref = jsonGaia.pref && jsonGaia.pref || {currency:"USD"};
+          const userData = {
+            coinz: gaiaCoinz,
+            pref: gaiaPref
+          };
+          return userData;
+        })
+        // @TODO return promise here, then setState
+        .then((userData) => {
+          this.setState(userData);
+        })
+        .then(() => {
+          this._marketData(this.state.coinz);
+        })
+        .then(() => {
+          this._fetchExchangeRates();
+        })
+
+    } else {
+      const storage = this._readLocalStorage();
+      this._marketData(storage.coinz);
+      this.setState({
+        coinz: storage.coinz,
+        pref: storage.pref
+      });
+      this._fetchExchangeRates();
+    }
+
+  }
+
+  _saveNewPref(newPref) {
+    if (isUserSignedIn()){
+      const encrypt = true;
+      const data = {
+        coinz: this.state.coinz,
+        pref: {currency: newPref}
+      };
+      // set state first, to avoid waiting for storage to update
+      this.setState({
+        pref: data.pref
+      });
+      putFile(this.state.gaiaStorage, JSON.stringify(data), encrypt)
+        .catch((ex) => {
+          console.log(ex, 'Gaia put exception');
+        })
+    } else {
+      localStorage.setItem("pref", JSON.stringify({currency: newPref}));
+      this.setState({pref: {currency: newPref}});
+    }
+  }
+
+
+  _deleteCoin (coin, history) {
+    var strconfirm = window.confirm("Remove "+ coin.toUpperCase() +" from your portfolio?");
+    if (strconfirm === true) {
+
+      const current = this.state.coinz;
+      Object.assign({}, current);
+      delete current[coin];
+
+      if(isUserSignedIn()) {
+        // delete from blockstack
+        const data = {
+          coinz: current,
+          pref: this.state.pref
+        };
+        const encrypt = true;
+        putFile(this.state.gaiaStorage, JSON.stringify(data), encrypt)
+        // may not need to set state, because it should read from storage again
+          .then(() => {
+            this.setState({
+              coinz: current
+            })
+          })
+          .catch((ex) => {
+            console.log(ex, 'Gaia put exception');
+          })
+
+      } else {
+        // delete from localStorage
+        localStorage.setItem("coinz", JSON.stringify(current));
+        // go back home
       }
 
+      // then go back
+      history.goBack();
 
     }
-
-  }
-
-  _toggleVisibility(element){
-    if (this.state[element] === "hidden") {
-      this.setState({[element]: "visible"})
-    } else {
-      this.setState({[element]: "hidden"})
-    }
-  }
-
-  _toggleMenu(){
-    this._toggleVisibility("menu_visibility");
-    this._toggleVisibility("isListVisible");
-  }
-
-  _togglePie(){
-    //alert('pie');
-    // this._toggleVisibility("menu_visibility");
-    this._toggleVisibility("isListVisible");
-    this._toggleVisibility("pie_chart_visibility");
-    this._toggleVisibility("pie_menu_visibility");
-    this._toggleVisibility("bar_menu_visibility");
-  }
-
-  _toggleBarView(){
-    //alert('pie');
-    // this._toggleVisibility("menu_visibility");
-    this._toggleVisibility("isListVisible");
-    this._toggleVisibility("pie_chart_visibility");
-    this._toggleVisibility("pie_menu_visibility");
-    this._toggleVisibility("bar_menu_visibility");
-  }
-
-  _handleSubmit (e) {
-    e.preventDefault();
-
-    const currentCoins = JSON.parse(localStorage.coinz) || {};
-    const ticker = this.state.add_ticker.toLowerCase();
-    const costBasis = Number(this.state.add_cost_basis);
-    const hodl = Number(this.state.add_hodl);
-
-    currentCoins[ticker] = {
-      cost_basis: costBasis,
-      hodl: hodl
-    }
-
-    const stringCoins = JSON.stringify(currentCoins);
-    if (ticker && costBasis >= 0 && hodl) {
-      localStorage.setItem("coinz", stringCoins);
-      window.location.href = window.location.href;
-    } else {
-      alert("Please fill in the ticker, cost basis & holding")
-    }
-
-  }
-
-
-  _handleSelectChange(e){
-    const domElement = e.target.id;
-    const statePref = this.state.preferences;
-    const localPref = localStorage.pref
-      ? JSON.parse(localStorage.pref)
-      : {};
-
-    localPref[domElement] = e.target.value;
-    statePref[domElement] = e.target.value;
-
-    localStorage.setItem('pref', JSON.stringify(localPref));
-    this.setState(statePref);
-    this._marketPrice();
-  }
-
-  _onChange (e) {
-    var text = e.target.value;
-    var item = e.target.className;
-
-    this.setState({[item]: text});
-  }
-
-  _closeCoinInfo () {
-    this.setState({coin_visibility: ""});
-  }
-
-  _toggleCoinInfo (e) {
-    const coin = e.target.id;
-    this.setState({coin_info: coin});
-
-    this._toggleVisibility("coin_visibility");
-    this._toggleVisibility("pie_menu_visibility");
-  }
-
-  _downloadLocalStorage () {
-    function download(filename, objectOfStrings) {
-      const coinz = objectOfStrings.coinz;
-      const pref = objectOfStrings.pref;
-      const json = {};
-
-      if (coinz) {
-        json["coinz"] = JSON.parse(coinz);
-      }
-      if (pref) {
-        json["pref"] = JSON.parse(pref);
-      }
-
-      var text = JSON.stringify(json);
-
-      var element = document.createElement('a');
-      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + text);
-      element.setAttribute('download', filename);
-
-      element.style.display = 'none';
-      document.body.appendChild(element);
-
-      element.click();
-
-      document.body.removeChild(element);
-    }
-    download('coinfox_holdings.txt', localStorage );
-  }
-
-  _updateLocalWithSave(e){
-    e.preventDefault();
-
-    const saveToLocalStorage = JSON.parse(this.state.coinfox_holdings);
-    const coinz = saveToLocalStorage.coinz;
-    const pref = saveToLocalStorage.pref;
-
-    if (coinz) {
-      localStorage.setItem('coinz', JSON.stringify(coinz));
-    } else {
-      alert("Something is wrong with your Save File, please try downloading it again");
-    }
-    if (pref) {
-      localStorage.setItem('pref', JSON.stringify(pref));
-    }
-
-    location.reload();
-
-  }
-
-  _hideAddApp () {
-    localStorage.setItem('seenAddApp', "true");
-    this.forceUpdate();
   }
 
   render() {
-    const coinCloseClass = this.state.coin_visibility + " coin-close fa fa-lg fa-times";
-
-    const coinStats = Object.entries(this.state.coinz)
-    const sortCoins = (coinStats) => {
-      coinStats.sort((a, b) => {
-        const aHodl = a[1].curr_price * a[1].hodl;
-        const bHodl = b[1].curr_price * b[1].hodl;
-        return bHodl - aHodl;
-      })
-      return coinStats
-    }
-    const sortedStats = sortCoins(coinStats);
-
-    const totalGainLoss = this._totalGainLoss();
-    const currencyPref = this.state.preferences.currency
-    const avgCostBasis = "Average Cost Basis ("+ $currencySymbol(this.state.preferences.currency) +"/per coin)"
-    const headerColor = totalGainLoss < 0
-      ? "App-header red"
-      : "App-header";
-    const gainz = Object.keys(this.state.coinz).length
-      ? $currencySymbol(this.state.preferences.currency) + $numberWithCommas($dontShowNaN(totalGainLoss).toFixed(2)) + " (" + $numberWithCommas($dontShowNaN($percentRoi(this._portfolioValue(), this._costBasis()).toFixed(2))) + "%)"
-      : "Use the menu to add your coin holdings";
-
-    const shouldShowBanner = window.location.hostname === "vinniejames.de" ? "banner" : "banner hidden";
-
-    const supportedCurrencies = [
-      "aud",
-      "bgn",
-      "brl",
-      "btc",
-      "cad",
-      "chf",
-      "cny",
-      "czk",
-      "dkk",
-      "eur",
-      "gbp",
-      "hkd",
-      "hrk",
-      "huf",
-      "idr",
-      "ils",
-      "inr",
-      "jpy",
-      "krw",
-      "mxn",
-      "myr",
-      "nok",
-      "nzd",
-      "php",
-      "pln",
-      "ron",
-      "rur",
-      "sek",
-      "sgd",
-      "thb",
-      "try",
-      "uah",
-      "usd",
-      "zar"
-    ];
-    const selectCurrency = supportedCurrencies.map((cur) => {
-      return <option key={cur} value={cur.toUpperCase()}>{cur.toUpperCase()} {$currencySymbol(cur)}</option>
-    });
-
-    const pie_data = coinStats.map(coin => {
-      const total_hodl = coin[1].hodl * coin[1].curr_price;
-      const hodl_percentage = ( total_hodl / this._portfolioValue() ) * 100;
-
-      return ({
-        name: coin[0].toUpperCase(),
-        y: hodl_percentage // return a percentage
-      })
-    });
-
-    const pie_chart_data = [{
-      name: 'HODL',
-      colorByPoint: true,
-
-      data: pie_data
-      //   [{
-      //   name: 'BTC',
-      //   y: 56.33
-      // }, {
-      //   name: 'LTC',
-      //   y: 24.03,
-      //   sliced: true,
-      //   selected: true
-      // }, {
-      //   name: 'ETH',
-      //   y: 10.38
-      // }, {
-      //   name: 'BCH',
-      //   y: 4.77
-      // }, {
-      //   name: 'GNT',
-      //   y: 0.91
-      // }, {
-      //   name: 'STRAT',
-      //   y: 0.2
-      // }]
-    }];
-
-
+    const exchangeRate = this.state.exchangeRates[this.state.pref.currency]
+      ? this.state.exchangeRates[this.state.pref.currency]
+      : 1; // default 1 for USD
 
     return (
-      <div className="App">
-        <div className={shouldShowBanner}>
-          <p className="text-center">
-            Moving to a new home: <a className="red" href="http://coinfox.co">Coinfox.co</a>! <br/>
-            Please use the import/export feature to move your data.
-          </p>
+      <BrowserRouter>
+        <div>
+          <Switch>
+            <Route exact path="/"
+              render={
+                (props) => <Home {...props}
+                  coinz={this.state.coinz}
+                  marketData={this.state.marketData}
+                  exchangeRate={exchangeRate}
+                  supportedCurrencies={this.state.supportedCurrencies}
+
+                  currency={this.state.pref && this.state.pref.currency || "USD"}
+                  addCoinz={this._addCoinz}
+                  saveNewPref={this._saveNewPref}
+
+                />
+              }
+            />
+
+            <Route exact path="/blockstack"
+              render={
+                (props) => <Blockstack {...props}
+                  coinz={this.state.coinz}
+                  marketData={this.state.marketData}
+                  exchangeRate={exchangeRate}
+                  supportedCurrencies={this.state.supportedCurrencies}
+                  currency={this.state.pref && this.state.pref.currency || "USD"}
+                />
+              }
+            />
+
+            <Route path="/coin/*"
+              render={
+                (props) => <Coin {...props}
+                  coinz={this.state.coinz}
+                  marketData={this.state.marketData}
+                  blockstack={this.state.blockstack}
+                  exchangeRate={exchangeRate}
+                  deleteCoin={this._deleteCoin}
+                  currency={this.state.pref && this.state.pref.currency || "USD"}
+                />
+               }
+            />
+
+            <Route path="/pie" component={Pie} />
+            <Route path="/menu"
+              render={
+                (props) => <Menu {...props}
+                  addCoinz={this._addCoinz}
+                  blockstack={this.state.blockstack}
+                  pref={this.state.pref}
+                  saveNewPref={this._saveNewPref}
+                  supportedCurrencies={this.state.supportedCurrencies}
+                  currency={this.state.pref && this.state.pref.currency || "USD"}
+                />
+              }
+            />
+
+          </Switch>
         </div>
-        <i onClick={this._toggleMenu} className="btn-menu fa fa-lg fa-bars" aria-hidden="true"></i>
-        <div id="menu-body" className={this.state.menu_visibility}>
-          <i onClick={this._toggleMenu} className="btn-menu fa fa-lg fa-times" aria-hidden="true"></i>
-
-          <label htmlFor="currency">{$currencySymbol(this.state.preferences.currency) || "USD"}</label>
-          <select id="currency" onChange={this._handleSelectChange} value={currencyPref} name="select">
-
-            {selectCurrency}
-
-          </select>
-
-          <hr />
-          <h3>Add a Coin</h3>
-          <form className="" onSubmit={this._handleSubmit}>
-                <input type="text"
-                  autoComplete='off' spellCheck='false' autoCorrect='off'
-                  className="add_ticker"
-                  onChange={this._onChange}
-                  value={this.state.ticker}
-                  placeholder="Ticker: (BTC, LTC, etc)"/>
-                  <br/>
-                <input type="text"
-                  autoComplete='off' spellCheck='false' autoCorrect='off'
-                  className="add_cost_basis"
-                  onChange={this._onChange}
-                  value={this.state.cost_basis}
-                  placeholder={avgCostBasis}/>
-                  <br/>
-                <input type="text"
-                  autoComplete='off' spellCheck='false' autoCorrect='off'
-                  className="add_hodl"
-                  onChange={this._onChange}
-                  value={this.state.hodl}
-                  placeholder="Number of Coins Held"/>
-                <br/>
-                <input className="" type="submit" value="Go"/>
-            </form>
-
-            <hr/>
-            <h3>Transfer your data to another device</h3>
-            <br/>
-            <a className="btn pointer" onClick={this._downloadLocalStorage}><i className="fa fa-lg fa-download" aria-hidden="true"></i> Download your Save File</a>
-            <br/><br/><br/><br/>
-            Then, on your new device
-            <br/><br/>
-            Copy/Paste the contents of your Save File below
-            <br/>
-            <form className="" onSubmit={this._updateLocalWithSave}>
-              <input type="text"
-                className="coinfox_holdings"
-                onChange={this._onChange}
-                value={this.state.coinfox_holdings}
-                placeholder="Paste Save File contents here"/>
-              <input className="" type="submit" value="Save"/>
-            </form>
-
-
-
-        </div>
-
-        <i onClick={this._togglePie} className={this.state.pie_menu_visibility + " btn-pie fa fa-lg fa-pie-chart"} aria-hidden="true"></i>
-        <i onClick={this._toggleBarView} className={this.state.bar_menu_visibility + " btn-pie fa fa-lg fa-th-list"} aria-hidden="true"></i>
-
-        <div className={headerColor}>
-          <div className="Overview">
-          <h1>
-            {$currencySymbol(this.state.preferences.currency)}{$numberWithCommas($dontShowNaN(this._portfolioValue()).toFixed(2))}
-          </h1>
-          <h2>
-            {gainz}
-          </h2>
-          </div>
-        </div>
-
-        <PieChart chart_data={pie_chart_data} container="pie_chart_view" isVisible={this.state.pie_chart_visibility} />
-
-        <span className={this.state.isListVisible + " main-coin-listing"}>
-        <div className="Coins">
-          {sortedStats.map(function(coin, i){
-            const ticker = coin[0].toUpperCase();
-            const hodl = parseFloat(Number(coin[1].hodl).toFixed(2));
-            const gain_loss = ((Number(coin[1].curr_price) - Number(coin[1].cost_basis) ) * Number(coin[1].hodl) ).toFixed(2);
-            const curr_price = Number(coin[1].curr_price).toFixed(2);
-            const color = gain_loss >= 0 ? "green" : "red";
-
-            if (!Number(hodl)) {
-              return null;
-            } else {
-              return (
-                <div id={ticker} onClick={this._toggleCoinInfo} key={i} className="coin">
-                  <p className="float-left">
-                    {ticker}<br/>
-                    <span>{$numberWithCommas(hodl)} Coins</span>
-                  </p>
-                  <i className="fa fa-lg fa-info-circle" aria-hidden="true"></i>
-                  <p className="text-right float-right">
-                    <span className={color}>{$currencySymbol(this.state.preferences.currency)}{$numberWithCommas($dontShowNaN(gain_loss))}</span><br/>
-                    <span>{$currencySymbol(this.state.preferences.currency)}{$numberWithCommas($dontShowNaN(curr_price))}</span>
-                  </p>
-                </div>
-              );
-            }
-
-          }.bind(this))}
-        </div>
-          <span>
-            <i onClick={this._closeCoinInfo} className={coinCloseClass} aria-hidden="true"></i>
-            <Coin visible={this.state.coin_visibility} parentState={this.state} coin={this.state.coin_info} />
-          </span>
-        {localStorage.seenAddApp !== "true" &&
-          <div className="save-app">Add to Home Screen for app experience <i onClick={this._hideAddApp}
-                                                                             className="fa fa-times text-right"
-                                                                             aria-hidden="true"></i></div>
-        }
-        </span>
-      </div>
+      </BrowserRouter>
     );
   }
 }
