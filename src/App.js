@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter} from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 import { Switch, Route } from 'react-router'
 import {
   isUserSignedIn,
@@ -269,6 +269,7 @@ class App extends Component {
     // this.setState({marketData: marketData});
 
   }
+
   _readLocalStorage(){
     const userCoinData = localStorage.coinz ? JSON.parse(localStorage.coinz) : {};
     const userPref = localStorage.pref ? JSON.parse(localStorage.pref) : {currency:"USD"};

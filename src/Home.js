@@ -10,6 +10,17 @@ import {
 } from 'blockstack';
 
 class Home extends Component {
+
+  componentDidMount () {
+    if (window.location.search.indexOf("blockstring")) {
+      console.log('adjusting redirect');
+      var redirectPath = localStorage.getItem("blockstring");
+      window.history.replaceState(null, null, redirectPath);
+      this.props.history.push('/blockstack');
+      localStorage.removeItem('blockstring');
+    }
+  }
+
   render() {
     console.log('render home');
     const coinz = Object.keys(this.props.coinz).length > 0 ? this.props.coinz : false;
