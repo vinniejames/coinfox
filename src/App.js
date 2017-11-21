@@ -404,7 +404,7 @@ class App extends Component {
       : 1; // default 1 for USD
 
     return (
-      <BrowserRouter>
+      <BrowserRouter basename={process.env.PUBLIC_URL}>
         <div>
           <Switch>
             <Route exact path="/"
