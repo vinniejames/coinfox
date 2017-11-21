@@ -6,11 +6,11 @@
   <script type="text/javascript">
     
     // GitHub pages appear to give 414 url too long at around 8195 characters
-    if (window.location.search.indexOf("authResponse")) {
+//     if (window.location.search.indexOf("authResponse")) {
       console.log('caught auth');
       localStorage.setItem('blockstring', window.location.search);
       window.location.replace(window.location.origin + "?blockstring");
-    }
+//     }
     
     // Single Page Apps for GitHub Pages
     // https://github.com/rafrex/spa-github-pages
@@ -30,15 +30,15 @@
     // https://username.github.io/repo-name/one/two?a=b&c=d#qwe becomes
     // https://username.github.io/repo-name/?p=/one/two&q=a=b~and~c=d#qwe
     // Otherwise, leave segmentCount as 0.
-    var segmentCount = 0;
-    var l = window.location;
-    l.replace(
-      l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-      l.pathname.split('/').slice(0, 1 + segmentCount).join('/') + '/?p=/' +
-      l.pathname.slice(1).split('/').slice(segmentCount).join('/').replace(/&/g, '~and~') +
-      (l.search ? '&q=' + l.search.slice(1).replace(/&/g, '~and~') : '') +
-      l.hash
-    );
+//     var segmentCount = 0;
+//     var l = window.location;
+//     l.replace(
+//       l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+//       l.pathname.split('/').slice(0, 1 + segmentCount).join('/') + '/?p=/' +
+//       l.pathname.slice(1).split('/').slice(segmentCount).join('/').replace(/&/g, '~and~') +
+//       (l.search ? '&q=' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+//       l.hash
+//     );
   </script>
 </head>
 <body>
