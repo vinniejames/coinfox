@@ -13,10 +13,10 @@ class Home extends Component {
 
   componentDidMount () {
     if (window.location.search.indexOf("blockstring")) {
-      console.log('adjusting redirect in HOME');
+      console.log('adjusting redirect in HOMEx');
       var redirectPath = localStorage.getItem("blockstring");
-      window.history.replaceState(null, null, redirectPath);
-      this.props.history.push('/blockstack');
+      // window.history.replaceState(null, null, redirectPath);
+      this.props.history.push(redirectPath);
       localStorage.removeItem('blockstring');
     }
   }
