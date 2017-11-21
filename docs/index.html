@@ -2,13 +2,12 @@
   
   
   <script type="text/javascript">
-    
     (function(l) {
         if (l.search.indexOf("blockstring")) {
-           console.log('read local');
-//             var redirectPath = localStorage.getItem("blockstring");
-//             window.history.replaceState(null, null, redirectPath);
-               //localStorage.removeItem('blockstring');
+           console.log('adjusting redirect');
+           var redirectPath = localStorage.getItem("blockstring");
+           window.history.replaceState(null, null, redirectPath);
+           localStorage.removeItem('blockstring');
         }
       }(window.location))
   </script>
