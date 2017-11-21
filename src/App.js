@@ -22,6 +22,7 @@ class App extends Component {
   constructor() {
     super();
     this._addCoinz = this._addCoinz.bind(this);
+    this._deleteCoin  = this._deleteCoin.bind(this);
     this._saveNewPref = this._saveNewPref.bind(this);
     this._fetchExchangeRates = this._fetchExchangeRates.bind(this);
 
@@ -116,6 +117,11 @@ class App extends Component {
 
   _saveCoinToGaia(key, payload) {
     // @TODO make this a function that returns a promise
+
+    // @TODO DO THIS READING FROM STATE INSTEAD!!!
+    // NO REASON TO getFile IF IT WILL BE OVERWRITTEN
+
+
     const decrypt = true;
     getFile(this.state.gaiaStorage, decrypt)
       .then((gaia) => {
@@ -183,14 +189,23 @@ class App extends Component {
   _addCoinz(coin){
     const ticker = coin.ticker;
     const costBasis = coin.avg_cost;
-    const payload = {
-      cost_basis: costBasis,
-      hodl: coin.hodl
-    };
-    if (isUserSignedIn()) {
-      this._saveCoinToGaia(ticker, payload);
+    const hodl = coin.hodl;
+
+    if (!ticker || !costBasis || !hodl) {
+      alert("Please fill in the ticker, cost basis & holding");
     } else {
-      this._saveCoinToStorage(ticker, payload);
+      const payload = {
+        cost_basis: costBasis,
+        hodl: hodl
+      };
+      if (isUserSignedIn()) {
+        this._saveCoinToGaia(ticker, payload);
+      } else {
+        this._saveCoinToStorage(ticker, payload);
+      }
+      // go back
+      //history.goBack()
+      alert(ticker.toUpperCase() + " added to your portfolio")
     }
   }
 
@@ -220,6 +235,22 @@ class App extends Component {
     return promise;
   }
 
+  // _percentOfPortfolio (coinz) {
+  //   let totalPortfolio = 0;
+  //   // coinz.forEach((coin) => {
+  //   //   const currentValue = coin.hodl * price;
+  //   //   totalPortfolio = totalPortfolio + currentValue;
+  //   // })
+  //   for (const coin in coinz) {
+  //     const price = this.state.marketData[coin];
+  //     console.log(coinz[coin].hodl, price)
+  //     const currentValue = coinz[coin].hodl * price;
+  //     totalPortfolio = totalPortfolio + currentValue;
+  //   }
+  //   console.log(totalPortfolio);
+  //   return totalPortfolio;
+  // }
+
   _marketData(userCoinz){
     let marketData = {};
     for (const coin in userCoinz) {
@@ -233,8 +264,10 @@ class App extends Component {
           this.setState({marketData: marketData});
         })
     }
+    // this._percentOfPortfolio(userCoinz);
     // @TODO find out why setting state after for loop broke things
     // this.setState({marketData: marketData});
+
   }
   _readLocalStorage(){
     const userCoinData = localStorage.coinz ? JSON.parse(localStorage.coinz) : {};
@@ -265,9 +298,10 @@ class App extends Component {
       )
   }
 
-  componentDidMount() {
 
-    if (isUserSignedIn()) {
+  componentDidMount() {
+    // @TODO find out why isUserSignedIn re:true, even if blockstack isnt running
+    if (isUserSignedIn() && window.location.pathname == "/blockstack") {
       // @TODO make this a function that returns a promise
       const decrypt = true;
       getFile(this.state.gaiaStorage, decrypt)
@@ -325,6 +359,45 @@ class App extends Component {
     }
   }
 
+
+  _deleteCoin (coin, history) {
+    var strconfirm = window.confirm("Remove "+ coin.toUpperCase() +" from your portfolio?");
+    if (strconfirm === true) {
+
+      const current = this.state.coinz;
+      Object.assign({}, current);
+      delete current[coin];
+
+      if(isUserSignedIn()) {
+        // delete from blockstack
+        const data = {
+          coinz: current,
+          pref: this.state.pref
+        };
+        const encrypt = true;
+        putFile(this.state.gaiaStorage, JSON.stringify(data), encrypt)
+        // may not need to set state, because it should read from storage again
+          .then(() => {
+            this.setState({
+              coinz: current
+            })
+          })
+          .catch((ex) => {
+            console.log(ex, 'Gaia put exception');
+          })
+
+      } else {
+        // delete from localStorage
+        localStorage.setItem("coinz", JSON.stringify(current));
+        // go back home
+      }
+
+      // then go back
+      history.goBack();
+
+    }
+  }
+
   render() {
     const exchangeRate = this.state.exchangeRates[this.state.pref.currency]
       ? this.state.exchangeRates[this.state.pref.currency]
@@ -357,6 +430,7 @@ class App extends Component {
                   marketData={this.state.marketData}
                   exchangeRate={exchangeRate}
                   supportedCurrencies={this.state.supportedCurrencies}
+                  currency={this.state.pref && this.state.pref.currency || "USD"}
                 />
               }
             />
@@ -368,6 +442,8 @@ class App extends Component {
                   marketData={this.state.marketData}
                   blockstack={this.state.blockstack}
                   exchangeRate={exchangeRate}
+                  deleteCoin={this._deleteCoin}
+                  currency={this.state.pref && this.state.pref.currency || "USD"}
                 />
                }
             />
@@ -381,6 +457,7 @@ class App extends Component {
                   pref={this.state.pref}
                   saveNewPref={this._saveNewPref}
                   supportedCurrencies={this.state.supportedCurrencies}
+                  currency={this.state.pref && this.state.pref.currency || "USD"}
                 />
               }
             />

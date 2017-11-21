@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {$currencySymbol} from './Helpers';
 
 class CurrencyPref extends Component {
   constructor(props) {
@@ -17,14 +18,14 @@ class CurrencyPref extends Component {
   }
 
   render() {
+    const curSymbol = $currencySymbol(this.props.currency);
     const selectCurrency = this.props.supportedCurrencies.map((cur) => {
       return <option key={cur[0]} value={cur[0].toUpperCase()}>{cur[0].toUpperCase()} {cur[1]}</option>
     });
-    const symbol = "$"//this._supportedCurrencies()[this.props.currency][1];
     return (
       <div className={"addFirstCoin"}>
-        <h3>Select your currency preference</h3>
-        <label htmlFor="currency">{symbol || "USD"}</label>
+        <h3>Currency preference</h3>
+        <label htmlFor="currency">{curSymbol}</label>
         <select id="currency" onChange={this._handleSelectChange} value={this.props.currency} name="select">
           {selectCurrency}
         </select>
