@@ -4,6 +4,13 @@
   <meta charset="utf-8">
   <title>Single Page Apps for GitHub Pages</title>
   <script type="text/javascript">
+    
+    // GitHub pages appear to give 414 url too long at around 8195 characters
+    if (window.location.pathname == "/blockstack" && window.location.search.indexOf("authResponse")) {
+      localStorage.setItem('blockstring', window.location.search);
+      window.location.replace(window.location.origin + "?blockstring");
+    }
+    
     // Single Page Apps for GitHub Pages
     // https://github.com/rafrex/spa-github-pages
     // Copyright (c) 2016 Rafael Pedicini, licensed under the MIT License
