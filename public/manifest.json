@@ -7,7 +7,7 @@
   "description": " Crypto coin portfolio tracker",
   "icons": [{
     "src": "/mobile-icon.png",
-    "sizes": "192x192",
+    "sizes": "512x512",
     "type": "image/png"
   }],
   "related_applications": [{

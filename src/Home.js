@@ -22,10 +22,8 @@ class Home extends Component {
   }
 
   render() {
-    console.log('render home');
     const coinz = Object.keys(this.props.coinz).length > 0 ? this.props.coinz : false;
     if (coinz) {
-      console.log('found coinz');
       return (
         <div className="Home">
           <div className="header">
@@ -56,7 +54,7 @@ class Home extends Component {
             <Link className="menu" key='Menu' to='/menu'>
               <i className="btn-menu fa fa-lg fa-bars" aria-hidden="true"></i>
             </Link>
-            <h1 className="center">Welcome to Coinfox</h1>
+            <h1 className="center">Welcome to CoinKitty</h1>
             <p className="center">Your secure, personal blockchain portfolio manager</p>
           </div>
           <div className="addFirstCoin">

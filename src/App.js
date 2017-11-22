@@ -430,23 +430,23 @@ class App extends Component {
       <BrowserRouter>
         <div>
           <Switch>
+            {/*<Route exact path="/"*/}
+              {/*render={*/}
+                {/*(props) => <Home {...props}*/}
+                  {/*coinz={this.state.coinz}*/}
+                  {/*marketData={this.state.marketData}*/}
+                  {/*exchangeRate={exchangeRate}*/}
+                  {/*supportedCurrencies={this.state.supportedCurrencies}*/}
+
+                  {/*currency={this.state.pref && this.state.pref.currency || "USD"}*/}
+                  {/*addCoinz={this._addCoinz}*/}
+                  {/*saveNewPref={this._saveNewPref}*/}
+
+                {/*/>*/}
+              {/*}*/}
+            {/*/>*/}
+
             <Route exact path="/"
-              render={
-                (props) => <Home {...props}
-                  coinz={this.state.coinz}
-                  marketData={this.state.marketData}
-                  exchangeRate={exchangeRate}
-                  supportedCurrencies={this.state.supportedCurrencies}
-
-                  currency={this.state.pref && this.state.pref.currency || "USD"}
-                  addCoinz={this._addCoinz}
-                  saveNewPref={this._saveNewPref}
-
-                />
-              }
-            />
-
-            <Route exact path="/blockstack"
               render={
                 (props) => <Blockstack {...props}
                   coinz={this.state.coinz}
