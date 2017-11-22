@@ -1,0 +1,5 @@
+Header set Access-Control-Allow-Origin "*"
+RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule . index.html [L]

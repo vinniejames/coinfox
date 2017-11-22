@@ -6,7 +6,7 @@ import { $numberWithCommas, $currencySymbol } from './Helpers';
 class Coin extends Component {
   render() {
     const curSymbol = $currencySymbol(this.props.currency);
-    const home = this.props.blockstack ? '/blockstack' : '/';
+    const home = '/'; // this.props.blockstack ? '/blockstack' : '/';
     const coin = this.props.match.params["0"] || 'X';
     const coinz = Object.keys(this.props.coinz).length > 0 ? this.props.coinz : false;
     const coinInfo = coinz && coin ? coinz[coin] : false;

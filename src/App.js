@@ -302,7 +302,7 @@ class App extends Component {
 
   componentDidMount() {
     // @TODO find out why isUserSignedIn re:true, even if blockstack isnt running
-    if (isUserSignedIn() && window.location.pathname == "/blockstack") {
+    if (isUserSignedIn()) {
       // @TODO make this a function that returns a promise
       const decrypt = true;
       getFile(this.state.gaiaStorage, decrypt)
