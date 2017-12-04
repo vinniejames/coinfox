@@ -56,7 +56,7 @@ class Home extends Component {
             <Link className="menu" key='Menu' to='/menu'>
               <i className="btn-menu fa fa-lg fa-bars" aria-hidden="true"></i>
             </Link>
-            <h1 className="center">Welcome to Coinfox</h1>
+            <h1 className="center">Welcome to CoinKitty</h1>
             <p className="center">Your secure, personal blockchain portfolio manager</p>
           </div>
           <div className="addFirstCoin">

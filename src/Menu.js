@@ -5,7 +5,7 @@ import CurrencyPref from './CurrencyPref';
 
 class Menu extends Component {
   render() {
-    const home = this.props.blockstack ? '/blockstack' : '/';
+    const home = this.props.blockstack ? '/' : '/';
     const currency = this.props.pref.currency ? this.props.pref.currency : '...';
 
     return (

@@ -17,7 +17,7 @@ class Blockstack extends React.Component {
     this._handleSignIn = this._handleSignIn.bind(this);
     this._handleSignOut = this._handleSignOut.bind(this);
     this.state = {
-      blockurl: window.location.origin + "/blockstack",
+      blockurl: window.location.origin + "/",
       manifest: window.location.origin + "/manifest.json",
     }
   }
