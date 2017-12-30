@@ -7,6 +7,8 @@ import {
   getFile
 } from 'blockstack';
 
+import fetch from 'fetch-retry';
+
 import Home from './Home';
 import Coin from './Coin';
 import Pie from './Pie';
@@ -218,7 +220,12 @@ class App extends Component {
         return res;
       };
 
-      fetch(endpoint)
+      const retryFetch = {
+        retries: 3,
+        retryDelay: 1000
+      };
+
+      fetch(endpoint, retryFetch)
         .then(handleFetchErr)
         .then((res) => {
           return res.json()

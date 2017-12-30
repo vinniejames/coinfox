@@ -2716,6 +2716,13 @@ fbjs@^0.8.16:
     setimmediate "^1.0.5"
     ua-parser-js "^0.7.9"
 
+fetch-retry:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/fetch-retry/-/fetch-retry-1.1.1.tgz#dd961c6c19c4ee42a69c03c9b581a0adec388874"
+  dependencies:
+    es6-promise "^4.1.0"
+    isomorphic-fetch "^2.2.1"
+
 figures@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/figures/-/figures-2.0.0.tgz#3ab1a2d2a62c8bfb431a0c94cb797a2fce27c962"
