@@ -19,7 +19,7 @@ module.exports = {
   entry: './src/index.js',
   target: 'web',
   output: {
-    path: path.resolve('public/build'),
+    path: '/index.js', //path.resolve('/public/build'),
     // filename: 'index_bundle.js',
     filename: 'index.js',
   },

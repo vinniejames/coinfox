@@ -5,6 +5,11 @@ import { $numberWithCommas, $currencySymbol } from './Helpers';
 
 class Coin extends Component {
   render() {
+    // wait for market data before trying to render single coin
+    if (!this.props.marketData) {
+      return null;
+    }
+
     const curSymbol = $currencySymbol(this.props.currency);
     const home = this.props.blockstack ? '/blockstack' : '/';
     const coin = this.props.match.params["0"] || 'X';
@@ -19,7 +24,8 @@ class Coin extends Component {
     const hodl = coinInfo && Number(coinInfo.hodl);
     const cost_basis = coinInfo && Number(coinInfo.cost_basis);
 
-    const volume24 = marketData[coin].ticker.volume * price;
+
+    const volume24 = Boolean(marketData[coin] && marketData[coin].ticker) && marketData[coin].ticker.volume * price;
     // console.log(marketData[coin].ticker.volume, 'voluem?');
 
     return (
@@ -48,7 +54,7 @@ class Coin extends Component {
 
           <div className="listCoin">
             <span className="left">
-              {curSymbol}{$numberWithCommas(volume24.toFixed())}<br/>
+              {curSymbol}{volume24 && $numberWithCommas(volume24.toFixed())}<br/>
               <span className="lightGray">24hr Volume</span>
             </span>
             <span className="right">
