@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import AddCoin from './AddCoin';
 import CurrencyPref from './CurrencyPref';
+import ImportExport from './ImportExport';
 
 class Menu extends Component {
   render() {
@@ -19,6 +20,9 @@ class Menu extends Component {
           currency={currency}
           key="CurrencyPref" />
         <AddCoin addCoinz={this.props.addCoinz} key='AddCoin'/>
+
+        <ImportExport />
+
       </div>
     );
   }

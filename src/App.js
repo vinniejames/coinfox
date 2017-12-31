@@ -308,6 +308,30 @@ class App extends Component {
 
 
   componentDidMount() {
+    // check for portfolio import string
+    var searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.has("import")) {
+      const importPortfolio = JSON.parse(atob(searchParams.get("import")));
+
+      const alreadyImported = importPortfolio == localStorage.getItem("lastImport");
+
+      if (alreadyImported) {
+        console.log('already imported this portfolio');
+        window.location.search = "";
+      } else {
+        // import the new portfolio
+        if (importPortfolio.pref) {
+          localStorage.setItem("pref", importPortfolio.pref);
+        }
+        if (importPortfolio.coinz) {
+          localStorage.setItem("coinz", importPortfolio.coinz);
+        }
+        localStorage.setItem("lastImport", importPortfolio);
+        window.location.search = ""
+      }
+    }
+
+
     // @TODO find out why isUserSignedIn re:true, even if blockstack isnt running
     if (isUserSignedIn() && window.location.pathname == "/blockstack") {
       // @TODO make this a function that returns a promise
