@@ -312,13 +312,13 @@ class App extends Component {
     var searchParams = new URLSearchParams(window.location.search);
     if (searchParams.has("import")) {
       const importPortfolio = JSON.parse(atob(searchParams.get("import")));
+// failing even if new import :(
+//       const alreadyImported = importPortfolio == localStorage.getItem("lastImport");
 
-      const alreadyImported = importPortfolio == localStorage.getItem("lastImport");
-
-      if (alreadyImported) {
-        console.log('already imported this portfolio');
-        window.location.search = "";
-      } else {
+//       if (alreadyImported) {
+//         console.log('already imported this portfolio');
+//         window.location.search = "";
+//       } else {
         // import the new portfolio
         if (importPortfolio.pref) {
           localStorage.setItem("pref", importPortfolio.pref);
@@ -328,7 +328,7 @@ class App extends Component {
         }
         localStorage.setItem("lastImport", importPortfolio);
         window.location.search = ""
-      }
+//       }
     }
 
 
