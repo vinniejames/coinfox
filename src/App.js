@@ -17,6 +17,11 @@ import Menu from './Menu';
 import './App.css';
 import Blockstack from "./Blockstack";
 
+import {translationStrings} from './i18n';
+const string = translationStrings();
+
+
+
 // @TODO yo generator
 // https://github.com/blockstack/blockstack-app-generator
 
@@ -194,7 +199,7 @@ class App extends Component {
     const hodl = coin.hodl;
 
     if (!ticker || !costBasis || !hodl) {
-      alert("Please fill in the ticker, cost basis & holding");
+      alert(string.fillticker);
     } else {
       const payload = {
         cost_basis: costBasis,
@@ -207,7 +212,7 @@ class App extends Component {
       }
       // go back
       //history.goBack()
-      alert(ticker.toUpperCase() + " added to your portfolio")
+      alert(ticker.toUpperCase() + string.added)
     }
   }
 
@@ -414,7 +419,7 @@ class App extends Component {
 
 
   _deleteCoin (coin, history) {
-    var strconfirm = window.confirm("Remove "+ coin.toUpperCase() +" from your portfolio?");
+    var strconfirm = window.confirm(string.remove+ coin.toUpperCase() +string.fromportfolio);
     if (strconfirm === true) {
 
       const current = this.state.coinz;

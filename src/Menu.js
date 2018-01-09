@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import AddCoin from './AddCoin';
 import CurrencyPref from './CurrencyPref';
 import ImportExport from './ImportExport';
+import {translationStrings} from './i18n';
+const string = translationStrings();
 
 class Menu extends Component {
   render() {
@@ -22,6 +24,14 @@ class Menu extends Component {
         <AddCoin addCoinz={this.props.addCoinz} key='AddCoin'/>
 
         <ImportExport />
+
+        <div>
+          <hr/>
+          <p className="center">
+            <a href="https://github.com/vinniejames/coinfox">{string.learnmore}</a> or&nbsp;
+            <a href="https://github.com/vinniejames/coinfox/issues">{string.givefeedback}</a>
+          </p>
+        </div>
 
       </div>
     );

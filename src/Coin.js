@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import Chart from "./Chart";
 import { $numberWithCommas, $currencySymbol } from './Helpers';
+import {translationStrings} from './i18n';
+const string = translationStrings();
 
 class Coin extends Component {
   render() {
@@ -48,18 +50,18 @@ class Coin extends Component {
             </span>
             <span className="right">
               {curSymbol}{$numberWithCommas( (hodl * price).toFixed(2) )}<br/>
-              <span className="lightGray">{"Total "+curSymbol+" Holding"}</span>
+              <span className="lightGray">{string.total+curSymbol+string.holding}</span>
             </span>
           </div>
 
           <div className="listCoin">
             <span className="left">
               {curSymbol}{volume24 && $numberWithCommas(volume24.toFixed())}<br/>
-              <span className="lightGray">24hr Volume</span>
+              <span className="lightGray">{string.volume}</span>
             </span>
             <span className="right">
               {curSymbol}{(cost_basis * hodl).toFixed(2)} <span className="lightGray">({cost_basis.toFixed(2)})</span><br/>
-              <span className="lightGray">Cost Basis (avg)</span>
+              <span className="lightGray">{string.costbasis}</span>
             </span>
           </div>
 
