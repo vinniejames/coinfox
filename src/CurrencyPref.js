@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import {$currencySymbol} from './Helpers';
+import {translationStrings} from './i18n';
+const string = translationStrings();
 
 class CurrencyPref extends Component {
   constructor(props) {
@@ -24,7 +26,7 @@ class CurrencyPref extends Component {
     });
     return (
       <div className={"addFirstCoin"}>
-        <h3>Currency preference</h3>
+        <h3>{string.currencypref}</h3>
         <label htmlFor="currency">{curSymbol}</label>
         <select id="currency" onChange={this._handleSelectChange} value={this.props.currency} name="select">
           {selectCurrency}

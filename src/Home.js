@@ -9,6 +9,9 @@ import {
   isUserSignedIn,
 } from 'blockstack';
 
+import {translationStrings} from './i18n';
+const string = translationStrings();
+
 class Home extends Component {
 
   componentDidMount () {
@@ -22,7 +25,7 @@ class Home extends Component {
   }
 
   render() {
-    console.log('render home');
+    console.log(string);
     const coinz = Object.keys(this.props.coinz).length > 0 ? this.props.coinz : false;
     if (coinz) {
       console.log('found coinz');
@@ -56,8 +59,8 @@ class Home extends Component {
             <Link className="menu" key='Menu' to='/menu'>
               <i className="btn-menu fa fa-lg fa-bars" aria-hidden="true"></i>
             </Link>
-            <h1 className="center">Welcome to Coinfox</h1>
-            <p className="center">Your secure, personal blockchain portfolio manager</p>
+            <h1 className="center">{string.welcome}</h1>
+            <p className="center">{string.tag}</p>
           </div>
           <div className="addFirstCoin">
             <CurrencyPref

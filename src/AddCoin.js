@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import {translationStrings} from './i18n';
+const string = translationStrings();
 
 class AddCoin extends Component {
   constructor(props) {
@@ -39,17 +41,17 @@ class AddCoin extends Component {
 
   render() {
     // const avgCostBasis = "Average Cost Basis ("+ $currencySymbol(this.state.preferences.currency) +"/per coin)"
-    const avgCostBasis = "Average Cost Basis ($/per coin)"
+    const avgCostBasis = string.avgcost
     return (
       <div className={"addFirstCoin"}>
-        <h3>Add a Coin</h3>
+        <h3>{string.addcoin}</h3>
         <form className="" onSubmit={this._addCoin}>
           <input type="text"
                  autoComplete='off' spellCheck='false' autoCorrect='off'
                  className="ticker"
                  onChange={this._onChange}
                  value={this.state.ticker}
-                 placeholder="Ticker: (BTC, LTC, etc)"/>
+                 placeholder={string.ticker}/>
           <br/>
           <input type="text"
                  autoComplete='off' spellCheck='false' autoCorrect='off'
@@ -63,9 +65,9 @@ class AddCoin extends Component {
                  className="hodl"
                  onChange={this._onChange}
                  value={this.state.hodl}
-                 placeholder="Number of Coins Held"/>
+                 placeholder={string.numberheld}/>
           <br/>
-          <input className="btn" type="submit" value="Go"/>
+          <input className="btn" type="submit" value={string.go}/>
         </form>
       </div>
     );

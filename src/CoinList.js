@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import { $numberWithCommas, $currencySymbol } from './Helpers';
+import {translationStrings} from './i18n';
+const string = translationStrings();
 
 class CoinList extends Component {
   render() {
@@ -23,7 +25,7 @@ class CoinList extends Component {
               <div className="listCoin">
                 <span className="left">
                   {coin.toUpperCase()}<br/>
-                  <span className="lightGray">{coinRound} Coins</span>
+                  <span className="lightGray">{coinRound}{string.coins}</span>
                 </span>
                 <span className="middle">
                   <i className="lightGray fa fa-lg fa-info-circle" aria-hidden="true"></i>
