@@ -311,6 +311,40 @@ class App extends Component {
       )
   }
 
+  _totalPortfolio (exchangeRate) {
+
+    const coinz = this.state.coinz ? this.state.coinz : false;
+    const marketData = this.state.marketData ? this.state.marketData : false;
+
+    let totalValue = 0;
+    let totalBasis = 0;
+
+    for (const coin in coinz) {
+      const costBasis = coinz[coin].cost_basis;
+      const hodl = coinz[coin].hodl;
+      const basisForCoin = costBasis * hodl;
+
+      // if we have the price data
+      if (marketData[coin]){
+        // set price to 0 if it doesnt exist
+        const price = (marketData[coin] && marketData[coin].ticker && marketData[coin].ticker.price)
+          ? Number(marketData[coin].ticker.price)
+          : 0;
+          // coinPrice adjusted for exchange rate
+        let coinPrice = price * exchangeRate;
+        const valueForCoin = coinPrice * hodl;
+
+        totalValue = totalValue + valueForCoin;
+      }
+      totalBasis = totalBasis + basisForCoin;
+    }
+
+    console.log(totalValue, totalBasis, 'xx');
+    return {
+      totalValue: totalValue,
+      totalBasis: totalBasis
+    }
+  }
 
   componentDidMount() {
     // check for portfolio import string
@@ -461,6 +495,8 @@ class App extends Component {
       ? this.state.exchangeRates[this.state.pref.currency]
       : 1; // default 1 for USD
 
+    const totalPortfolio = this._totalPortfolio(exchangeRate);
+
     return (
       <BrowserRouter>
         <div>
@@ -472,11 +508,10 @@ class App extends Component {
                   marketData={this.state.marketData}
                   exchangeRate={exchangeRate}
                   supportedCurrencies={this.state.supportedCurrencies}
-
+                  totalPortfolio={totalPortfolio}
                   currency={this.state.pref && this.state.pref.currency || "USD"}
                   addCoinz={this._addCoinz}
                   saveNewPref={this._saveNewPref}
-
                 />
               }
             />
@@ -488,7 +523,6 @@ class App extends Component {
                   marketData={this.state.marketData}
                   exchangeRate={exchangeRate}
                   supportedCurrencies={this.state.supportedCurrencies}
-
                   currency={this.state.pref && this.state.pref.currency || "USD"}
                   addCoinz={this._addCoinz}
                   saveNewPref={this._saveNewPref}
@@ -509,7 +543,17 @@ class App extends Component {
                }
             />
 
-            <Route path="/pie" component={Pie} />
+            <Route path="/pie"
+              render={
+                (props) => <Pie {...props}
+                  coinz={this.state.coinz}
+                  marketData={this.state.marketData}
+                  exchangeRate={exchangeRate}
+                  totalPortfolio={totalPortfolio}
+                />
+              }
+            />
+
             <Route path="/menu"
               render={
                 (props) => <Menu {...props}
