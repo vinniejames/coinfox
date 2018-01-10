@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
 import TotalPortfolio from './TotalPortfolio';
+import Pie from './Pie';
 import CoinList from './CoinList';
 import CurrencyPref from './CurrencyPref';
 import AddCoin from './AddCoin';
@@ -14,6 +15,14 @@ const string = translationStrings();
 
 class Home extends Component {
 
+  constructor () {
+    super()
+    this.state = {
+      listView: true
+    }
+    this._toggleView = this._toggleView.bind(this);
+  }
+
   componentDidMount () {
     // if (window.location.search.indexOf("blockstring")) {
     //   console.log('adjusting redirect in HOMEx');
@@ -24,11 +33,12 @@ class Home extends Component {
     // }
   }
 
+  _toggleView () {
+    this.setState({listView: !this.state.listView});
+  }
   render() {
-    console.log(string);
     const coinz = Object.keys(this.props.coinz).length > 0 ? this.props.coinz : false;
     if (coinz) {
-      console.log('found coinz');
       return (
         <div className="Home">
           <div className="header">
@@ -36,18 +46,28 @@ class Home extends Component {
               <i className="btn-menu fa fa-lg fa-bars" aria-hidden="true"></i>
             </Link>
             <TotalPortfolio
+              totalPortfolio={this.props.totalPortfolio}
               currency={this.props.currency}
               exchangeRate={this.props.exchangeRate}
               marketData={this.props.marketData}
               coinz={this.props.coinz}
               key={"TotalPortfolio"}/>
           </div>
-          <CoinList
+          <div className="toggleView">
+            <i onClick={this._toggleView} className={this.state.listView ? "fa fa-lg fa-pie-chart" : "fa fa-lg fa-th-list"} aria-hidden="true"></i>
+          </div>
+          {!this.state.listView && <Pie
+              coinz={this.props.coinz}
+              marketData={this.props.marketData}
+              exchangeRate={this.props.exchangeRate}
+              totalPortfolio={this.props.totalPortfolio}
+          />}
+          {this.state.listView && <CoinList
             currency={this.props.currency}
             exchangeRate={this.props.exchangeRate}
             marketData={this.props.marketData}
             coinz={this.props.coinz}
-            key={"CoinList"}/>
+            key={"CoinList"}/>}
         </div>
       );
     } else { // if (!isUserSignedIn()) {

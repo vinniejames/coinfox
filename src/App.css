@@ -1,3 +1,14 @@
+.Pie {
+  background-color: #303032;
+  margin: -25px 10px;
+}
+.toggleView {
+  color: white;
+  position: absolute;
+  right: 11px;
+  top: 123px;
+  cursor: pointer;
+}
 body {
   background-color: black;
   font-family: Roboto, sans-serif;
