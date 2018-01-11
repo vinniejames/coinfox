@@ -7,6 +7,9 @@ const string = translationStrings();
 
 class Coin extends Component {
   render() {
+    // https://github.com/ReactTraining/react-router/blob/master/packages/react-router-dom/docs/guides/scroll-restoration.md
+    window.scrollTo(0, 0);
+
     // wait for market data before trying to render single coin
     if (!this.props.marketData) {
       return null;
