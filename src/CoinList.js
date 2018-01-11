@@ -20,6 +20,12 @@ class CoinList extends Component {
 
           const coinRound = Math.round(coinz[coin].hodl*100)/100;
 
+          console.log(coinPrice, coinz[coin].cost_basis);
+
+          const textColor = !coinPrice || coinPrice >= coinz[coin].cost_basis
+            ? 'right green'
+            : 'right red';
+
           return (
             <Link className="coinLink" key={i} to={"/coin/" + coin}>
               <div className="listCoin">
@@ -30,7 +36,7 @@ class CoinList extends Component {
                 <span className="middle">
                   <i className="lightGray fa fa-lg fa-info-circle" aria-hidden="true"></i>
                 </span>
-                <span className="right green">
+                <span className={textColor}>
                   {curSymbol}{$numberWithCommas( (price * coinz[coin].hodl).toFixed(2) )}<br/>
                   <span className="lightGray">{curSymbol}{price.toFixed(2)}</span>
                 </span>

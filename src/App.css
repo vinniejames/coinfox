@@ -1,3 +1,9 @@
+#ChartPortfolioValue {
+  background: gray;
+  height: 140px;
+  margin: 10px 10px 15px;
+}
+
 .Pie {
   background-color: #303032;
   margin: -25px 10px;
@@ -19,6 +25,10 @@ body {
 }
 .green {
   color: #21ce99;
+}
+
+.red {
+  color: rgb(216, 45, 45);
 }
 
 .white {

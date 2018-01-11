@@ -339,7 +339,6 @@ class App extends Component {
       totalBasis = totalBasis + basisForCoin;
     }
 
-    console.log(totalValue, totalBasis, 'xx');
     return {
       totalValue: totalValue,
       totalBasis: totalBasis

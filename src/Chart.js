@@ -17,6 +17,9 @@ class Chart extends Component {
   }
 
   _chartOptions(data){
+
+    const chartColor = this.props.chartColor;
+
     return (
       {
         credits: false,
@@ -59,7 +62,7 @@ class Chart extends Component {
         },
         plotOptions: {
           area: {
-            color: 'rgb(33, 206, 153)',
+            color: chartColor,
             fillColor: {
               linearGradient: {
                 x1: 0,
@@ -68,8 +71,8 @@ class Chart extends Component {
                 y2: 1
               },
               stops: [
-                [0, 'rgb(33, 206, 153)'],
-                [1, Highcharts.Color('rgb(33, 206, 153)').setOpacity(0).get('rgba')]
+                [0, chartColor],
+                [1, Highcharts.Color(chartColor).setOpacity(0).get('rgba')]
               ]
             },
             marker: {

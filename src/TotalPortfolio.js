@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import { $numberWithCommas, $currencySymbol} from './Helpers';
+//import ChartPortfolioValue from './ChartPortfolioValue';
+
+
 class TotalPortfolio extends Component {
 
   returnPercentage (currentValue, costBasis) {
@@ -19,6 +22,8 @@ class TotalPortfolio extends Component {
           <h1>{curSymbol}{$numberWithCommas(totalValue.toFixed(2))}</h1>
           <p>{curSymbol}{$numberWithCommas(totalReturn.toFixed(2))}
             ({$numberWithCommas(returnPercentage.toFixed())}%)</p>
+
+          {/*<ChartPortfolioValue />*/}
         </div>
       );
     } else {

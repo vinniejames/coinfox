@@ -30,8 +30,14 @@ class Coin extends Component {
     const volume24 = Boolean(marketData[coin] && marketData[coin].ticker) && marketData[coin].ticker.volume * price;
     // console.log(marketData[coin].ticker.volume, 'voluem?');
 
+    const chartColor = !price || price >= cost_basis
+      ? 'rgb(33, 206, 153)'
+      : 'rgb(216, 45, 45)';
+    const headStyle = {
+      backgroundColor: chartColor,
+    };
     return (
-      <div className="Coin">
+      <div className="Coin" style={headStyle}>
         <Link className="menu" key='Menu' to='/menu'><i className="btn-menu fa fa-lg fa-bars" aria-hidden="true"></i></Link>
         <Link className="coinClose" to={home}><i className="btn-menu fa fa-lg fa-times" aria-hidden="true"></i></Link>
 
@@ -40,7 +46,7 @@ class Coin extends Component {
           <h1>{curSymbol}{$numberWithCommas(price.toFixed(2))}</h1>
 
           <div className="theChart">
-            <Chart exchangeRate={this.props.exchangeRate} ticker={coin} />
+            <Chart chartColor={chartColor} exchangeRate={this.props.exchangeRate} ticker={coin} />
           </div>
 
           <div className="listCoin">
