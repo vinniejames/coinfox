@@ -15,6 +15,20 @@ class Pie extends Component {
       })
     }
 
+    // Make monochrome colors
+    var pieColors = (function () {
+        var colors = [],
+            base = "#21ce99", //Highcharts.getOptions().colors[0],
+            i;
+
+        for (i = 0; i < 10; i += 1) {
+            // Start out with a darkened base color (negative brighten), and end
+            // up with a much brighter color
+            colors.push(Highcharts.Color(base).brighten((i - 3) / 7).get());
+        }
+        return colors;
+    }());
+
     return (
       {
         credits: false,
@@ -36,6 +50,7 @@ class Pie extends Component {
           pie: {
             allowPointSelect: true,
             cursor: 'pointer',
+            colors: pieColors,
             dataLabels: {
               enabled: true,
               format: '<b>{point.name}</b><br/>{point.percentage:.1f} %',
