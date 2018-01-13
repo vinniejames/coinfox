@@ -26,11 +26,13 @@ class CurrencyPref extends Component {
     });
     return (
       <div className={"addFirstCoin"}>
-        <h3>{string.currencypref}</h3>
+        <h3  style={{float: "left"}}>{string.currencypref}</h3>
+        <div className="selectCurrency">
         <label htmlFor="currency">{curSymbol}</label>
         <select id="currency" onChange={this._handleSelectChange} value={this.props.currency} name="select">
           {selectCurrency}
         </select>
+        </div>
       </div>
     );
   }
