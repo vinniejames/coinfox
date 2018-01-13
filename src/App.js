@@ -13,6 +13,7 @@ import Home from './Home';
 import Coin from './Coin';
 import Pie from './Pie';
 import Menu from './Menu';
+import SupportedCoins from './SupportedCoins';
 
 import './App.css';
 import Blockstack from "./Blockstack";
@@ -565,6 +566,8 @@ class App extends Component {
                 />
               }
             />
+
+            <Route path="/supportedcoins" component={SupportedCoins} />
 
           </Switch>
         </div>

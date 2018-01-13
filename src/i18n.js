@@ -59,6 +59,7 @@ const strings = {
     // Menu
     learnmore: "Learn More",
     givefeedback: "Give Feedback",
+    supportedcoins: "Supported Coins",
   },
   de: {
     // AddCoin
@@ -92,6 +93,7 @@ const strings = {
     // Menu
     learnmore: "Erfahren Sie mehr",
     givefeedback: "Vorschläge machen",
+    supportedcoins: "Unterstützte Münzen",
   },
   fr: {
     // AddCoin
@@ -125,6 +127,7 @@ const strings = {
     // Menu
     learnmore: "En savoir plus",
     givefeedback: "Donner des suggestions",
+    supportedcoins: "Pièces prises en charge",
   },
 
 }

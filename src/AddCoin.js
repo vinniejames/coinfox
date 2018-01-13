@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import {Link} from 'react-router-dom';
 import {translationStrings} from './i18n';
+import fetch from "fetch-retry";
 const string = translationStrings();
 
 class AddCoin extends Component {
@@ -10,7 +12,8 @@ class AddCoin extends Component {
     this.state = {
       ticker: "",
       avg_cost_basis: "",
-      hodl: ""
+      hodl: "",
+      supported: []
     }
   }
   _addCoin (e) {
@@ -22,7 +25,7 @@ class AddCoin extends Component {
     const payload = {
       ticker: ticker,
       avg_cost: avg_cost,
-      hodl: hodl
+      hodl: hodl,
     };
 
     this.props.addCoinz(payload);
@@ -39,13 +42,47 @@ class AddCoin extends Component {
     this.setState({[item]: text});
   }
 
+  componentWillMount () {
+
+    fetch('https://www.cryptonator.com/api/currencies')
+      .then(function(res) {
+        if (!res.ok) {
+          throw Error(res.statusText);
+        }
+        return res;
+      })
+      .then((res) => res.json())
+      .then((res)=> {
+          // https://stackoverflow.com/a/40969739/1580610
+          if (this.refs.addRef) {
+            this.setState({supported: res.rows});
+          }
+        }
+      )
+
+  }
   render() {
+
+    const supportedTickers = this.state.supported.map((tick)=>{
+        return tick.code;
+    });
+
+    const supportedIcon = supportedTickers.includes(this.state.ticker.toUpperCase())
+      ? "green fa fa-check-circle"
+      : "red fa fa-question-circle";
+
     // const avgCostBasis = "Average Cost Basis ("+ $currencySymbol(this.state.preferences.currency) +"/per coin)"
-    const avgCostBasis = string.avgcost
+    const avgCostBasis = string.avgcost;
     return (
-      <div className={"addFirstCoin"}>
+      <div ref="addRef" className={"addFirstCoin"}>
         <h3>{string.addcoin}</h3>
+        <Link className="supportedcoins" key='supportedcoins' to={'/supportedcoins'}>
+          {string.supportedcoins}
+        </Link>
         <form className="" onSubmit={this._addCoin}>
+          <div className={"isSupported"}>
+            {this.state.ticker && <i className={supportedIcon} aria-hidden="true"></i>}
+          </div>
           <input type="text"
                  autoComplete='off' spellCheck='false' autoCorrect='off'
                  className="ticker"

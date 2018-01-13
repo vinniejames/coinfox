@@ -8,6 +8,36 @@
   margin: 0 10px;
 }
 
+.supportedCoins ul {
+  background: #303032;
+  margin-top: 0px;
+  list-style: none;
+  padding: 65px 20px 0px 20px;
+}
+
+.supportedCoins li {
+  border-bottom: 1px solid hsla(0,0%,100%,.1);
+  color: white;
+  padding: 10px 0;
+}
+
+#topMenu {
+  background: rgb(33, 206, 153);
+  height: 20px;
+  padding: 20px 0;
+  position: fixed;
+  width: 100%;
+}
+
+.isSupported {
+  position: absolute;
+  right: 0;
+  width: 50%;
+  color: #ccc;
+  margin: 14px 20px;
+  pointer-events: none;
+}
+
 .btn-buy a {
   text-decoration: none;
 }
@@ -168,8 +198,17 @@ a {
   text-align: center;
   color: white;
   background-color: #303032;
-  margin: -20px 10px;
-  padding: 20px;
+  padding: 10px 20px 0 20px;
+}
+
+.selectCurrency {
+  margin-top: 10px;
+  float: right;
+}
+.addFirstCoin:after {
+  content: "";
+  display: table;
+  clear: both;
 }
 
 select {
