@@ -15,7 +15,6 @@ const supportedLanguages = [
 ];
 // default to english language
 let browserLang = 'en';
-console.log(browserLang, 'before');
 
 // reset browserLang to user's navigator.language[s]
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some
@@ -26,7 +25,6 @@ navigator.languages.some((lang)=>{
   return supportedLanguages.includes(lang);
 });
 
-console.log(browserLang, 'after');
 
 const strings = {
   en: {

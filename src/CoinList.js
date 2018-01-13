@@ -20,8 +20,6 @@ class CoinList extends Component {
 
           const coinRound = Math.round(coinz[coin].hodl*100)/100;
 
-          console.log(coinPrice, coinz[coin].cost_basis);
-
           const textColor = !coinPrice || coinPrice >= coinz[coin].cost_basis
             ? 'right green'
             : 'right red';

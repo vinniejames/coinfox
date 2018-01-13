@@ -34,11 +34,42 @@ class Coin extends Component {
     // console.log(marketData[coin].ticker.volume, 'voluem?');
 
     const chartColor = !price || price >= cost_basis
-      ? 'rgb(33, 206, 153)'
-      : 'rgb(216, 45, 45)';
+      ? '#21ce99'
+      : '#d82d2d';
     const headStyle = {
       backgroundColor: chartColor,
     };
+
+    const changellyCoins = [
+      'BTC',
+      'ETH',
+      'XMR',
+      'ZEC',
+      'DASH',
+      'XRP',
+      'LTC',
+      'DODGE',
+      'BCH',
+      'BTG',
+      'DGB',
+      'EXP',
+      'GAME',
+      'LSK',
+      'NLG',
+      'NXT',
+      'POT',
+      'QTUM',
+      'SYS',
+      'XDN',
+      'XVG'
+    ];
+
+    const changePrefix = "https://changelly.com/widget/v1?auth=email&";
+    const changeSuffix = "&merchant_id=db206cefa712&address=&amount=1&ref_id=db206cefa712&color=" + chartColor.replace("#", "");
+
+    const changellyBuy = changePrefix + "from=BTC&to=" + coin.toUpperCase() + changeSuffix;
+    const changellySell = changePrefix + "from=" + coin.toUpperCase() + "&to=BTC" + changeSuffix;
+
     return (
       <div className="Coin" style={headStyle}>
         <Link className="menu" key='Menu' to='/menu'><i className="btn-menu fa fa-lg fa-bars" aria-hidden="true"></i></Link>
@@ -74,6 +105,40 @@ class Coin extends Component {
             </span>
           </div>
 
+          {changellyCoins.includes(coin.toUpperCase()) &&
+          <div className="listCoin">
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href={changellyBuy}>
+            <button className="btn-buy" style={headStyle}>
+              <i className="fa fa-money" aria-hidden="true"></i> Buy
+            </button>
+            </a>
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href={changellySell}>
+              <button className="btn-buy" style={headStyle}>
+                <i className="fa fa-line-chart" aria-hidden="true"></i> Sell
+              </button>
+            </a>
+
+          </div>}
+
+          {!changellyCoins.includes(coin.toUpperCase()) &&
+          <div className="listCoin">
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href={"https://changelly.com/widget/v1?auth=email&from=ETH&to=BTC&merchant_id=db206cefa712&address=&amount=1&ref_id=db206cefa712&color=" + chartColor.replace("#", "")}>
+              <button className="btn-buy" style={headStyle}>
+                <i className="fa fa-line-chart" aria-hidden="true"></i> Trade Coins
+              </button>
+            </a>
+          </div>
+          }
+
           <div className="trash listCoin">
             <span className="left">
             </span>
@@ -81,7 +146,6 @@ class Coin extends Component {
               <span onClick={()=>this.props.deleteCoin(coin, this.props.history)} className="lightGray"><i className="fa fa-trash" aria-hidden="true"></i></span>
             </span>
           </div>
-
 
         </div>
       </div>
