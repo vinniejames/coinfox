@@ -48,7 +48,7 @@ class Coin extends Component {
       'DASH',
       'XRP',
       'LTC',
-      'DODGE',
+      'DOGE',
       'BCH',
       'BTG',
       'DGB',
