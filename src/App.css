@@ -1,3 +1,17 @@
+.btn-buy {
+  border: solid 0px;
+  border-radius: 5px;
+  padding: 10px 20px;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  margin: 0 10px;
+}
+
+.btn-buy a {
+  text-decoration: none;
+}
+
 #ChartPortfolioValue {
   background: gray;
   height: 140px;
