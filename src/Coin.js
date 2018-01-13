@@ -83,37 +83,15 @@ class Coin extends Component {
             <Chart chartColor={chartColor} exchangeRate={this.props.exchangeRate} ticker={coin} />
           </div>
 
-          <div className="listCoin">
-            <span className="left">
-              {hodl}<br/>
-              <span className="lightGray">{coin.toUpperCase() + " Holding"}</span>
-            </span>
-            <span className="right">
-              {curSymbol}{$numberWithCommas( (hodl * price).toFixed(2) )}<br/>
-              <span className="lightGray">{string.total+curSymbol+string.holding}</span>
-            </span>
-          </div>
-
-          <div className="listCoin">
-            <span className="left">
-              {curSymbol}{volume24 && $numberWithCommas(volume24.toFixed())}<br/>
-              <span className="lightGray">{string.volume}</span>
-            </span>
-            <span className="right">
-              {curSymbol}{$numberWithCommas( (cost_basis * hodl).toFixed(2) )}&nbsp;<span className="lightGray">({$numberWithCommas(cost_basis.toFixed(2))})</span><br/>
-              <span className="lightGray">{string.costbasis}</span>
-            </span>
-          </div>
-
           {changellyCoins.includes(coin.toUpperCase()) &&
           <div className="listCoin">
             <a
               target="_blank"
               rel="noopener noreferrer"
               href={changellyBuy}>
-            <button className="btn-buy" style={headStyle}>
-              <i className="fa fa-money" aria-hidden="true"></i> Buy
-            </button>
+              <button className="btn-buy" style={headStyle}>
+                <i className="fa fa-money" aria-hidden="true"></i> Buy
+              </button>
             </a>
             <a
               target="_blank"
@@ -136,8 +114,29 @@ class Coin extends Component {
                 <i className="fa fa-line-chart" aria-hidden="true"></i> Trade Coins
               </button>
             </a>
+          </div>}
+
+          <div className="listCoin">
+            <span className="left">
+              {hodl}<br/>
+              <span className="lightGray">{coin.toUpperCase() + " Holding"}</span>
+            </span>
+            <span className="right">
+              {curSymbol}{$numberWithCommas( (hodl * price).toFixed(2) )}<br/>
+              <span className="lightGray">{string.total+curSymbol+string.holding}</span>
+            </span>
           </div>
-          }
+
+          <div className="listCoin">
+            <span className="left">
+              {curSymbol}{volume24 && $numberWithCommas(volume24.toFixed())}<br/>
+              <span className="lightGray">{string.volume}</span>
+            </span>
+            <span className="right">
+              {curSymbol}{$numberWithCommas( (cost_basis * hodl).toFixed(2) )}&nbsp;<span className="lightGray">({$numberWithCommas(cost_basis.toFixed(2))})</span><br/>
+              <span className="lightGray">{string.costbasis}</span>
+            </span>
+          </div>
 
           <div className="trash listCoin">
             <span className="left">
