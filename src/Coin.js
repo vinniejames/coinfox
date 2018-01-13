@@ -69,7 +69,7 @@ class Coin extends Component {
               <span className="lightGray">{string.volume}</span>
             </span>
             <span className="right">
-              {curSymbol}{(cost_basis * hodl).toFixed(2)} <span className="lightGray">({cost_basis.toFixed(2)})</span><br/>
+              {curSymbol}{$numberWithCommas( (cost_basis * hodl).toFixed(2) )}&nbsp;<span className="lightGray">({$numberWithCommas(cost_basis.toFixed(2))})</span><br/>
               <span className="lightGray">{string.costbasis}</span>
             </span>
           </div>

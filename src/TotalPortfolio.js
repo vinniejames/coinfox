@@ -20,7 +20,7 @@ class TotalPortfolio extends Component {
       return (
         <div className="TotalPortfolio">
           <h1>{curSymbol}{$numberWithCommas(totalValue.toFixed(2))}</h1>
-          <p>{curSymbol}{$numberWithCommas(totalReturn.toFixed(2))}
+          <p>{curSymbol}{$numberWithCommas(totalReturn.toFixed(2))}&nbsp;
             ({$numberWithCommas(returnPercentage.toFixed())}%)</p>
 
           {/*<ChartPortfolioValue />*/}

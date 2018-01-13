@@ -38,7 +38,7 @@ class CoinList extends Component {
                 </span>
                 <span className={textColor}>
                   {curSymbol}{$numberWithCommas( (price * coinz[coin].hodl).toFixed(2) )}<br/>
-                  <span className="lightGray">{curSymbol}{price.toFixed(2)}</span>
+                  <span className="lightGray">{curSymbol}{$numberWithCommas(price.toFixed(2))}</span>
                 </span>
               </div>
             </Link>
