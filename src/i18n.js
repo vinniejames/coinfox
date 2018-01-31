@@ -18,7 +18,7 @@ let browserLang = 'en';
 
 // reset browserLang to user's navigator.language[s]
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some
-navigator.languages.some((lang)=>{
+navigator.languages && navigator.languages.some((lang)=>{
   if (supportedLanguages.includes(lang)){
     browserLang = lang;
   }
