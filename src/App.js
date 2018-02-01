@@ -268,7 +268,7 @@ class App extends Component {
     let marketData = {};
     for (const coin in userCoinz) {
       // @TODO modify price based on userPref
-      const currency = "USD";
+      const currency = "usd";
       const endpoint = 'https://api.cryptonator.com/api/ticker/'+ coin.toLowerCase() + '-' + currency;
 
       this._fetchThen(endpoint)
