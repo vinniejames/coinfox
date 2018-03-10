@@ -10,7 +10,7 @@ import 'react-virtualized-select/styles.css'
 
 const string = translationStrings();
 
-const getOptions = (input) => {
+function getOptions(input) {
   return fetch(`https://www.cryptonator.com/api/currencies`)
     .then((response) => {
       return response.json();
@@ -38,9 +38,6 @@ const Input = styled.input`
 class AddCoin extends Component {
   constructor(props) {
     super(props);
-    this._addCoin = this._addCoin.bind(this);
-    this._onChange = this._onChange.bind(this);
-    this._handleTickerChange = this._handleTickerChange.bind(this);
     this.state = {
       ticker: "",
       selectedTicker: null,
@@ -49,7 +46,7 @@ class AddCoin extends Component {
       supported: []
     }
   }
-  _addCoin (e) {
+  addCoin = (e) => {
     e.preventDefault();
     const ticker = this.state.ticker.toLocaleLowerCase();
     const avg_cost = Number(this.state.avg_cost_basis);
@@ -69,7 +66,7 @@ class AddCoin extends Component {
     })
   }
 
-  _onChange (item, e) {
+  onChange = (item, e) => {
     var text = e.target.value;
     this.setState({[item]: text});
   }
@@ -91,9 +88,8 @@ class AddCoin extends Component {
           }
         }
       )
-
   }
-  _handleTickerChange(selectedTicker) {
+  handleTickerChange = (selectedTicker) => {
     this.setState({ selectedTicker });
     console.log(`Selected: ${selectedTicker.name}`);
   }
@@ -118,19 +114,19 @@ class AddCoin extends Component {
             placeholder={string.ticker}
             value={selectedTicker}
             labelKey="name"
-            onChange={this._handleTickerChange}
+            onChange={this.handleTickerChange}
             loadOptions={getOptions}
           />
           <br/>
           <Input type="text"
                  autoComplete='off' spellCheck='false' autoCorrect='off'
-                 onChange={(e) => this._onChange("avg_cost_basis", e)}
+                 onChange={(e) => this.onChange("avg_cost_basis", e)}
                  value={this.state.avg_cost_basis}
                  placeholder={avgCostBasis}/>
           <br/>
           <Input type="text"
                  autoComplete='off' spellCheck='false' autoCorrect='off'
-                 onChange={(e) => this._onChange("hodl", e)}
+                 onChange={(e) => this.onChange("hodl", e)}
                  value={this.state.hodl}
                  placeholder={string.numberheld}/>
           <br/>
