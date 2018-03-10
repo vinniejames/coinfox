@@ -34,7 +34,7 @@ module.exports = {
   },
   module: {
     rules: [
-      { test: /\.json$/, use: 'json-loader' },
+      { test: /\.json$/, use: 'json-loader' , exclude: /node_modules/},
       { test: /\.js$/, loader: 'babel-loader', exclude: /node_modules/,
         query: {
           presets: ['es2016', 'react']
