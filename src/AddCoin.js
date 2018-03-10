@@ -2,15 +2,48 @@ import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import {translationStrings} from './i18n';
 import fetch from "fetch-retry";
+import styled from 'styled-components';
+import VirtualizedSelect from 'react-virtualized-select'
+import 'react-select/dist/react-select.css';
+import 'react-virtualized/styles.css'
+import 'react-virtualized-select/styles.css'
+
 const string = translationStrings();
 
+const getOptions = (input) => {
+  return fetch(`https://www.cryptonator.com/api/currencies`)
+    .then((response) => {
+      return response.json();
+    }).then((json) => {
+      console.log(json)
+      return { options: json.rows };
+    });
+}
+const Title = styled.h3`
+  color: white;
+`;
+const AddCoinWrapper = styled.div`
+  margin: 10px auto;
+  max-width: 1100px;
+`;
+const Form = styled.form`
+  margin: auto;
+`;
+const TickerSelector = styled(VirtualizedSelect)`
+
+`;
+const Input = styled.input`
+  width: 100%;
+`;
 class AddCoin extends Component {
   constructor(props) {
     super(props);
     this._addCoin = this._addCoin.bind(this);
     this._onChange = this._onChange.bind(this);
+    this._handleTickerChange = this._handleTickerChange.bind(this);
     this.state = {
       ticker: "",
+      selectedTicker: null,
       avg_cost_basis: "",
       hodl: "",
       supported: []
@@ -36,9 +69,8 @@ class AddCoin extends Component {
     })
   }
 
-  _onChange (e) {
+  _onChange (item, e) {
     var text = e.target.value;
-    var item = e.target.className;
     this.setState({[item]: text});
   }
 
@@ -61,52 +93,50 @@ class AddCoin extends Component {
       )
 
   }
+  _handleTickerChange(selectedTicker) {
+    this.setState({ selectedTicker });
+    console.log(`Selected: ${selectedTicker.name}`);
+  }
   render() {
-
-    const supportedTickers = this.state.supported.map((tick)=>{
-        return tick.code;
-    });
-
-    const supportedIcon = supportedTickers.includes(this.state.ticker.toUpperCase())
-      ? "green fa fa-check-circle"
-      : "red fa fa-question-circle";
+    
+    const { selectedTicker } = this.state;
 
     // const avgCostBasis = "Average Cost Basis ("+ $currencySymbol(this.state.preferences.currency) +"/per coin)"
     const avgCostBasis = string.avgcost;
     return (
-      <div ref="addRef" className={"addFirstCoin"}>
-        <h3>{string.addcoin}</h3>
-        <Link className="supportedcoins" key='supportedcoins' to={'/supportedcoins'}>
-          {string.supportedcoins}
-        </Link>
-        <form className="" onSubmit={this._addCoin}>
-          <div className={"isSupported"}>
-            {this.state.ticker && <i className={supportedIcon} aria-hidden="true"></i>}
-          </div>
-          <input type="text"
-                 autoComplete='off' spellCheck='false' autoCorrect='off'
-                 className="ticker"
-                 onChange={this._onChange}
-                 value={this.state.ticker}
-                 placeholder={string.ticker}/>
+      <AddCoinWrapper ref="addRef" >
+        <Title>{string.addcoin}</Title>
+        <Form className="" onSubmit={this._addCoin}>
+
+          <Link className="supportedcoins" key='supportedcoins' to={'/supportedcoins'}>
+            {string.supportedcoins}
+          </Link>
+
+          <TickerSelector 
+            async
+            name="form-select-ticker"
+            placeholder={string.ticker}
+            value={selectedTicker}
+            labelKey="name"
+            onChange={this._handleTickerChange}
+            loadOptions={getOptions}
+          />
           <br/>
-          <input type="text"
+          <Input type="text"
                  autoComplete='off' spellCheck='false' autoCorrect='off'
-                 className="avg_cost_basis"
-                 onChange={this._onChange}
+                 onChange={(e) => this._onChange("avg_cost_basis", e)}
                  value={this.state.avg_cost_basis}
                  placeholder={avgCostBasis}/>
           <br/>
-          <input type="text"
+          <Input type="text"
                  autoComplete='off' spellCheck='false' autoCorrect='off'
-                 className="hodl"
-                 onChange={this._onChange}
+                 onChange={(e) => this._onChange("hodl", e)}
                  value={this.state.hodl}
                  placeholder={string.numberheld}/>
           <br/>
-          <input className="btn" type="submit" value={string.go}/>
-        </form>
-      </div>
+          <Input className="btn" type="submit" value={string.go}/>
+        </Form>
+      </AddCoinWrapper>
     );
   }
 }
