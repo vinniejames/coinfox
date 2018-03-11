@@ -30,17 +30,41 @@ const Form = styled.form`
   margin: auto;
 `;
 const TickerSelector = styled(VirtualizedSelect)`
-
+  color: black;
+  text-align: left;
+  & .Select-control {
+    border-radius: 0px;
+  }
 `;
 const Input = styled.input`
+  color: #aaa;
   width: 100%;
+  font-family: Roboto, sans-serif;
+  font-size: 16px;
+  margin: 5px 0px;
+  padding: 0px 10px;
+  height: 36px;
+  box-sizing: border-box;
+`;
+const SubmitButton = styled.button`
+  width: 100%;
+  font-family: Roboto, sans-serif;
+  font-weight: 600;
+  background-color: rgb(33, 206, 153);
+  color: white;
+  border: none;
+  font-size: 20px;
+  line-height: 20px;
+  margin: 5px 0px;
+  height: 36px;
+  box-sizing: border-box;
 `;
 class AddCoin extends Component {
   constructor(props) {
     super(props);
     this.state = {
       ticker: "",
-      selectedTicker: null,
+      selected_ticker: "",
       avg_cost_basis: "",
       hodl: "",
       supported: []
@@ -48,7 +72,7 @@ class AddCoin extends Component {
   }
   addCoin = (e) => {
     e.preventDefault();
-    const ticker = this.state.ticker.toLocaleLowerCase();
+    const ticker = this.state.selected_ticker.code.toLocaleLowerCase();
     const avg_cost = Number(this.state.avg_cost_basis);
     const hodl = Number(this.state.hodl);
 
@@ -89,30 +113,25 @@ class AddCoin extends Component {
         }
       )
   }
-  handleTickerChange = (selectedTicker) => {
-    this.setState({ selectedTicker });
-    console.log(`Selected: ${selectedTicker.name}`);
+  handleTickerChange = (selected_ticker) => {
+    this.setState({ selected_ticker });
   }
   render() {
     
-    const { selectedTicker } = this.state;
+    const { selected_ticker } = this.state;
 
     // const avgCostBasis = "Average Cost Basis ("+ $currencySymbol(this.state.preferences.currency) +"/per coin)"
     const avgCostBasis = string.avgcost;
     return (
       <AddCoinWrapper ref="addRef" >
         <Title>{string.addcoin}</Title>
-        <Form className="" onSubmit={this._addCoin}>
-
-          <Link className="supportedcoins" key='supportedcoins' to={'/supportedcoins'}>
-            {string.supportedcoins}
-          </Link>
+        <Form className="" onSubmit={this.addCoin}>
 
           <TickerSelector 
             async
             name="form-select-ticker"
             placeholder={string.ticker}
-            value={selectedTicker}
+            value={selected_ticker}
             labelKey="name"
             onChange={this.handleTickerChange}
             loadOptions={getOptions}
@@ -130,7 +149,7 @@ class AddCoin extends Component {
                  value={this.state.hodl}
                  placeholder={string.numberheld}/>
           <br/>
-          <Input className="btn" type="submit" value={string.go}/>
+          <SubmitButton type="submit">{string.go}</SubmitButton>
         </Form>
       </AddCoinWrapper>
     );
