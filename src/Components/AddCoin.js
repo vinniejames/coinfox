@@ -8,7 +8,6 @@ import 'react-select/dist/react-select.css';
 import 'react-virtualized/styles.css'
 import 'react-virtualized-select/styles.css'
 
-const string = translationStrings();
 
 function getOptions(input) {
   return fetch(`https://www.cryptonator.com/api/currencies`)
@@ -145,6 +144,7 @@ class AddCoin extends Component {
   render() {
     
     const { selected_ticker } = this.state;
+    const string = translationStrings(this.props.language);
 
     // const avgCostBasis = "Average Cost Basis ("+ $currencySymbol(this.state.preferences.currency) +"/per coin)"
     const avgCostBasis = string.avgcost;

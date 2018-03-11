@@ -1,4 +1,4 @@
-const supportedLanguages = [
+export const supportedLanguages = [
   'en',
   'de',
   'fr',
@@ -48,6 +48,8 @@ const strings = {
     coins: " Coins",
     // CurrencyPref
     currencypref: "Currency preference",
+    // LanguagePref
+    languagepref: "Language preference",
     // Home
     welcome: "Welcome to Coinfox",
     tag: "Your secure, personal blockchain portfolio manager app. Track your crypto currency portfolio performance",
@@ -82,6 +84,8 @@ const strings = {
     coins: " Münzen",
     // CurrencyPref
     currencypref: "Münzen",
+    // LanguagePref
+    languagepref: "Language preference",
     // Home
     welcome: "Willkommen bei Coinfox",
     tag: "Ihre sichere, persönliche Blockchain Portfolio Manager App. Verfolgen Sie Ihre Crypto-Währung Portfolio-Performance",
@@ -116,6 +120,8 @@ const strings = {
     coins: " Pièces",
     // CurrencyPref
     currencypref: "Préférence de devise",
+    // LanguagePref
+    languagepref: "Language preference",
     // Home
     welcome: "Bienvenue à Coinfox",
     tag: "Votre application de gestion de portefeuilles blockchain personnelle et sécurisée. Suivez votre performance de portefeuille de devises crypto",
@@ -133,6 +139,9 @@ const strings = {
 }
 
 
-export function translationStrings() {
+export function translationStrings(lang) {
+  if(lang){
+    return strings[lang.toLowerCase()];
+  }
   return strings[browserLang];
 }

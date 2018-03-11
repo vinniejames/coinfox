@@ -425,12 +425,12 @@ class App extends Component {
 
   }
 
-  saveNewPref = (newPref) => {
+  saveNewPref = (name, value) => {
     if (isUserSignedIn()){
       const encrypt = true;
       const data = {
         coinz: this.state.coinz,
-        pref: {currency: newPref}
+        pref: {[name]: value}
       };
       // set state first, to avoid waiting for storage to update
       this.setState({
@@ -441,8 +441,10 @@ class App extends Component {
           console.log(ex, 'Gaia put exception');
         })
     } else {
-      localStorage.setItem("pref", JSON.stringify({currency: newPref}));
-      this.setState({pref: {currency: newPref}});
+      const prefs = JSON.parse(localStorage.getItem("pref"))
+      prefs[name] = value;
+      localStorage.setItem("pref", JSON.stringify(prefs));
+      this.setState({pref: prefs});
     }
   }
 
@@ -505,6 +507,7 @@ class App extends Component {
                   supportedCurrencies={this.state.supportedCurrencies}
                   totalPortfolio={totalPortfolio}
                   currency={this.state.pref && this.state.pref.currency || "USD"}
+                  language={this.state.pref && this.state.pref.language || "EN"}
                   addCoinz={this.addCoinz}
                   saveNewPref={this.saveNewPref}
                 />
@@ -519,6 +522,7 @@ class App extends Component {
                   exchangeRate={exchangeRate}
                   supportedCurrencies={this.state.supportedCurrencies}
                   currency={this.state.pref && this.state.pref.currency || "USD"}
+                  language={this.state.pref && this.state.pref.language || "EN"}
                   addCoinz={this.addCoinz}
                   saveNewPref={this.saveNewPref}
                 />
@@ -534,6 +538,7 @@ class App extends Component {
                   exchangeRate={exchangeRate}
                   deleteCoin={this.deleteCoin}
                   currency={this.state.pref && this.state.pref.currency || "USD"}
+                  language={this.state.pref && this.state.pref.language || "EN"}
                 />
                }
             />
@@ -545,6 +550,7 @@ class App extends Component {
                   marketData={this.state.marketData}
                   exchangeRate={exchangeRate}
                   totalPortfolio={totalPortfolio}
+                  language={this.state.pref && this.state.pref.language || "EN"}
                 />
               }
             />
@@ -558,6 +564,7 @@ class App extends Component {
                   saveNewPref={this.saveNewPref}
                   supportedCurrencies={this.state.supportedCurrencies}
                   currency={this.state.pref && this.state.pref.currency || "USD"}
+                  language={this.state.pref && this.state.pref.language || "EN"}
                 />
               }
             />

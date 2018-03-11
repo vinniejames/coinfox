@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {$currencySymbol} from '../Utils/Helpers';
 import {translationStrings} from '../Utils/i18n';
 import styled from 'styled-components';
+import { supportedLanguages } from '../Utils/i18n'
 
 const PrefWrapper = styled.div`
   display: flex;
@@ -35,31 +36,29 @@ const Label = styled.div`
   font-family: Roboto, sans-serif;
 `;
 
-
-class CurrencyPref extends Component {
+class LanguagePref extends Component {
 
   handleSelectChange = (e) => {
     const domElement = e.target.id;
-    const newCurrencyPref = e.target.value;
-    const currentCurrencyPref = this.props.currency;
+    const newLanguagePref = e.target.value;
+    const currentLanguagePref = this.props.language;
 
-    console.log(newCurrencyPref, currentCurrencyPref, domElement);
-    this.props.saveNewPref("currency", newCurrencyPref);
+    console.log(newLanguagePref, currentLanguagePref, domElement);
+    this.props.saveNewPref("language", newLanguagePref);
   }
 
   render() {
-    const curSymbol = $currencySymbol(this.props.currency);
-    const selectCurrency = this.props.supportedCurrencies.map((cur) => {
-      return <option key={cur[0]} value={cur[0].toUpperCase()}>{cur[0].toUpperCase()} {cur[1]}</option>
+    const selectLanguage = supportedLanguages.map((lang) => {
+      return <option key={lang} value={lang.toUpperCase()}>{lang.toUpperCase()}</option>
     });
     const string = translationStrings(this.props.language);
     return (
       <PrefWrapper>
-        <Title>{string.currencypref}</Title>
+        <Title>{string.languagepref}</Title>
         <Selector>
-          <Label htmlFor="currency">{curSymbol}</Label>
-          <select id="currency" onChange={this.handleSelectChange} value={this.props.currency} name="select">
-            {selectCurrency}
+          <Label htmlFor="language">{this.props.language}</Label>
+          <select id="language" onChange={this.handleSelectChange} value={this.props.language} name="select">
+            {selectLanguage}
           </select>
         </Selector>
       </PrefWrapper>
@@ -67,4 +66,4 @@ class CurrencyPref extends Component {
   }
 }
 
-export default CurrencyPref;
+export default LanguagePref;

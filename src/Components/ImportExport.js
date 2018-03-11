@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import {translationStrings} from './i18n';
-const string = translationStrings();
+import {translationStrings} from '../Utils/i18n';
+
 
 class ImportExport extends Component {
   constructor(){
@@ -21,6 +21,7 @@ class ImportExport extends Component {
   }
 
   render() {
+    const string = translationStrings(this.props.language);
     return (
       <div>
         <hr />

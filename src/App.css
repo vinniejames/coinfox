@@ -172,10 +172,6 @@ a {
   padding: 10px 20px 0 20px;
 }
 
-.selectCurrency {
-  margin-top: 10px;
-  float: right;
-}
 .addFirstCoin:after {
   content: "";
   display: table;
