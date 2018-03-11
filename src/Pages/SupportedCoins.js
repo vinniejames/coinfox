@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
-import {translationStrings} from './i18n';
+import {translationStrings} from '../i18n';
 import fetch from "fetch-retry";
 
 class SupportedCoins extends Component {

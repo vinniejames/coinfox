@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
-import Chart from "./Chart";
-import { $numberWithCommas, $currencySymbol } from './Helpers';
-import {translationStrings} from './i18n';
+import Chart from "../Components/Chart";
+import { $numberWithCommas, $currencySymbol } from '../Helpers';
+import {translationStrings} from '../i18n';
 const string = translationStrings();
 
 class Coin extends Component {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
-import {translationStrings} from './i18n';
+import {translationStrings} from '../i18n';
 import fetch from "fetch-retry";
 import styled from 'styled-components';
 import VirtualizedSelect from 'react-virtualized-select'
@@ -24,6 +24,7 @@ const Title = styled.h3`
 `;
 const AddCoinWrapper = styled.div`
   margin: 10px auto;
+  padding: 10px 10px;
   max-width: 1100px;
 `;
 const Form = styled.form`

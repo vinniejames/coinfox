@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
-import TotalPortfolio from './TotalPortfolio';
+import TotalPortfolio from '../TotalPortfolio';
 import Pie from './Pie';
-import CoinList from './CoinList';
-import CurrencyPref from './CurrencyPref';
-import AddCoin from './AddCoin';
+import CoinList from '../Components/CoinList';
+import CurrencyPref from '../CurrencyPref';
+import AddCoin from '../Components/AddCoin';
 
 import {
   isUserSignedIn,
 } from 'blockstack';
 
-import {translationStrings} from './i18n';
+import {translationStrings} from '../i18n';
 const string = translationStrings();
 
 class Home extends Component {
