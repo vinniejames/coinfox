@@ -16,9 +16,9 @@ import Menu from './Pages/Menu';
 import SupportedCoins from './Pages/SupportedCoins';
 
 import './App.css';
-import Blockstack from "./Blockstack";
+import Blockstack from "./Components/Blockstack";
 
-import {translationStrings} from './i18n';
+import {translationStrings} from './Utils/i18n';
 const string = translationStrings();
 
 

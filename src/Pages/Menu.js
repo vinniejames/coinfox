@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import AddCoin from '../Components/AddCoin';
-import CurrencyPref from '../CurrencyPref';
-import ImportExport from '../ImportExport';
-import {translationStrings} from '../i18n';
+import CurrencyPref from '../Components/CurrencyPref';
+import ImportExport from '../Utils/ImportExport';
+import {translationStrings} from '../Utils/i18n';
 const string = translationStrings();
 
 class Menu extends Component {

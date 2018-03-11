@@ -8,19 +8,6 @@
   margin: 0 10px;
 }
 
-.supportedCoins ul {
-  background: #303032;
-  margin-top: 0px;
-  list-style: none;
-  padding: 65px 20px 0px 20px;
-}
-
-.supportedCoins li {
-  border-bottom: 1px solid hsla(0,0%,100%,.1);
-  color: white;
-  padding: 10px 0;
-}
-
 #topMenu {
   background: rgb(33, 206, 153);
   height: 20px;
@@ -100,22 +87,6 @@ a {
   background-color: #21ce99;
   padding-top: 20px;
   padding-bottom: 20px;
-}
-
-.TotalPortfolio {
-  text-align: center;
-  margin-top: 30px;
-}
-
-.TotalPortfolio h1 {
-  font-weight: 300;
-  font-size: 2.5rem;
-  color: white;
-  margin: 5px;
-}
-
-.TotalPortfolio p {
-  margin-top: 5px;
 }
 
 .CoinList {

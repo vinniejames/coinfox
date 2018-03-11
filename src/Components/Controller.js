@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Menu from './Menu'; // maybe dont need
+import Menu from '../Pages/Menu'; // maybe dont need
 
 class Controller extends Component {
 

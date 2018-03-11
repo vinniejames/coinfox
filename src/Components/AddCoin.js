@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
-import {translationStrings} from '../i18n';
+import {translationStrings} from '../Utils/i18n';
 import fetch from "fetch-retry";
 import styled from 'styled-components';
 import VirtualizedSelect from 'react-virtualized-select'
@@ -38,7 +38,6 @@ const TickerSelector = styled(VirtualizedSelect)`
   }
 `;
 const Input = styled.input`
-  color: #aaa;
   width: 100%;
   font-family: Roboto, sans-serif;
   font-size: 16px;
@@ -46,11 +45,15 @@ const Input = styled.input`
   padding: 0px 10px;
   height: 36px;
   box-sizing: border-box;
+  ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: #aaa;
+    opacity: 1; /* Firefox */
+}
 `;
 const SubmitButton = styled.button`
   width: 100%;
   font-family: Roboto, sans-serif;
-  font-weight: 600;
+  font-weight: 100;
   background-color: rgb(33, 206, 153);
   color: white;
   border: none;
@@ -59,12 +62,34 @@ const SubmitButton = styled.button`
   margin: 5px 0px;
   height: 36px;
   box-sizing: border-box;
+  -webkit-transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+  cursor: pointer;
+  :hover{
+    font-size: 25px;
+
+  }
+  ::after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    box-shadow: 0px 0px 6px 2px #21ce99;
+    -webkit-transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+    transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+  }
+  :hover::after {
+    opacity: 1;
+  }
 `;
 class AddCoin extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      ticker: "",
       selected_ticker: "",
       avg_cost_basis: "",
       hodl: "",
@@ -138,13 +163,13 @@ class AddCoin extends Component {
             loadOptions={getOptions}
           />
           <br/>
-          <Input type="text"
+          <Input type="number"
                  autoComplete='off' spellCheck='false' autoCorrect='off'
                  onChange={(e) => this.onChange("avg_cost_basis", e)}
                  value={this.state.avg_cost_basis}
                  placeholder={avgCostBasis}/>
           <br/>
-          <Input type="text"
+          <Input type="number"
                  autoComplete='off' spellCheck='false' autoCorrect='off'
                  onChange={(e) => this.onChange("hodl", e)}
                  value={this.state.hodl}

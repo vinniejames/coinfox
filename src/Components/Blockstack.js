@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Signin from './Signin';
 import Profile from './Profile';
-import Home from "./Pages/Home";
+import Home from "../Pages/Home";
 import {
   isSignInPending,
   isUserSignedIn,
