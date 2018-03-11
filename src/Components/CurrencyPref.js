@@ -1,16 +1,12 @@
 import React, { Component } from 'react';
-import {$currencySymbol} from './Helpers';
-import {translationStrings} from './i18n';
+import {$currencySymbol} from '../Utils/Helpers';
+import {translationStrings} from '../Utils/i18n';
+import styled from 'styled-components';
 const string = translationStrings();
 
 class CurrencyPref extends Component {
-  constructor(props) {
-    super(props);
-    this._handleSelectChange = this._handleSelectChange.bind(this);
-  }
 
-
-  _handleSelectChange(e){
+  handleSelectChange = (e) => {
     const domElement = e.target.id;
     const newPref = e.target.value;
     const currentPref = this.props.currency;
@@ -29,7 +25,7 @@ class CurrencyPref extends Component {
         <h3  style={{float: "left"}}>{string.currencypref}</h3>
         <div className="selectCurrency">
         <label htmlFor="currency">{curSymbol}</label>
-        <select id="currency" onChange={this._handleSelectChange} value={this.props.currency} name="select">
+        <select id="currency" onChange={this.handleSelectChange} value={this.props.currency} name="select">
           {selectCurrency}
         </select>
         </div>
