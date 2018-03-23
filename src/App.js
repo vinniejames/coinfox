@@ -101,7 +101,7 @@ class App extends Component {
   saveCoinToStorage = (key, payload) => {
     const storage = this.readLocalStorage();
     if (storage.coinz[key]) {
-      const newCoinz = this._addExistingCoin(storage, key, payload);
+      const newCoinz = this.addExistingCoin(storage, key, payload);
 
       localStorage.setItem("coinz", JSON.stringify(newCoinz));
       this.setState({coinz: newCoinz})
@@ -143,7 +143,7 @@ class App extends Component {
 
         if (storage.coinz[key]) {
           //user already has this coin
-          const newCoinz = this._addExistingCoin(storage, key, payload);
+          const newCoinz = this.addExistingCoin(storage, key, payload);
           const data = {
             coinz: newCoinz,
             pref: storage.pref

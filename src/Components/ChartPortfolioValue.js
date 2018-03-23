@@ -5,8 +5,6 @@ class ChartPortfolioValue extends Component {
 
   componentDidMount(){
     let data = [[1515487909,200000], [1515559909,300000]];
-    console.log(data, JSON.stringify(data), JSON.parse(JSON.stringify(data)));
-
     //localStorage.setItem("porfolio_value");
 
     // Set container which the chart should render to.

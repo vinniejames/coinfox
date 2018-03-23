@@ -14,7 +14,6 @@ function getOptions(input) {
     .then((response) => {
       return response.json();
     }).then((json) => {
-      console.log(json)
       return { options: json.rows };
     });
 }
@@ -61,13 +60,7 @@ const SubmitButton = styled.button`
   margin: 5px 0px;
   height: 36px;
   box-sizing: border-box;
-  -webkit-transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
-  transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
   cursor: pointer;
-  :hover{
-    font-size: 25px;
-
-  }
   ::after {
     content: '';
     position: absolute;
@@ -158,7 +151,7 @@ class AddCoin extends Component {
             name="form-select-ticker"
             placeholder={string.ticker}
             value={selected_ticker}
-            labelKey="name"
+            labelKey="code"
             onChange={this.handleTickerChange}
             loadOptions={getOptions}
           />

@@ -20,22 +20,6 @@ const Selector = styled.div`
   margin-left: auto;
 `;
 
-const Label = styled.div`
-  width: 30px;
-  height: 30px;
-  font-size: 16px;
-  color: #303032;
-  line-height: 30px;
-  border-radius: 100%;
-  padding:2px;
-  background-color: white;
-  text-align: center;
-  margin: auto 0px;
-  margin-right: 10px;
-  font-weight: 700;
-  font-family: Roboto, sans-serif;
-`;
-
 class LanguagePref extends Component {
 
   handleSelectChange = (e) => {
@@ -43,7 +27,6 @@ class LanguagePref extends Component {
     const newLanguagePref = e.target.value;
     const currentLanguagePref = this.props.language;
 
-    console.log(newLanguagePref, currentLanguagePref, domElement);
     this.props.saveNewPref("language", newLanguagePref);
   }
 
@@ -56,7 +39,6 @@ class LanguagePref extends Component {
       <PrefWrapper>
         <Title>{string.languagepref}</Title>
         <Selector>
-          <Label htmlFor="language">{this.props.language}</Label>
           <select id="language" onChange={this.handleSelectChange} value={this.props.language} name="select">
             {selectLanguage}
           </select>

@@ -19,23 +19,6 @@ const Selector = styled.div`
   margin-left: auto;
 `;
 
-const Label = styled.div`
-  width: 30px;
-  height: 30px;
-  font-size: 16px;
-  color: #303032;
-  line-height: 30px;
-  border-radius: 100%;
-  padding:2px;
-  background-color: white;
-  text-align: center;
-  margin: auto 0px;
-  margin-right: 10px;
-  font-weight: 700;
-  font-family: Roboto, sans-serif;
-`;
-
-
 class CurrencyPref extends Component {
 
   handleSelectChange = (e) => {
@@ -43,7 +26,6 @@ class CurrencyPref extends Component {
     const newCurrencyPref = e.target.value;
     const currentCurrencyPref = this.props.currency;
 
-    console.log(newCurrencyPref, currentCurrencyPref, domElement);
     this.props.saveNewPref("currency", newCurrencyPref);
   }
 
@@ -57,7 +39,6 @@ class CurrencyPref extends Component {
       <PrefWrapper>
         <Title>{string.currencypref}</Title>
         <Selector>
-          <Label htmlFor="currency">{curSymbol}</Label>
           <select id="currency" onChange={this.handleSelectChange} value={this.props.currency} name="select">
             {selectCurrency}
           </select>
