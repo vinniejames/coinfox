@@ -23,6 +23,7 @@ module.exports = {
     // filename: 'index_bundle.js',
     filename: 'index.js',
   },
+  mode: 'development',
   devServer: {
     historyApiFallback: true,
     watchOptions: { aggregateTimeout: 300, poll: 1000 },

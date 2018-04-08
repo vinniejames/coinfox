@@ -41,14 +41,14 @@
     -->
     <title>Coinfox: Crypto coin portfolio tracker</title>
     <script type="text/javascript">
-     (function(l) {
-       if (l.search.indexOf("spa")) {
-         console.log('adjusting redirect');
-         var redirectPath = localStorage.getItem("spa");
-         window.history.replaceState(null, null, redirectPath);
-         localStorage.removeItem('spa');
-       }
-     }(window.location))
+      (function(l) {
+        if (l.search.indexOf("spa")) {
+          console.log('adjusting redirect');
+          var redirectPath = localStorage.getItem("spa");
+          window.history.replaceState(null, null, redirectPath);
+          localStorage.removeItem('spa');
+        }
+      }(window.location))
     </script>
 
   </head>

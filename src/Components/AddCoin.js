@@ -8,15 +8,6 @@ import 'react-select/dist/react-select.css';
 import 'react-virtualized/styles.css'
 import 'react-virtualized-select/styles.css'
 
-
-function getOptions(input) {
-  return fetch(`https://www.cryptonator.com/api/currencies`)
-    .then((response) => {
-      return response.json();
-    }).then((json) => {
-      return { options: json.rows };
-    });
-}
 const Title = styled.h3`
   color: white;
 `;
@@ -126,7 +117,7 @@ class AddCoin extends Component {
       .then((res)=> {
           // https://stackoverflow.com/a/40969739/1580610
           if (this.refs.addRef) {
-            this.setState({supported: res.rows});
+            this.setState({options: res.rows});
           }
         }
       )
@@ -136,7 +127,7 @@ class AddCoin extends Component {
   }
   render() {
     
-    const { selected_ticker } = this.state;
+    const { selected_ticker, options } = this.state;
     const string = translationStrings(this.props.language);
 
     // const avgCostBasis = "Average Cost Basis ("+ $currencySymbol(this.state.preferences.currency) +"/per coin)"
@@ -147,26 +138,25 @@ class AddCoin extends Component {
         <Form className="" onSubmit={this.addCoin}>
 
           <TickerSelector 
-            async
             name="form-select-ticker"
             placeholder={string.ticker}
             value={selected_ticker}
             labelKey="code"
             onChange={this.handleTickerChange}
-            loadOptions={getOptions}
+            options={options}
           />
           <br/>
           <Input type="number"
-                 autoComplete='off' spellCheck='false' autoCorrect='off'
-                 onChange={(e) => this.onChange("avg_cost_basis", e)}
-                 value={this.state.avg_cost_basis}
-                 placeholder={avgCostBasis}/>
+            autoComplete='off' spellCheck='false' autoCorrect='off'
+            onChange={(e) => this.onChange("avg_cost_basis", e)}
+            value={this.state.avg_cost_basis}
+            placeholder={avgCostBasis}/>
           <br/>
           <Input type="number"
-                 autoComplete='off' spellCheck='false' autoCorrect='off'
-                 onChange={(e) => this.onChange("hodl", e)}
-                 value={this.state.hodl}
-                 placeholder={string.numberheld}/>
+            autoComplete='off' spellCheck='false' autoCorrect='off'
+            onChange={(e) => this.onChange("hodl", e)}
+            value={this.state.hodl}
+            placeholder={string.numberheld}/>
           <br/>
           <SubmitButton type="submit">{string.go}</SubmitButton>
         </Form>
