@@ -39,7 +39,7 @@ class LanguagePref extends Component {
       <PrefWrapper>
         <Title>{string.languagepref}</Title>
         <Selector>
-          <select id="language" onChange={this.handleSelectChange} value={this.props.language} name="select">
+          <select id="language" onChange={this.handleSelectChange} value={this.props.language || ''} name="select">
             {selectLanguage}
           </select>
         </Selector>
