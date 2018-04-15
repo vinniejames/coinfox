@@ -1,17 +1,14 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
-import TotalPortfolio from './TotalPortfolio';
+import { isUserSignedIn } from 'blockstack';
+
 import Pie from './Pie';
-import CoinList from './CoinList';
-import CurrencyPref from './CurrencyPref';
-import AddCoin from './AddCoin';
+import TotalPortfolio from '../Components/TotalPortfolio';
+import CoinList from '../Components/CoinList';
+import CurrencyPref from '../Components/CurrencyPref';
+import AddCoin from '../Components/AddCoin';
+import {translationStrings} from '../Utils/i18n';
 
-import {
-  isUserSignedIn,
-} from 'blockstack';
-
-import {translationStrings} from './i18n';
-const string = translationStrings();
 
 class Home extends Component {
 
@@ -20,7 +17,6 @@ class Home extends Component {
     this.state = {
       listView: true
     }
-    this._toggleView = this._toggleView.bind(this);
   }
 
   componentDidMount () {
@@ -33,11 +29,12 @@ class Home extends Component {
     // }
   }
 
-  _toggleView () {
+  toggleView = () => {
     this.setState({listView: !this.state.listView});
   }
   render() {
     const coinz = Object.keys(this.props.coinz).length > 0 ? this.props.coinz : false;
+    const string = translationStrings(this.props.language);
     if (coinz) {
       return (
         <div className="Home">
@@ -54,7 +51,7 @@ class Home extends Component {
               key={"TotalPortfolio"}/>
           </div>
           <div className="toggleView">
-            <i onClick={this._toggleView} className={this.state.listView ? "fa fa-lg fa-pie-chart" : "fa fa-lg fa-th-list"} aria-hidden="true"></i>
+            <i onClick={this.toggleView} className={this.state.listView ? "fa fa-lg fa-pie-chart" : "fa fa-lg fa-th-list"} aria-hidden="true"></i>
           </div>
           {!this.state.listView && <Pie
               coinz={this.props.coinz}
@@ -86,8 +83,14 @@ class Home extends Component {
             <CurrencyPref
               supportedCurrencies={this.props.supportedCurrencies}
               saveNewPref={this.props.saveNewPref}
-              currency={this.props.currency} />
-            <AddCoin addCoinz={this.props.addCoinz} key='AddCoin'/>
+              language={this.props.language}
+              currency={this.props.currency} 
+            />
+            <AddCoin 
+              addCoinz={this.props.addCoinz}
+              language={this.props.language}
+              key='AddCoin'
+            />
           </div>
 
         </div>

@@ -9,16 +9,16 @@ import {
 
 import fetch from 'fetch-retry';
 
-import Home from './Home';
-import Coin from './Coin';
-import Pie from './Pie';
-import Menu from './Menu';
-import SupportedCoins from './SupportedCoins';
+import Home from './Pages/Home';
+import Coin from './Pages/Coin';
+import Pie from './Pages/Pie';
+import Menu from './Pages/Menu';
+import SupportedCoins from './Pages/SupportedCoins';
 
 import './App.css';
-import Blockstack from "./Blockstack";
+import Blockstack from "./Components/Blockstack";
 
-import {translationStrings} from './i18n';
+import {translationStrings} from './Utils/i18n';
 const string = translationStrings();
 
 
@@ -29,11 +29,6 @@ const string = translationStrings();
 class App extends Component {
   constructor() {
     super();
-    this._addCoinz = this._addCoinz.bind(this);
-    this._deleteCoin  = this._deleteCoin.bind(this);
-    this._saveNewPref = this._saveNewPref.bind(this);
-    this._fetchExchangeRates = this._fetchExchangeRates.bind(this);
-
     const supportedCurrencies = [
       ['AUD', '$'],
       ['BGN', 'лв'],
@@ -82,7 +77,7 @@ class App extends Component {
     }
   }
 
-  _addExistingCoin (storage, key, payload) {
+  addExistingCoin (storage, key, payload) {
     // if user had coin, add more
     const existingPriceAvg = storage.coinz[key].cost_basis;
     const existingHodl = storage.coinz[key].hodl;
@@ -103,10 +98,10 @@ class App extends Component {
     return storage.coinz;
   }
 
-  _saveCoinToStorage(key, payload) {
-    const storage = this._readLocalStorage();
+  saveCoinToStorage = (key, payload) => {
+    const storage = this.readLocalStorage();
     if (storage.coinz[key]) {
-      const newCoinz = this._addExistingCoin(storage, key, payload);
+      const newCoinz = this.addExistingCoin(storage, key, payload);
 
       localStorage.setItem("coinz", JSON.stringify(newCoinz));
       this.setState({coinz: newCoinz})
@@ -118,12 +113,12 @@ class App extends Component {
 
       localStorage.setItem("coinz", JSON.stringify(newCoinz));
       // must re-fetch market data if new coin
-      this._marketData(newCoinz);
+      this.marketData(newCoinz);
       this.setState({coinz: newCoinz})
     }
   }
 
-  _saveCoinToGaia(key, payload) {
+  saveCoinToGaia = (key, payload) => {
     // @TODO make this a function that returns a promise
 
     // @TODO DO THIS READING FROM STATE INSTEAD!!!
@@ -148,7 +143,7 @@ class App extends Component {
 
         if (storage.coinz[key]) {
           //user already has this coin
-          const newCoinz = this._addExistingCoin(storage, key, payload);
+          const newCoinz = this.addExistingCoin(storage, key, payload);
           const data = {
             coinz: newCoinz,
             pref: storage.pref
@@ -156,7 +151,7 @@ class App extends Component {
 
           putFile(this.state.gaiaStorage, JSON.stringify(data), encrypt)
             .then(() => {
-              this._marketData(newCoinz);
+              this.marketData(newCoinz);
             })
             .then(() => {
               this.setState({
@@ -178,7 +173,7 @@ class App extends Component {
 
           putFile(this.state.gaiaStorage, JSON.stringify(data), encrypt)
             .then(() => {
-              this._marketData(newCoinz);
+              this.marketData(newCoinz);
             })
             .then(() =>{
               this.setState({
@@ -194,7 +189,7 @@ class App extends Component {
       })
   }
 
-  _addCoinz(coin){
+  addCoinz = (coin) => {
     const ticker = coin.ticker;
     const costBasis = coin.avg_cost;
     const hodl = coin.hodl;
@@ -207,9 +202,9 @@ class App extends Component {
         hodl: hodl
       };
       if (isUserSignedIn()) {
-        this._saveCoinToGaia(ticker, payload);
+        this.saveCoinToGaia(ticker, payload);
       } else {
-        this._saveCoinToStorage(ticker, payload);
+        this.saveCoinToStorage(ticker, payload);
       }
       // go back
       //history.goBack()
@@ -217,7 +212,7 @@ class App extends Component {
     }
   }
 
-  _fetchThen(endpoint) {
+  fetchThen = (endpoint) => {
     const promise = new Promise(function(resolve, reject) {
       let handleFetchErr = function(res) {
         if (!res.ok) {
@@ -264,14 +259,14 @@ class App extends Component {
   //   return totalPortfolio;
   // }
 
-  _marketData(userCoinz){
+  marketData = (userCoinz) => {
     let marketData = {};
     for (const coin in userCoinz) {
       // @TODO modify price based on userPref
       const currency = "usd";
       const endpoint = 'https://api.cryptonator.com/api/ticker/'+ coin.toLowerCase() + '-' + currency;
 
-      this._fetchThen(endpoint)
+      this.fetchThen(endpoint)
         .then((res) => {
           marketData[coin] = res;
           this.setState({marketData: marketData});
@@ -283,14 +278,14 @@ class App extends Component {
 
   }
 
-  _readLocalStorage(){
+  readLocalStorage(){
     const userCoinData = localStorage.coinz ? JSON.parse(localStorage.coinz) : {};
     const userPref = localStorage.pref ? JSON.parse(localStorage.pref) : {currency:"USD"};
 
     return {coinz: userCoinData, pref: userPref}
   }
 
-  _fetchExchangeRates () {
+  fetchExchangeRates = () => {
     const currencies = this.state.supportedCurrencies.map((cur) => {
       return cur[0];
     });
@@ -312,7 +307,7 @@ class App extends Component {
       )
   }
 
-  _totalPortfolio (exchangeRate) {
+  totalPortfolio = (exchangeRate) => {
 
     const coinz = this.state.coinz ? this.state.coinz : false;
     const marketData = this.state.marketData ? this.state.marketData : false;
@@ -393,10 +388,10 @@ class App extends Component {
           this.setState(userData);
         })
         .then(() => {
-          this._marketData(this.state.coinz);
+          this.marketData(this.state.coinz);
         })
         .then(() => {
-          this._fetchExchangeRates();
+          this.fetchExchangeRates();
         })
         .catch((ex) => {
           console.log(ex, 'Gaia get exception');
@@ -419,23 +414,23 @@ class App extends Component {
         })
 
     } else {
-      const storage = this._readLocalStorage();
-      this._marketData(storage.coinz);
+      const storage = this.readLocalStorage();
+      this.marketData(storage.coinz);
       this.setState({
         coinz: storage.coinz,
         pref: storage.pref
       });
-      this._fetchExchangeRates();
+      this.fetchExchangeRates();
     }
 
   }
 
-  _saveNewPref(newPref) {
+  saveNewPref = (name, value) => {
     if (isUserSignedIn()){
       const encrypt = true;
       const data = {
         coinz: this.state.coinz,
-        pref: {currency: newPref}
+        pref: {[name]: value}
       };
       // set state first, to avoid waiting for storage to update
       this.setState({
@@ -446,13 +441,15 @@ class App extends Component {
           console.log(ex, 'Gaia put exception');
         })
     } else {
-      localStorage.setItem("pref", JSON.stringify({currency: newPref}));
-      this.setState({pref: {currency: newPref}});
+      const prefs = JSON.parse(localStorage.getItem("pref"))
+      prefs[name] = value;
+      localStorage.setItem("pref", JSON.stringify(prefs));
+      this.setState({pref: prefs});
     }
   }
 
 
-  _deleteCoin (coin, history) {
+  deleteCoin = (coin, history) => {
     var strconfirm = window.confirm(string.remove+ coin.toUpperCase() +string.fromportfolio);
     if (strconfirm === true) {
 
@@ -495,7 +492,7 @@ class App extends Component {
       ? this.state.exchangeRates[this.state.pref.currency]
       : 1; // default 1 for USD
 
-    const totalPortfolio = this._totalPortfolio(exchangeRate);
+    const totalPortfolio = this.totalPortfolio(exchangeRate);
 
     return (
       <BrowserRouter>
@@ -510,8 +507,9 @@ class App extends Component {
                   supportedCurrencies={this.state.supportedCurrencies}
                   totalPortfolio={totalPortfolio}
                   currency={this.state.pref && this.state.pref.currency || "USD"}
-                  addCoinz={this._addCoinz}
-                  saveNewPref={this._saveNewPref}
+                  language={this.state.pref && this.state.pref.language || "EN"}
+                  addCoinz={this.addCoinz}
+                  saveNewPref={this.saveNewPref}
                 />
               }
             />
@@ -524,8 +522,9 @@ class App extends Component {
                   exchangeRate={exchangeRate}
                   supportedCurrencies={this.state.supportedCurrencies}
                   currency={this.state.pref && this.state.pref.currency || "USD"}
-                  addCoinz={this._addCoinz}
-                  saveNewPref={this._saveNewPref}
+                  language={this.state.pref && this.state.pref.language || "EN"}
+                  addCoinz={this.addCoinz}
+                  saveNewPref={this.saveNewPref}
                 />
               }
             />
@@ -537,8 +536,9 @@ class App extends Component {
                   marketData={this.state.marketData}
                   blockstack={this.state.blockstack}
                   exchangeRate={exchangeRate}
-                  deleteCoin={this._deleteCoin}
+                  deleteCoin={this.deleteCoin}
                   currency={this.state.pref && this.state.pref.currency || "USD"}
+                  language={this.state.pref && this.state.pref.language || "EN"}
                 />
                }
             />
@@ -550,6 +550,7 @@ class App extends Component {
                   marketData={this.state.marketData}
                   exchangeRate={exchangeRate}
                   totalPortfolio={totalPortfolio}
+                  language={this.state.pref && this.state.pref.language || "EN"}
                 />
               }
             />
@@ -557,12 +558,13 @@ class App extends Component {
             <Route path="/menu"
               render={
                 (props) => <Menu {...props}
-                  addCoinz={this._addCoinz}
+                  addCoinz={this.addCoinz}
                   blockstack={this.state.blockstack}
                   pref={this.state.pref}
-                  saveNewPref={this._saveNewPref}
+                  saveNewPref={this.saveNewPref}
                   supportedCurrencies={this.state.supportedCurrencies}
                   currency={this.state.pref && this.state.pref.currency || "USD"}
+                  language={this.state.pref && this.state.pref.language || "EN"}
                 />
               }
             />

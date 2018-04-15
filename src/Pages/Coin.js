@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
-import Chart from "./Chart";
-import { $numberWithCommas, $currencySymbol } from './Helpers';
-import {translationStrings} from './i18n';
-const string = translationStrings();
+import Chart from "../Components/Chart";
+import { $numberWithCommas, $currencySymbol } from '../Utils/Helpers';
+import {translationStrings} from '../Utils/i18n';
 
 class Coin extends Component {
   render() {
+    const string = translationStrings(this.props.language);
     // https://github.com/ReactTraining/react-router/blob/master/packages/react-router-dom/docs/guides/scroll-restoration.md
     window.scrollTo(0, 0);
+
 
     // wait for market data before trying to render single coin
     if (!this.props.marketData) {
@@ -71,7 +72,7 @@ class Coin extends Component {
     const changellySell = changePrefix + "from=" + coin.toUpperCase() + "&to=BTC" + changeSuffix;
 
     return (
-      <div className="Coin" style={headStyle}>
+      <div className="Coin">
         <Link className="menu" key='Menu' to='/menu'><i className="btn-menu fa fa-lg fa-bars" aria-hidden="true"></i></Link>
         <Link className="coinClose" to={home}><i className="btn-menu fa fa-lg fa-times" aria-hidden="true"></i></Link>
 

@@ -1,8 +1,21 @@
 import React, { Component } from 'react';
-import { $numberWithCommas, $currencySymbol} from './Helpers';
+import { $numberWithCommas, $currencySymbol} from '../Utils/Helpers';
 //import ChartPortfolioValue from './ChartPortfolioValue';
+import styled from 'styled-components';
 
-
+const TotalPortfolioWrapper = styled.div`
+  text-align: center;
+  margin-top: 30px;
+  h1 {
+    font-weight: 300;
+    font-size: 2.5rem;
+    color: white;
+    margin: 5px;
+  }
+  p {
+    margin-top: 5px;
+  }
+`
 class TotalPortfolio extends Component {
 
   returnPercentage (currentValue, costBasis) {
@@ -18,13 +31,13 @@ class TotalPortfolio extends Component {
 
     if (totalValue > 0) {
       return (
-        <div className="TotalPortfolio">
+        <TotalPortfolioWrapper>
           <h1>{curSymbol}{$numberWithCommas(totalValue.toFixed(2))}</h1>
           <p>{curSymbol}{$numberWithCommas(totalReturn.toFixed(2))}&nbsp;
             ({$numberWithCommas(returnPercentage.toFixed())}%)</p>
 
           {/*<ChartPortfolioValue />*/}
-        </div>
+        </TotalPortfolioWrapper>
       );
     } else {
       // @TODO add loading animation

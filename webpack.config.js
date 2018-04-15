@@ -23,6 +23,7 @@ module.exports = {
     // filename: 'index_bundle.js',
     filename: 'index.js',
   },
+  mode: 'development',
   devServer: {
     historyApiFallback: true,
     watchOptions: { aggregateTimeout: 300, poll: 1000 },
@@ -31,13 +32,15 @@ module.exports = {
       // "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
       // "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization",
     },
+    https: false, // true for self-signed, object for cert authority
+    noInfo: true, 
   },
   module: {
     rules: [
-      { test: /\.json$/, use: 'json-loader' },
+      { test: /\.json$/, use: 'json-loader' , exclude: /node_modules/},
       { test: /\.js$/, loader: 'babel-loader', exclude: /node_modules/,
         query: {
-          presets: ['es2015', 'react']
+          presets: ['es2016', 'react']
         }
       },
       { test: /\.jsx$/, loader: 'babel-loader', exclude: /node_modules/ },

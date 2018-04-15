@@ -1,15 +1,19 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import AddCoin from './AddCoin';
-import CurrencyPref from './CurrencyPref';
-import ImportExport from './ImportExport';
-import {translationStrings} from './i18n';
-const string = translationStrings();
+import AddCoin from '../Components/AddCoin';
+import CurrencyPref from '../Components/CurrencyPref';
+import LanguagePref from '../Components/LanguagePref'
+import ImportExport from '../Components/ImportExport';
+import {translationStrings} from '../Utils/i18n';
+
 
 class Menu extends Component {
   render() {
     const home = this.props.blockstack ? '/blockstack' : '/';
     const currency = this.props.pref.currency ? this.props.pref.currency : '...';
+    const language = this.props.pref.language ? this.props.pref.language : null;
+
+    const string = translationStrings(this.props.language);
 
     return (
       <div className="theMenu">
@@ -19,11 +23,21 @@ class Menu extends Component {
         <CurrencyPref
           supportedCurrencies={this.props.supportedCurrencies}
           saveNewPref={this.props.saveNewPref}
+          language={language}
           currency={currency}
           key="CurrencyPref" />
-        <AddCoin addCoinz={this.props.addCoinz} key='AddCoin'/>
+        <LanguagePref
+          saveNewPref={this.props.saveNewPref}
+          language={language}
+          key="LanguagePref" />
+          
+        <AddCoin
+          language={language}
+          addCoinz={this.props.addCoinz} 
+          key='AddCoin'
+        />
 
-        <ImportExport />
+        <ImportExport language={language}/>
 
         <div>
           <hr/>
