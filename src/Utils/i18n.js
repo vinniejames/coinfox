@@ -13,6 +13,11 @@ export const supportedLanguages = [
   // 'pl',
   // 'pt-pt'
 ];
+export const languageName = {
+  'en': 'English',
+  'de': 'Deutsch',
+  'fr': 'Français',
+}
 // default to english language
 let browserLang = 'en';
 
@@ -85,7 +90,7 @@ const strings = {
     // CurrencyPref
     currencypref: "Münzen",
     // LanguagePref
-    languagepref: "Language preference",
+    languagepref: "Spracheinstellung",
     // Home
     welcome: "Willkommen bei Coinfox",
     tag: "Ihre sichere, persönliche Blockchain Portfolio Manager App. Verfolgen Sie Ihre Crypto-Währung Portfolio-Performance",
@@ -121,7 +126,7 @@ const strings = {
     // CurrencyPref
     currencypref: "Préférence de devise",
     // LanguagePref
-    languagepref: "Language preference",
+    languagepref: "Préférence de langue",
     // Home
     welcome: "Bienvenue à Coinfox",
     tag: "Votre application de gestion de portefeuilles blockchain personnelle et sécurisée. Suivez votre performance de portefeuille de devises crypto",
