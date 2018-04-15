@@ -1,6 +1,9 @@
 const path = require('path');
 const webpack = require('webpack');
 
+// RUN BUILD:
+// npm run build && mv docs/CNAME build && rm -rf docs && mv build docs
+
 // copy manifest.json to the path: 'public/build'
 // this will allow for the authRequest to see the file at www.example.com/manifest.json
 const CopyWebpackPlugin = require('copy-webpack-plugin');
