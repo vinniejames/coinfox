@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {$currencySymbol} from '../Utils/Helpers';
 import {translationStrings} from '../Utils/i18n';
 import styled from 'styled-components';
-import { supportedLanguages } from '../Utils/i18n'
+import { supportedLanguages, languageName } from '../Utils/i18n'
 
 const PrefWrapper = styled.div`
   display: flex;
@@ -32,7 +32,7 @@ class LanguagePref extends Component {
 
   render() {
     const selectLanguage = supportedLanguages.map((lang) => {
-      return <option key={lang} value={lang.toUpperCase()}>{lang.toUpperCase()}</option>
+      return <option key={lang} value={lang.toUpperCase()}>{languageName[lang]}</option>
     });
     const string = translationStrings(this.props.language);
     return (

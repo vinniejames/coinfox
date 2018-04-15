@@ -12,7 +12,6 @@ class Menu extends Component {
     const home = this.props.blockstack ? '/blockstack' : '/';
     const currency = this.props.pref.currency ? this.props.pref.currency : '...';
     const language = this.props.pref.language ? this.props.pref.language : null;
-
     const string = translationStrings(this.props.language);
 
     return (
