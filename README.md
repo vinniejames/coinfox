@@ -49,7 +49,7 @@ Easily track all your crypto coin holdings with [Coinfox.co](http://coinfox.co)
 * Coin holding total
 * Coin holding $ value
 * Percentage of Portfolio
-* Purchase price (Avg Cost Basis)
+* Purchase price (Avg. Cost Basis)
 * Remove from portfolio button
 
 
