@@ -13,7 +13,7 @@ class ImportExport extends Component {
 
   _getLink () {
     if (!localStorage.coinz){
-      alert(string.addfirstcoin);
+      alert(translationStrings.addfirstcoin);
     } else {
       const base64 = btoa(JSON.stringify(localStorage));
       this.setState({importUrl: window.location.origin + "?import=" + base64});
