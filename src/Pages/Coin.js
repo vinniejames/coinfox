@@ -21,10 +21,10 @@ class Coin extends Component {
     const coin = this.props.match.params["0"] || 'X';
     const coinz = Object.keys(this.props.coinz).length > 0 ? this.props.coinz : false;
     const coinInfo = coinz && coin ? coinz[coin] : false;
-
+    const exchangeRate = this.props.exchangeRate;
     const marketData = this.props.marketData ? this.props.marketData : false;
     const price = marketData[coin] && marketData[coin].ticker
-      ? Number(marketData[coin].ticker.price)
+      ? Number(marketData[coin].ticker.price) * exchangeRate
       : 0; //false
 
     const hodl = coinInfo && Number(coinInfo.hodl);
