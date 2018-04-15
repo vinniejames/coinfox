@@ -441,7 +441,7 @@ class App extends Component {
           console.log(ex, 'Gaia put exception');
         })
     } else {
-      const prefs = JSON.parse(localStorage.getItem("pref"))
+      const prefs = JSON.parse(localStorage.getItem("pref")) || {};
       prefs[name] = value;
       localStorage.setItem("pref", JSON.stringify(prefs));
       this.setState({pref: prefs});

@@ -26,6 +26,7 @@ class LanguagePref extends Component {
     const domElement = e.target.id;
     const newLanguagePref = e.target.value;
     const currentLanguagePref = this.props.language;
+
     this.props.saveNewPref("language", newLanguagePref);
   }
 
