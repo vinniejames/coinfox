@@ -342,6 +342,21 @@ class App extends Component {
   }
 
   componentDidMount() {
+    const userHasCoins = Boolean(localStorage.coinz);
+    const https = location.protocol == "https:"
+    // no coins, http visitor, redirect to https
+    if (localStorage.https === "true" || !userHasCoins && !https) {
+      location.protocol = "https:";
+    
+    // user has coins on http  
+    // send them to https with coin string
+    } else if (userHasCoins && !https) {
+      console.log('redirect to https with coin string');
+      const base64 = btoa(JSON.stringify(localStorage));
+      localStorage.setItem('https', "true");
+      window.location.href = "https://coinfox.co?import=" + base64;
+    }
+
     // check for portfolio import string
     var searchParams = new URLSearchParams(window.location.search);
     if (searchParams.has("import")) {
