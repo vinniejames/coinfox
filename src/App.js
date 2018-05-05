@@ -343,10 +343,10 @@ class App extends Component {
 
   componentDidMount() {
     const userHasCoins = Boolean(localStorage.coinz);
-    const https = location.protocol == "https:"
+    const https = window.location.protocol == "https:"
     // no coins, http visitor, redirect to https
     if (localStorage.https === "true" || !userHasCoins && !https) {
-      location.protocol = "https:";
+      window.location.protocol = "https:";
     
     // user has coins on http  
     // send them to https with coin string
