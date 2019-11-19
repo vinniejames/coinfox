@@ -60,6 +60,13 @@
       })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
       ga('create', 'UA-2918890-15', 'auto');
       ga('send', 'pageview');
+      if(web3 || window.web3){
+        ga('send', {
+          hitType: 'event',
+          eventCategory: 'Crypto',
+          eventAction: 'Web3 Enabled',
+         });
+       }
     </script>
     <noscript>
       You need to enable JavaScript to run this app.
