@@ -18,9 +18,45 @@ import SupportedCoins from './Pages/SupportedCoins';
 import './App.css';
 import Blockstack from "./Components/Blockstack";
 
-import {translationStrings} from './Utils/i18n';
+import { translationStrings } from './Utils/i18n';
 const string = translationStrings();
 
+const supportedCurrencies = [
+  ['AUD', '$'],
+  ['BGN', 'лв'],
+  ['BRL', 'R$'],
+  // ['BTC', '฿'],
+  ['CAD', '$'],
+  ['CHF', 'Fr.'],
+  ['CNY', '¥'],
+  ['CZK', 'Kč'],
+  ['DKK', 'kr'],
+  ['EUR', '€'],
+  ['GBP', '£'],
+  ['HKD', '$'],
+  ['HRK', 'kn'],
+  ['HUF', 'Ft'],
+  ['IDR', 'Rp'],
+  ['ILS', '₪'],
+  ['INR', '₹'],
+  ['JPY', '¥'],
+  ['KRW', '₩'],
+  ['MXN', '$'],
+  ['MYR', 'RM'],
+  ['NOK', 'kr'],
+  ['NZD', '$'],
+  ['PHP', '₱'],
+  ['PLN', 'zł'],
+  ['RON', 'lei'],
+  // ['RUR', '₽'],
+  ['SEK', 'kr'],
+  ['SGD', '$'],
+  ['THB', '฿'],
+  ['TRY', '₺'],
+  // ['UAH', '₴'],
+  ['USD', '$'],
+  ['ZAR', 'R'],
+];
 
 
 // @TODO yo generator
@@ -29,55 +65,19 @@ const string = translationStrings();
 class App extends Component {
   constructor() {
     super();
-    const supportedCurrencies = [
-      ['AUD', '$'],
-      ['BGN', 'лв'],
-      ['BRL', 'R$'],
-      // ['BTC', '฿'],
-      ['CAD', '$'],
-      ['CHF', 'Fr.'],
-      ['CNY', '¥'],
-      ['CZK', 'Kč'],
-      ['DKK', 'kr'],
-      ['EUR', '€'],
-      ['GBP', '£'],
-      ['HKD', '$'],
-      ['HRK', 'kn'],
-      ['HUF', 'Ft'],
-      ['IDR', 'Rp'],
-      ['ILS', '₪'],
-      ['INR', '₹'],
-      ['JPY', '¥'],
-      ['KRW', '₩'],
-      ['MXN', '$'],
-      ['MYR', 'RM'],
-      ['NOK', 'kr'],
-      ['NZD', '$'],
-      ['PHP', '₱'],
-      ['PLN', 'zł'],
-      ['RON', 'lei'],
-      // ['RUR', '₽'],
-      ['SEK', 'kr'],
-      ['SGD', '$'],
-      ['THB', '฿'],
-      ['TRY', '₺'],
-      // ['UAH', '₴'],
-      ['USD', '$'],
-      ['ZAR', 'R'],
-    ];
 
     this.state = {
       coinz: {},
       pref: {},
       marketData: false, // no data yet
-      exchangeRates: {USD: 1}, // defaults to 1 for US Dollar
+      exchangeRates: { USD: 1 }, // defaults to 1 for US Dollar
       blockstack: isUserSignedIn(), //returns true if user is logged in
       gaiaStorage: 'coinfox.json',
       supportedCurrencies: supportedCurrencies,
     }
   }
 
-  addExistingCoin (storage, key, payload) {
+  addExistingCoin(storage, key, payload) {
     // if user had coin, add more
     const existingPriceAvg = storage.coinz[key].cost_basis;
     const existingHodl = storage.coinz[key].hodl;
@@ -104,7 +104,7 @@ class App extends Component {
       const newCoinz = this.addExistingCoin(storage, key, payload);
 
       localStorage.setItem("coinz", JSON.stringify(newCoinz));
-      this.setState({coinz: newCoinz})
+      this.setState({ coinz: newCoinz })
 
     } else {
       // must be a new coin
@@ -114,7 +114,7 @@ class App extends Component {
       localStorage.setItem("coinz", JSON.stringify(newCoinz));
       // must re-fetch market data if new coin
       this.marketData(newCoinz);
-      this.setState({coinz: newCoinz})
+      this.setState({ coinz: newCoinz })
     }
   }
 
@@ -130,7 +130,7 @@ class App extends Component {
       .then((gaia) => {
         const jsonGaia = JSON.parse(gaia);
         const gaiaCoinz = jsonGaia.coinz && jsonGaia.coinz || {};
-        const gaiaPref = jsonGaia.pref && jsonGaia.pref || {currency:"USD"};
+        const gaiaPref = jsonGaia.pref && jsonGaia.pref || { currency: "USD" };
         const userData = {
           coinz: gaiaCoinz,
           pref: gaiaPref
@@ -175,7 +175,7 @@ class App extends Component {
             .then(() => {
               this.marketData(newCoinz);
             })
-            .then(() =>{
+            .then(() => {
               this.setState({
                 coinz: newCoinz,
                 pref: storage.pref
@@ -213,8 +213,8 @@ class App extends Component {
   }
 
   fetchThen = (endpoint) => {
-    const promise = new Promise(function(resolve, reject) {
-      let handleFetchErr = function(res) {
+    const promise = new Promise(function (resolve, reject) {
+      let handleFetchErr = function (res) {
         if (!res.ok) {
           throw Error(res.statusText);
         }
@@ -264,12 +264,12 @@ class App extends Component {
     for (const coin in userCoinz) {
       // @TODO modify price based on userPref
       const currency = "usd";
-      const endpoint = 'https://api.cryptonator.com/api/ticker/'+ coin.toLowerCase() + '-' + currency;
+      const endpoint = 'https://api.cryptonator.com/api/ticker/' + coin.toLowerCase() + '-' + currency;
 
       this.fetchThen(endpoint)
         .then((res) => {
           marketData[coin] = res;
-          this.setState({marketData: marketData});
+          this.setState({ marketData: marketData });
         })
     }
     // this._percentOfPortfolio(userCoinz);
@@ -278,11 +278,11 @@ class App extends Component {
 
   }
 
-  readLocalStorage(){
+  readLocalStorage() {
     const userCoinData = localStorage.coinz ? JSON.parse(localStorage.coinz) : {};
-    const userPref = localStorage.pref ? JSON.parse(localStorage.pref) : {currency:"USD"};
+    const userPref = localStorage.pref ? JSON.parse(localStorage.pref) : { currency: "USD" };
 
-    return {coinz: userCoinData, pref: userPref}
+    return { coinz: userCoinData, pref: userPref }
   }
 
   fetchExchangeRates = () => {
@@ -292,18 +292,18 @@ class App extends Component {
     const endpoint = 'https://api.fixer.io/latest?base=USD&symbols=' + currencies.toString();
 
     return fetch(endpoint)
-      .then(function(res) {
+      .then(function (res) {
         if (!res.ok) {
           throw Error(res.statusText);
         }
         return res;
       })
       .then((res) => res.json())
-      .then((res)=> {
-          // set default to US 1
-          res.rates.USD = 1;
-          this.setState({exchangeRates: res.rates});
-        }
+      .then((res) => {
+        // set default to US 1
+        res.rates.USD = 1;
+        this.setState({ exchangeRates: res.rates });
+      }
       )
   }
 
@@ -321,12 +321,12 @@ class App extends Component {
       const basisForCoin = costBasis * hodl;
 
       // if we have the price data
-      if (marketData[coin]){
+      if (marketData[coin]) {
         // set price to 0 if it doesnt exist
         const price = (marketData[coin] && marketData[coin].ticker && marketData[coin].ticker.price)
           ? Number(marketData[coin].ticker.price)
           : 0;
-          // coinPrice adjusted for exchange rate
+        // coinPrice adjusted for exchange rate
         let coinPrice = price * exchangeRate;
         const valueForCoin = coinPrice * hodl;
 
@@ -341,21 +341,27 @@ class App extends Component {
     }
   }
 
-  componentDidMount() {
+  redirectToHttps = () => {
     const userHasCoins = Boolean(localStorage.coinz);
     const https = window.location.protocol == "https:"
     // no coins, http visitor, redirect to https
     if (localStorage.https === "true" || !userHasCoins && !https) {
       window.location.protocol = "https:";
-    
-    // user has coins on http  
-    // send them to https with coin string
+
+      // user has coins on http  
+      // send them to https with coin string
     } else if (userHasCoins && !https) {
       console.log('redirect to https with coin string');
       const base64 = btoa(JSON.stringify(localStorage));
       localStorage.setItem('https', "true");
       window.location.href = "https://coinfox.co?import=" + base64;
     }
+  }
+  componentDidMount() {
+    if (!window.location.origin.includes('localhost')) {
+      this.redirectToHttps()
+    }
+
 
     // check for portfolio import string
     var searchParams = new URLSearchParams(window.location.search);
@@ -391,7 +397,7 @@ class App extends Component {
 
           const jsonGaia = JSON.parse(gaia);
           const gaiaCoinz = jsonGaia.coinz && jsonGaia.coinz || {};
-          const gaiaPref = jsonGaia.pref && jsonGaia.pref || {currency:"USD"};
+          const gaiaPref = jsonGaia.pref && jsonGaia.pref || { currency: "USD" };
           const userData = {
             coinz: gaiaCoinz,
             pref: gaiaPref
@@ -417,10 +423,10 @@ class App extends Component {
           const encrypt = true;
           const data = {
             coinz: this.state.coinz,
-            pref: {currency:"USD"}
+            pref: { currency: "USD" }
           };
           putFile(this.state.gaiaStorage, JSON.stringify(data), encrypt)
-            .then(()=>{
+            .then(() => {
               window.location.reload();
             })
             .catch((ex) => {
@@ -441,11 +447,11 @@ class App extends Component {
   }
 
   saveNewPref = (name, value) => {
-    if (isUserSignedIn()){
+    if (isUserSignedIn()) {
       const encrypt = true;
       const data = {
         coinz: this.state.coinz,
-        pref: {[name]: value}
+        pref: { [name]: value }
       };
       // set state first, to avoid waiting for storage to update
       this.setState({
@@ -459,20 +465,20 @@ class App extends Component {
       const prefs = JSON.parse(localStorage.getItem("pref")) || {};
       prefs[name] = value;
       localStorage.setItem("pref", JSON.stringify(prefs));
-      this.setState({pref: prefs});
+      this.setState({ pref: prefs });
     }
   }
 
 
   deleteCoin = (coin, history) => {
-    var strconfirm = window.confirm(string.remove+ coin.toUpperCase() +string.fromportfolio);
+    var strconfirm = window.confirm(string.remove + coin.toUpperCase() + string.fromportfolio);
     if (strconfirm === true) {
 
       const current = this.state.coinz;
       Object.assign({}, current);
       delete current[coin];
 
-      if(isUserSignedIn()) {
+      if (isUserSignedIn()) {
         // delete from blockstack
         const data = {
           coinz: current,
@@ -480,7 +486,7 @@ class App extends Component {
         };
         const encrypt = true;
         putFile(this.state.gaiaStorage, JSON.stringify(data), encrypt)
-        // may not need to set state, because it should read from storage again
+          // may not need to set state, because it should read from storage again
           .then(() => {
             this.setState({
               coinz: current
@@ -555,7 +561,7 @@ class App extends Component {
                   currency={this.state.pref && this.state.pref.currency || "USD"}
                   language={this.state.pref && this.state.pref.language || "EN"}
                 />
-               }
+              }
             />
 
             <Route path="/pie"
