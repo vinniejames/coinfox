@@ -7,7 +7,7 @@
     "fetch-retry": "^1.2.1",
     "highcharts": "^6.0.7",
     "react": "^16.3.1",
-    "react-dom": "^16.3.1",
+    "react-dom": "^16.13.1",
     "react-redux": "^5.0.7",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
@@ -24,21 +24,34 @@
     "babel-preset-stage-0": "^6.24.1",
     "copy-webpack-plugin": "^4.5.1",
     "css-loader": "^0.28.11",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.2.0",
     "json-loader": "^0.5.7",
     "path": "^0.12.7",
-    "react-scripts": "1.1.4",
+    "react-scripts": "^3.4.1",
     "style-loader": "^0.20.3",
     "url-loader": "^1.0.1",
-    "webpack": "^4.5.0",
+    "webpack": "^4.43.0",
     "webpack-cli": "^2.0.14",
-    "webpack-dev-server": "^3.1.3"
+    "webpack-dev-server": "^3.11.0"
   },
   "scripts": {
     "start": "webpack-dev-server",
-    "build": "react-scripts build",
+    "build": "react-scripts build && rm -rf ./docs && mv ./build ./docs",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
