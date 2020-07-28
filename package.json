@@ -38,7 +38,7 @@
   },
   "scripts": {
     "start": "webpack-dev-server",
-    "build": "react-scripts build && rm -rf ./docs && mv ./build ./docs",
+    "build": "react-scripts build && rm -rf ./docs && mv ./build ./docs && echo 'coinfox.co' > ./docs/CNAME",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },

@@ -30,7 +30,7 @@ class CoinList extends Component {
     return (
       <div className="CoinList">
         {coinzWithPrice && coinzWithPrice.map((coin, i) => {
-          const textColor = !coin.coinPrice || coin.coinPrice >= coinz[coin].cost_basis
+          const textColor = !coin.price || coin.price >= coinz[coin.coin].cost_basis
             ? 'right green'
             : 'right red';
 
