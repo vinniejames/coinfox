@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import Chart from "../Components/Chart";
-import { $numberWithCommas, $currencySymbol } from '../Utils/Helpers';
+import { $numberWithCommas, $currencySymbol, returnMultiple } from '../Utils/Helpers';
 import {translationStrings} from '../Utils/i18n';
 
 class Coin extends Component {
@@ -29,6 +29,8 @@ class Coin extends Component {
 
     const hodl = coinInfo && Number(coinInfo.hodl);
     const cost_basis = coinInfo && Number(coinInfo.cost_basis);
+    const totalCostBasis = cost_basis * hodl;
+    const currentValue = hodl * price;
 
 
     const volume24 = Boolean(marketData[coin] && marketData[coin].ticker) && marketData[coin].ticker.volume * price;
@@ -79,6 +81,7 @@ class Coin extends Component {
         <div className="coinCard">
           <h2>{coin.toUpperCase()}</h2>
           <h1>{curSymbol}{$numberWithCommas(price.toFixed(2))}</h1>
+          <p>{returnMultiple(currentValue, totalCostBasis).toFixed(2)}x</p>
 
           <div className="theChart">
             <Chart chartColor={chartColor} exchangeRate={this.props.exchangeRate} ticker={coin} />
@@ -123,7 +126,7 @@ class Coin extends Component {
               <span className="lightGray">{coin.toUpperCase() + " Holding"}</span>
             </span>
             <span className="right">
-              {curSymbol}{$numberWithCommas( (hodl * price).toFixed(2) )}<br/>
+              {curSymbol}{$numberWithCommas( (currentValue).toFixed(2) )}<br/>
               <span className="lightGray">{string.total+curSymbol+string.holding}</span>
             </span>
           </div>
@@ -134,7 +137,7 @@ class Coin extends Component {
               <span className="lightGray">{string.volume}</span>
             </span>
             <span className="right">
-              {curSymbol}{$numberWithCommas( (cost_basis * hodl).toFixed(2) )}&nbsp;<span className="lightGray">({$numberWithCommas(cost_basis.toFixed(2))})</span><br/>
+              {curSymbol}{$numberWithCommas((totalCostBasis).toFixed(2))}&nbsp;<span className="lightGray">({$numberWithCommas(cost_basis.toFixed(2))})</span><br/>
               <span className="lightGray">{string.costbasis}</span>
             </span>
           </div>

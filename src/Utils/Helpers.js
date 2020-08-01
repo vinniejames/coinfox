@@ -51,6 +51,10 @@ export function $numberWithCommas(d) {
   return d.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+export const returnMultiple = (currentValue, costBasis) => {
+  return currentValue / costBasis;
+}
+
 // export function $dontShowNaN(value) {
 //
 //   return isNaN(value) ? 0 : value;
