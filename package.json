@@ -5,7 +5,7 @@
   "dependencies": {
     "blockstack": "^0.17.1",
     "fetch-retry": "^1.2.1",
-    "highcharts": "^6.0.7",
+    "highcharts": "^7.2.2",
     "react": "^16.3.1",
     "react-dom": "^16.13.1",
     "react-redux": "^5.0.7",
