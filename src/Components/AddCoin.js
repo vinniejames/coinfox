@@ -105,22 +105,22 @@ class AddCoin extends Component {
   }
 
   componentWillMount () {
-    // TODO fetch currencies from CoinGecko
-    // fetch('https://www.cryptonator.com/api/currencies')
-    //   .then(function(res) {
-    //     if (!res.ok) {
-    //       throw Error(res.statusText);
-    //     }
-    //     return res;
-    //   })
-    //   .then((res) => res.json())
-    //   .then((res)=> {
-    //       // https://stackoverflow.com/a/40969739/1580610
-    //       if (this.refs.addRef) {
-    //         this.setState({options: res.rows});
-    //       }
-    //     }
-    //   )
+    fetch("https://api.coingecko.com/api/v3/coins/list")
+      .then(res => res.json())
+      .then(coins => {
+          // https://stackoverflow.com/a/40969739/1580610
+          if (this.refs.addRef) {
+            this.setState({
+              options: coins.map(c => ({
+                "code": c.symbol, // ticker
+                "name": c.name,
+                "statuses": ["primary"]
+              }
+              ))
+            })
+          }
+      }
+      )
   }
   handleTickerChange = (selected_ticker) => {
     this.setState({ selected_ticker });
