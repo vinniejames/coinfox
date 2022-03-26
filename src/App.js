@@ -259,23 +259,42 @@ class App extends Component {
   //   return totalPortfolio;
   // }
 
-  marketData = (userCoinz) => {
+  marketData = async (userCoinz) => {
     let marketData = {};
-    for (const coin in userCoinz) {
-      // @TODO modify price based on userPref
-      const currency = "usd";
-      const endpoint = 'https://api.cryptonator.com/api/ticker/' + coin.toLowerCase() + '-' + currency;
 
-      this.fetchThen(endpoint)
-        .then((res) => {
-          marketData[coin] = res;
-          this.setState({ marketData: marketData });
-        })
-    }
-    // this._percentOfPortfolio(userCoinz);
-    // @TODO find out why setting state after for loop broke things
-    // this.setState({marketData: marketData});
+    const userTickers = Object.keys(userCoinz);
 
+    const usersCoinList = (await fetch("https://api.coingecko.com/api/v3/coins/list")
+      .then(res => res.json()))
+      .filter(coin => userTickers.includes(coin.symbol))
+    const usersCoinIds = usersCoinList.map(coin => coin.id)
+
+    // @TODO modify price based on userPref
+    const currency = "usd";
+    const usersMarketData = (await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${usersCoinIds.join("%2C")}&vs_currencies=${currency}&include_24hr_vol=true&include_24hr_change=true`)
+      .then(res => res.json()))
+
+
+    userTickers.forEach(t => {
+      try {
+        const meta = usersCoinList.find(c => c.symbol === t);
+        const marketDataz = usersMarketData[meta.id]
+        marketData[t] = {
+          ticker: {
+            base: t.toUpperCase(),
+            target: currency.toUpperCase(),
+            price: marketDataz[currency],
+            volume: marketDataz.usd_24h_vol,
+            change: marketDataz.usd_24h_change
+          },
+          "timestamp": Math.floor(new Date().getTime() / 100), "success": true, "error": ""
+        }
+      } catch (e) {
+        console.log(e, `ticker not found in market data: ${t}`)
+      }
+
+    })
+    this.setState({ marketData });
   }
 
   readLocalStorage() {
@@ -286,25 +305,29 @@ class App extends Component {
   }
 
   fetchExchangeRates = () => {
-    const currencies = this.state.supportedCurrencies.map((cur) => {
-      return cur[0];
-    });
-    const endpoint = 'https://api.fixer.io/latest?base=USD&symbols=' + currencies.toString();
+    //TODO replace with CoinGecko local currency pricing 
 
-    return fetch(endpoint)
-      .then(function (res) {
-        if (!res.ok) {
-          throw Error(res.statusText);
-        }
-        return res;
-      })
-      .then((res) => res.json())
-      .then((res) => {
-        // set default to US 1
-        res.rates.USD = 1;
-        this.setState({ exchangeRates: res.rates });
-      }
-      )
+
+
+    // const currencies = this.state.supportedCurrencies.map((cur) => {
+    //   return cur[0];
+    // });
+    // const endpoint = 'https://api.fixer.io/latest?base=USD&symbols=' + currencies.toString();
+
+    // return fetch(endpoint)
+    //   .then(function (res) {
+    //     if (!res.ok) {
+    //       throw Error(res.statusText);
+    //     }
+    //     return res;
+    //   })
+    //   .then((res) => res.json())
+    //   .then((res) => {
+    //     // set default to US 1
+    //     res.rates.USD = 1;
+    //     this.setState({ exchangeRates: res.rates });
+    //   }
+    //   )
   }
 
   totalPortfolio = (exchangeRate) => {

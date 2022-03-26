@@ -27,21 +27,21 @@ class SupportedCoins extends Component {
 
   componentWillMount () {
 
-    console.log('hi im here');
+    // TODO fetch currencies from CoinGecko
 
-    fetch('https://www.cryptonator.com/api/currencies')
-      .then(function(res) {
-        if (!res.ok) {
-          throw Error(res.statusText);
-        }
-        return res;
-      })
-      .then((res) => res.json())
-      .then((res)=> {
-          // https://stackoverflow.com/a/40969739/1580610
-            this.setState({supported: res.rows});
-        }
-      )
+    // fetch('https://www.cryptonator.com/api/currencies')
+    //   .then(function(res) {
+    //     if (!res.ok) {
+    //       throw Error(res.statusText);
+    //     }
+    //     return res;
+    //   })
+    //   .then((res) => res.json())
+    //   .then((res)=> {
+    //       // https://stackoverflow.com/a/40969739/1580610
+    //         this.setState({supported: res.rows});
+    //     }
+    //   )
 
   }
 
