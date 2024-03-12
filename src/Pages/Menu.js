@@ -41,6 +41,13 @@ class Menu extends Component {
         <div>
           <hr/>
           <p className="center">
+            <b>Leverage your hodlings with a <a href="https://rocko.co"><i>crypto backed loan</i></a> through Rocko DeFi!</b>
+          </p>
+        </div>
+
+        <div>
+          <hr/>
+          <p className="center">
             <a href="https://github.com/vinniejames/coinfox">{string.learnmore}</a> or&nbsp;
             <a href="https://github.com/vinniejames/coinfox/issues">{string.givefeedback}</a>
           </p>
