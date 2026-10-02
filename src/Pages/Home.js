@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
-import { isUserSignedIn } from 'blockstack';
-
 import Pie from './Pie';
 import TotalPortfolio from '../Components/TotalPortfolio';
 import CoinList from '../Components/CoinList';
@@ -68,7 +66,6 @@ class Home extends Component {
         </div>
       );
     } else { // if (!isUserSignedIn()) {
-      console.log("!isUserSignedIn()");
       // NEW User Welcome screen
       return (
         <div className="Home">

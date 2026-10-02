@@ -72,7 +72,7 @@ class Chart extends Component {
               },
               stops: [
                 [0, chartColor],
-                [1, Highcharts.Color(chartColor).setOpacity(0).get('rgba')]
+                [1, Highcharts.color(chartColor).setOpacity(0).get('rgba')]
               ]
             },
             marker: {
@@ -89,7 +89,7 @@ class Chart extends Component {
         },
         series: [{
           type: 'area',
-          name: this.props.ticker + '/' + "$", // @TODO get correct symbol
+          name: this.props.ticker + '/$', // currency label
           data: data
         }]
       }
