@@ -98,6 +98,7 @@ class Chart extends Component {
 
   //Destroy chart before unmount.
   componentWillUnmount () {
+    this._mounted = false;
     this.chart && this.chart.destroy();
   }
 
@@ -110,6 +111,7 @@ class Chart extends Component {
     fetch(endpoint)
       .then((res) => res.json())
       .then((res)=>{
+        if (!this._mounted) return;
 
         if (res.Response === "Success") {
           const highcharts_data = res.Data.map(function (day) {
@@ -138,9 +140,16 @@ class Chart extends Component {
           this.chart && this.chart.destroy();
         }
       })
+      .catch((err) => {
+        console.log(err, 'chart fetch failed');
+        if (!this._mounted) return;
+        this.setState({ time_series: [] });
+        this.chart && this.chart.destroy();
+      });
   }
 
   componentDidMount() {
+    this._mounted = true;
     this._fetchChartData(this.props.ticker, this.props.exchangeRate);
   }
 

@@ -33,7 +33,10 @@ class Coin extends Component {
     const currentValue = hodl * price;
 
 
-    const volume24 = Boolean(marketData[coin] && marketData[coin].ticker) && marketData[coin].ticker.volume * price;
+    // CoinGecko usd_24h_vol is already in USD; apply FX only (do not multiply by spot price).
+    const volume24 = marketData[coin] && marketData[coin].ticker
+      ? Number(marketData[coin].ticker.volume) * exchangeRate
+      : 0;
     // console.log(marketData[coin].ticker.volume, 'voluem?');
 
     const chartColor = !price || price >= cost_basis
@@ -133,7 +136,7 @@ class Coin extends Component {
 
           <div className="listCoin">
             <span className="left">
-              {curSymbol}{volume24 && $numberWithCommas(volume24.toFixed())}<br/>
+              {curSymbol}{$numberWithCommas((volume24 || 0).toFixed())}<br/>
               <span className="lightGray">{string.volume}</span>
             </span>
             <span className="right">

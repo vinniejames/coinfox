@@ -14,31 +14,36 @@ const TotalPortfolioWrapper = styled.div`
   }
   p {
     margin-top: 5px;
+    min-height: 1.2em;
   }
 `
 class TotalPortfolio extends Component {
 
   render() {
-    const totalValue = this.props.totalPortfolio.totalValue;
-    const totalBasis = this.props.totalPortfolio.totalBasis;
+    const portfolio = this.props.totalPortfolio || { totalValue: 0, totalBasis: 0 };
+    const totalValue = Number(portfolio.totalValue) || 0;
+    const totalBasis = Number(portfolio.totalBasis) || 0;
     const totalReturn = totalValue - totalBasis;
     const returnX = returnMultiple(totalValue, totalBasis);
     const curSymbol = $currencySymbol(this.props.currency);
 
-    if (totalValue > 0) {
-      return (
-        <TotalPortfolioWrapper>
-          <h1>{curSymbol}{$numberWithCommas(totalValue.toFixed(2))}</h1>
-          <p>{curSymbol}{$numberWithCommas(totalReturn.toFixed(2))}&nbsp;
-            ({$numberWithCommas(returnX.toFixed(2))}x)</p>
+    return (
+      <TotalPortfolioWrapper>
+        <h1>{curSymbol}{$numberWithCommas(totalValue.toFixed(2))}</h1>
+        <p>
+          {totalValue > 0 ? (
+            <>
+              {curSymbol}{$numberWithCommas(totalReturn.toFixed(2))}&nbsp;
+              ({$numberWithCommas(returnX.toFixed(2))}x)
+            </>
+          ) : (
+            '\u00a0'
+          )}
+        </p>
 
-          {/*<ChartPortfolioValue />*/}
-        </TotalPortfolioWrapper>
-      );
-    } else {
-      // @TODO add loading animation
-      return null;
-    }
+        {/*<ChartPortfolioValue />*/}
+      </TotalPortfolioWrapper>
+    );
   }
 }
 

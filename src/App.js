@@ -292,7 +292,10 @@ class App extends Component {
   };
 
   componentDidMount() {
-    if (!window.location.origin.includes('localhost')) {
+    const host = window.location.hostname;
+    const isLocal =
+      host === 'localhost' || host === '127.0.0.1' || host === '[::1]';
+    if (!isLocal) {
       this.redirectToHttps();
     }
 
@@ -450,6 +453,7 @@ class App extends Component {
                   marketData={this.state.marketData}
                   exchangeRate={exchangeRate}
                   supportedCurrencies={this.state.supportedCurrencies}
+                  totalPortfolio={totalPortfolio}
                   currency={currency}
                   language={language}
                   addCoinz={this.addCoinz}

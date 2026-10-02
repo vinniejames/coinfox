@@ -47,14 +47,20 @@ class ImportExport extends Component {
         <p className="white center">{string.copylink}</p>
         <p className="center">
           <input
+            className="import-link"
             type="text"
             onChange={(e) => this.setState({ importString: e.target.value })}
-            defaultValue={this.state.importUrl}
+            value={this.state.importString || this.state.importUrl}
+            onFocus={() => {
+              if (!this.state.importString && this.state.importUrl) {
+                this.setState({ importString: this.state.importUrl });
+              }
+            }}
           />
         </p>
         {!hasCoinz() ? (
           <button
-            style={{ margin: '8px auto' }}
+            style={{ margin: '8px auto', display: 'block' }}
             onClick={this._importString}
           >
             Import

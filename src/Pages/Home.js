@@ -47,9 +47,9 @@ class Home extends Component {
               marketData={this.props.marketData}
               coinz={this.props.coinz}
               key={"TotalPortfolio"}/>
-          </div>
-          <div className="toggleView">
-            <i onClick={this.toggleView} className={this.state.listView ? "fa fa-lg fa-pie-chart" : "fa fa-lg fa-th-list"} aria-hidden="true"></i>
+            <div className="toggleView">
+              <i onClick={this.toggleView} className={this.state.listView ? "fa fa-lg fa-pie-chart" : "fa fa-lg fa-th-list"} aria-hidden="true"></i>
+            </div>
           </div>
           {!this.state.listView && <Pie
               coinz={this.props.coinz}

@@ -6,11 +6,15 @@ import Select from 'react-select';
 
 const Title = styled.h3`
   color: white;
+  margin: 0 0 8px;
+  font-weight: 300;
 `;
 const AddCoinWrapper = styled.div`
   margin: 10px auto;
   padding: 10px 10px;
   max-width: 1100px;
+  box-sizing: border-box;
+  width: 100%;
 `;
 const Form = styled.form`
   margin: auto;
@@ -18,9 +22,38 @@ const Form = styled.form`
 const TickerSelector = styled(Select)`
   color: black;
   text-align: left;
+  margin: 5px 0;
+
   & .coinfox__control {
-    border-radius: 0px;
+    border-radius: 0;
     min-height: 36px;
+    height: 36px;
+    border-color: #ccc;
+    box-shadow: none;
+  }
+  & .coinfox__control:hover {
+    border-color: #aaa;
+  }
+  & .coinfox__value-container {
+    height: 36px;
+    padding: 0 10px;
+  }
+  & .coinfox__indicators {
+    height: 36px;
+  }
+  & .coinfox__indicator-separator {
+    display: none;
+  }
+  & .coinfox__dropdown-indicator {
+    padding: 0 8px;
+  }
+  & .coinfox__input-container {
+    margin: 0;
+    padding: 0;
+  }
+  & .coinfox__placeholder,
+  & .coinfox__single-value {
+    margin: 0;
   }
 `;
 const Input = styled.input`
@@ -31,7 +64,9 @@ const Input = styled.input`
   padding: 0px 10px;
   height: 36px;
   box-sizing: border-box;
-  ::placeholder {
+  border: 1px solid #ccc;
+  border-radius: 0;
+  &::placeholder {
     color: #aaa;
     opacity: 1;
   }
@@ -50,7 +85,7 @@ const SubmitButton = styled.button`
   box-sizing: border-box;
   cursor: pointer;
   position: relative;
-  ::after {
+  &::after {
     content: '';
     position: absolute;
     z-index: -1;
@@ -62,7 +97,7 @@ const SubmitButton = styled.button`
     box-shadow: 0px 0px 6px 2px #21ce99;
     transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
   }
-  :hover::after {
+  &:hover::after {
     opacity: 1;
   }
 `;
