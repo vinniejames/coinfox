@@ -43,8 +43,9 @@
   color: white;
   position: absolute;
   right: 11px;
-  top: 123px;
+  bottom: 10px;
   cursor: pointer;
+  z-index: 2;
 }
 body {
   background-color: black;
@@ -77,16 +78,25 @@ a {
   background-color: #303032;
   height: 100vh;
   padding-top: 20px;
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 
 .menu {
   margin-left: 20px;
+  color: white;
+  text-decoration: none;
+}
+
+.btn-menu {
+  color: white;
 }
 
 .Home .header {
   background-color: #21ce99;
   padding-top: 20px;
   padding-bottom: 20px;
+  position: relative;
 }
 
 .CoinList {
@@ -98,6 +108,8 @@ a {
   background: #303032;
   border-bottom: 1px solid hsla(0,0%,100%,.1);
   padding: 20px;
+  position: relative;
+  overflow: hidden;
 
 }
 .listCoin:after {
@@ -116,8 +128,10 @@ a {
 }
 .middle {
   position: absolute;
-  right: 0;
-  margin: 10px 50vw;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
 }
 .right {
   float: right;
@@ -134,11 +148,14 @@ a {
   height: 100vh;
   margin-top: -15px;
   padding-top: 35px;
+  box-sizing: border-box;
 }
 
 .coinClose {
   float: right;
   padding-right: 20px;
+  color: white;
+  text-decoration: none;
 }
 
 #chart_container {
@@ -152,6 +169,7 @@ a {
   margin-top: 20px;
   padding-top: 10px;
   min-height: calc(100vh - 60px);
+  box-sizing: border-box;
 }
 .coinCard h1, .coinCard h2 {
   font-weight: 300;
@@ -188,6 +206,14 @@ input {
   width: 50%;
   margin: 5px;
   padding: 10px;
+  box-sizing: content-box;
+}
+input.import-link {
+  width: calc(100% - 40px);
+  max-width: 1100px;
+  box-sizing: border-box;
+  margin: 5px auto;
+  display: block;
 }
 .btn {
   background-color: #fafafa;

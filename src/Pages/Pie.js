@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import {Link} from 'react-router-dom';
 import Highcharts from 'highcharts'
 
 
@@ -24,7 +23,7 @@ class Pie extends Component {
         for (i = 0; i < 10; i += 1) {
             // Start out with a darkened base color (negative brighten), and end
             // up with a much brighter color
-            colors.push(Highcharts.Color(base).brighten((i - 3) / 7).get());
+            colors.push(Highcharts.color(base).brighten((i - 3) / 7).get());
         }
         return colors;
     }());
@@ -84,8 +83,6 @@ class Pie extends Component {
   }
 
   render() {
-    const home = this.props.blockstack ? '/blockstack' : '/';
-
     return (
       <div className="Pie">
         <div id="piechart"></div>

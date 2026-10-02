@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
-import { isUserSignedIn } from 'blockstack';
-
 import Pie from './Pie';
 import TotalPortfolio from '../Components/TotalPortfolio';
 import CoinList from '../Components/CoinList';
@@ -49,9 +47,9 @@ class Home extends Component {
               marketData={this.props.marketData}
               coinz={this.props.coinz}
               key={"TotalPortfolio"}/>
-          </div>
-          <div className="toggleView">
-            <i onClick={this.toggleView} className={this.state.listView ? "fa fa-lg fa-pie-chart" : "fa fa-lg fa-th-list"} aria-hidden="true"></i>
+            <div className="toggleView">
+              <i onClick={this.toggleView} className={this.state.listView ? "fa fa-lg fa-pie-chart" : "fa fa-lg fa-th-list"} aria-hidden="true"></i>
+            </div>
           </div>
           {!this.state.listView && <Pie
               coinz={this.props.coinz}
@@ -68,7 +66,6 @@ class Home extends Component {
         </div>
       );
     } else { // if (!isUserSignedIn()) {
-      console.log("!isUserSignedIn()");
       // NEW User Welcome screen
       return (
         <div className="Home">

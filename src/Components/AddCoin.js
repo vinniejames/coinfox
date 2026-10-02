@@ -1,29 +1,59 @@
 import React, { Component } from 'react';
-import {Link} from 'react-router-dom';
-import {translationStrings} from '../Utils/i18n';
-import fetch from "fetch-retry";
+import { translationStrings } from '../Utils/i18n';
+import fetchRetry from '../Utils/fetchRetry';
 import styled from 'styled-components';
-import VirtualizedSelect from 'react-virtualized-select'
-import 'react-select/dist/react-select.css';
-import 'react-virtualized/styles.css'
-import 'react-virtualized-select/styles.css'
+import Select from 'react-select';
 
 const Title = styled.h3`
   color: white;
+  margin: 0 0 8px;
+  font-weight: 300;
 `;
 const AddCoinWrapper = styled.div`
   margin: 10px auto;
   padding: 10px 10px;
   max-width: 1100px;
+  box-sizing: border-box;
+  width: 100%;
 `;
 const Form = styled.form`
   margin: auto;
 `;
-const TickerSelector = styled(VirtualizedSelect)`
+const TickerSelector = styled(Select)`
   color: black;
   text-align: left;
-  & .Select-control {
-    border-radius: 0px;
+  margin: 5px 0;
+
+  & .coinfox__control {
+    border-radius: 0;
+    min-height: 36px;
+    height: 36px;
+    border-color: #ccc;
+    box-shadow: none;
+  }
+  & .coinfox__control:hover {
+    border-color: #aaa;
+  }
+  & .coinfox__value-container {
+    height: 36px;
+    padding: 0 10px;
+  }
+  & .coinfox__indicators {
+    height: 36px;
+  }
+  & .coinfox__indicator-separator {
+    display: none;
+  }
+  & .coinfox__dropdown-indicator {
+    padding: 0 8px;
+  }
+  & .coinfox__input-container {
+    margin: 0;
+    padding: 0;
+  }
+  & .coinfox__placeholder,
+  & .coinfox__single-value {
+    margin: 0;
   }
 `;
 const Input = styled.input`
@@ -34,10 +64,12 @@ const Input = styled.input`
   padding: 0px 10px;
   height: 36px;
   box-sizing: border-box;
-  ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  border: 1px solid #ccc;
+  border-radius: 0;
+  &::placeholder {
     color: #aaa;
-    opacity: 1; /* Firefox */
-}
+    opacity: 1;
+  }
 `;
 const SubmitButton = styled.button`
   width: 100%;
@@ -52,7 +84,8 @@ const SubmitButton = styled.button`
   height: 36px;
   box-sizing: border-box;
   cursor: pointer;
-  ::after {
+  position: relative;
+  &::after {
     content: '';
     position: absolute;
     z-index: -1;
@@ -62,25 +95,27 @@ const SubmitButton = styled.button`
     height: 100%;
     opacity: 0;
     box-shadow: 0px 0px 6px 2px #21ce99;
-    -webkit-transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
     transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
   }
-  :hover::after {
+  &:hover::after {
     opacity: 1;
   }
 `;
+
 class AddCoin extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selected_ticker: "",
-      avg_cost_basis: "",
-      hodl: "",
-      supported: []
-    }
+      selected_ticker: null,
+      avg_cost_basis: '',
+      hodl: '',
+      options: [],
+    };
   }
+
   addCoin = (e) => {
     e.preventDefault();
+    if (!this.state.selected_ticker) return;
     const ticker = this.state.selected_ticker.code.toLocaleLowerCase();
     const avg_cost = Number(this.state.avg_cost_basis);
     const hodl = Number(this.state.hodl);
@@ -93,71 +128,85 @@ class AddCoin extends Component {
 
     this.props.addCoinz(payload);
     this.setState({
-      ticker: "",
-      avg_cost_basis: "",
-      hodl: ""
-    })
-  }
+      selected_ticker: null,
+      avg_cost_basis: '',
+      hodl: '',
+    });
+  };
 
   onChange = (item, e) => {
-    var text = e.target.value;
-    this.setState({[item]: text});
+    this.setState({ [item]: e.target.value });
+  };
+
+  componentDidMount() {
+    this._mounted = true;
+    fetchRetry('https://api.coingecko.com/api/v3/coins/list')
+      .then((res) => res.json())
+      .then((coins) => {
+        if (this._mounted) {
+          this.setState({
+            options: coins.map((c) => ({
+              code: c.symbol,
+              name: c.name,
+              label: `${c.symbol.toUpperCase()} — ${c.name}`,
+              value: c.symbol,
+              statuses: ['primary'],
+            })),
+          });
+        }
+      })
+      .catch((e) => console.log(e));
   }
 
-  componentWillMount () {
-    fetch("https://api.coingecko.com/api/v3/coins/list")
-      .then(res => res.json())
-      .then(coins => {
-          // https://stackoverflow.com/a/40969739/1580610
-          if (this.refs.addRef) {
-            this.setState({
-              options: coins.map(c => ({
-                "code": c.symbol, // ticker
-                "name": c.name,
-                "statuses": ["primary"]
-              }
-              ))
-            })
-          }
-      }
-      )
+  componentWillUnmount() {
+    this._mounted = false;
   }
+
   handleTickerChange = (selected_ticker) => {
     this.setState({ selected_ticker });
-  }
+  };
+
   render() {
-    
     const { selected_ticker, options } = this.state;
     const string = translationStrings(this.props.language);
-
-    // const avgCostBasis = "Average Cost Basis ("+ $currencySymbol(this.state.preferences.currency) +"/per coin)"
     const avgCostBasis = string.avgcost;
-    return (
-      <AddCoinWrapper ref="addRef" >
-        <Title>{string.addcoin}</Title>
-        <Form className="" onSubmit={this.addCoin}>
 
-          <TickerSelector 
+    return (
+      <AddCoinWrapper>
+        <Title>{string.addcoin}</Title>
+        <Form onSubmit={this.addCoin}>
+          <TickerSelector
+            classNamePrefix="coinfox"
             name="form-select-ticker"
             placeholder={string.ticker}
             value={selected_ticker}
-            labelKey="code"
             onChange={this.handleTickerChange}
             options={options}
+            getOptionLabel={(o) => o.label || o.code}
+            getOptionValue={(o) => o.code}
+            isClearable
           />
-          <br/>
-          <Input type="number"
-            autoComplete='off' spellCheck='false' autoCorrect='off'
-            onChange={(e) => this.onChange("avg_cost_basis", e)}
+          <br />
+          <Input
+            type="number"
+            autoComplete="off"
+            spellCheck="false"
+            autoCorrect="off"
+            onChange={(e) => this.onChange('avg_cost_basis', e)}
             value={this.state.avg_cost_basis}
-            placeholder={avgCostBasis}/>
-          <br/>
-          <Input type="number"
-            autoComplete='off' spellCheck='false' autoCorrect='off'
-            onChange={(e) => this.onChange("hodl", e)}
+            placeholder={avgCostBasis}
+          />
+          <br />
+          <Input
+            type="number"
+            autoComplete="off"
+            spellCheck="false"
+            autoCorrect="off"
+            onChange={(e) => this.onChange('hodl', e)}
             value={this.state.hodl}
-            placeholder={string.numberheld}/>
-          <br/>
+            placeholder={string.numberheld}
+          />
+          <br />
           <SubmitButton type="submit">{string.go}</SubmitButton>
         </Form>
       </AddCoinWrapper>

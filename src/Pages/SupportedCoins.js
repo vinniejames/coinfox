@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
-import {translationStrings} from '../Utils/i18n';
-import fetch from "fetch-retry";
+import fetchRetry from '../Utils/fetchRetry';
 import styled from 'styled-components';
 
 const SupportedCoinsList = styled.ul`
@@ -25,9 +24,9 @@ class SupportedCoins extends Component {
     }
   }
 
-  componentWillMount () {
+  componentDidMount () {
 
-    fetch("https://api.coingecko.com/api/v3/coins/list")
+    fetchRetry("https://api.coingecko.com/api/v3/coins/list")
       .then(res => res.json())
       .then(coins => 
         this.setState({
@@ -54,7 +53,7 @@ class SupportedCoins extends Component {
         <div>
           <SupportedCoinsList>
           {this.state.supported.map((coin)=>(
-            <SupportedCoinItem>
+            <SupportedCoinItem key={coin.code + coin.name}>
               {coin.name} ({coin.code})
             </SupportedCoinItem>
           ))}
