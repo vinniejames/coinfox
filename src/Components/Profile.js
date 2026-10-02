@@ -3,9 +3,7 @@ import {
   isSignInPending,
   loadUserData,
   Person,
-} from 'blockstack';
-
-// const avatarFallbackImage = 'https://s3.amazonaws.com/onename/avatar-placeholder.png';
+} from '../Utils/blockstackCompat';
 
 class Profile extends Component {
   constructor(props) {
@@ -16,35 +14,37 @@ class Profile extends Component {
         name() {
           return 'Anon';
         },
-        // avatarUrl() {
-        //   return avatarFallbackImage;
-        // },
       },
     };
   }
 
-  componentWillMount() {
-    this.setState({
-      person: new Person(loadUserData().profile),
-    });
+  componentDidMount() {
+    try {
+      this.setState({
+        person: new Person(loadUserData().profile),
+      });
+    } catch (e) {
+      // keep Anon fallback
+    }
   }
 
-  render () {
+  render() {
     const { handleSignOut } = this.props;
     const { person } = this.state;
 
-    return (
-      !isSignInPending() ?
-        <div className="Profile">
-          <span id="logout">
-            { person.name() ? person.name() : 'Natoshi Sockamoto' } &nbsp;
-            <i onClick={handleSignOut.bind(this)} className="fa fa-sign-out" aria-hidden="true"></i>
-          </span>
-        </div>
-        : null
-    )
+    return !isSignInPending() ? (
+      <div className="Profile">
+        <span id="logout">
+          {person.name() ? person.name() : 'Natoshi Sockamoto'} &nbsp;
+          <i
+            onClick={handleSignOut}
+            className="fa fa-sign-out"
+            aria-hidden="true"
+          ></i>
+        </span>
+      </div>
+    ) : null;
   }
-
 }
 
 export default Profile;
